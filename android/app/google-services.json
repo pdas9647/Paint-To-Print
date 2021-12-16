@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "123107637220",
+    "project_id": "paint-to-print-chayan19062000",
+    "storage_bucket": "paint-to-print-chayan19062000.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123107637220:android:1757386f89f0b4ce88b9f1",
+        "android_client_info": {
+          "package_name": "com.paint_print.paint_to_print"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "123107637220-5m5onjdc454sp9ekkq6vl47jdthdrqgs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.paint_print.paint_to_print",
+            "certificate_hash": "1bb18aef26ba569143690e1046974589b772f0a0"
+          }
+        },
+        {
+          "client_id": "123107637220-djh9ifb2kfndtmu4iuss3uf4leq01npo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-rr9IJb8GNrWX4ZXXQwLzulcAFP7FRNo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "123107637220-djh9ifb2kfndtmu4iuss3uf4leq01npo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
