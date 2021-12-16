@@ -4,7 +4,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:paint_to_print/screens/splash_screen.dart';
 import 'package:paint_to_print/screens/user_state.dart';
 
-Future<void> main() async {
+void main() async {
+  // await Firebase.initializeApp(
+  // options: FirebaseOptions(
+  //   apiKey: "AIzaSyCoymMJXZzdhmduwp5JWgwURw5nARmJFNc", // Your apiKey
+  //   appId: "1:123107637220:web:786d26970421203c88b9f1", // Your appId
+  //   messagingSenderId: "123107637220", // Your messagingSenderId
+  //   projectId: "paint-to-print-chayan19062000", // Your projectId
+  // ),
+  // );
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }

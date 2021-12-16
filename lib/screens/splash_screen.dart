@@ -44,24 +44,26 @@ class _SplashScreenState extends State<SplashScreen> {
             right: 0.0,
             child: Padding(
               padding: const EdgeInsets.all(12.0),
-              child: DefaultTextStyle(
-                textAlign: TextAlign.center,
-                style: GoogleFonts.alexBrush(
-                  fontSize: 45.0,
-                  letterSpacing: 5,
-                  color: Colors.redAccent,
-                  fontWeight: FontWeight.bold,
-                ),
-                child: AnimatedTextKit(
-                  animatedTexts: [
-                    TyperAnimatedText(
-                      'Paint to Print',
-                      curve: Curves.easeInCubic,
-                      speed: Duration(milliseconds: 50),
-                    ),
-                  ],
-                  repeatForever: true,
-                  // pause: const Duration(milliseconds: 2),
+              child: Center(
+                child: DefaultTextStyle(
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.alexBrush(
+                    fontSize: 45.0,
+                    letterSpacing: 5,
+                    color: Colors.redAccent,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  child: AnimatedTextKit(
+                    animatedTexts: [
+                      TyperAnimatedText(
+                        'Paint to Print',
+                        curve: Curves.easeInCubic,
+                        speed: Duration(milliseconds: 50),
+                      ),
+                    ],
+                    repeatForever: true,
+                    // pause: const Duration(milliseconds: 2),
+                  ),
                 ),
               ),
             ),

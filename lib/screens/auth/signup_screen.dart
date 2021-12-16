@@ -424,8 +424,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     style: GoogleFonts.getFont(
                                       'Fira Sans',
                                       fontSize: 20.0,
-                                      color: Colors.black87,
                                       letterSpacing: 0.8,
+                                      color: Colors.black87,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),

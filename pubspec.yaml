@@ -53,6 +53,12 @@ dependencies:
   animated_text_kit: ^4.2.1
   wave: ^0.2.0
   flutter_shine: ^0.0.5
+  backdrop: ^0.6.2
+  flutter_colorpicker: ^1.0.3
+  provider: ^6.0.1
+  shared_preferences: ^2.0.11
+  permission_handler: ^8.3.0
+  image_gallery_saver: ^1.7.1
 
 dev_dependencies:
   flutter_test:
