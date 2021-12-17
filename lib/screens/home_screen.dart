@@ -26,6 +26,14 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('Paint to Print'),
         leading: BackdropToggleButton(icon: AnimatedIcons.home_menu),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await _firebaseAuth.signOut();
+            },
+            icon: Icon(Icons.logout_rounded),
+          ),
+        ],
       ),
       backLayer: Center(
         child: Text('Back Layer'),
