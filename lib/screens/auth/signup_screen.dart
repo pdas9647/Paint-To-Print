@@ -23,11 +23,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String _name = '';
   String _emailAddress = '';
   String _password = '';
-  String _phoneNumber = '';
   bool _obscureText = true;
   final FocusNode _passwordFocusNode = FocusNode();
   final FocusNode _emailFocusNode = FocusNode();
-  final FocusNode _phoneNumberFocusNode = FocusNode();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   bool _isLoading = false;
 
@@ -56,7 +54,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           'id': _uid,
           'name': _name,
           'email': _emailAddress,
-          'phoneNumber': _phoneNumber,
           'joinedAt': formattedDate,
           'createdAt': createdDate,
           'authenticatedBy': 'email',
@@ -83,7 +80,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     // TODO: implement dispose
     _passwordFocusNode.dispose();
     _emailFocusNode.dispose();
-    _phoneNumberFocusNode.dispose();
     super.dispose();
   }
 
@@ -130,7 +126,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 20.0),
+                Container(
+                  margin: const EdgeInsets.only(top: 80.0),
+                  height: 120.0,
+                  width: 120.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.0),
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/app_icon.png'),
+                      fit: BoxFit.cover,
+                    ),
+                    shape: BoxShape.rectangle,
+                  ),
+                  // child: Hero(
+                  //   tag: 'logo',
+                  //   child: Container(
+                  //     height: 200.0,
+                  //     decoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(20.0),
+                  //       shape: BoxShape.rectangle,
+                  //     ),
+                  //     child: Image.asset('assets/images/app_icon.png'),
+                  //   ),
+                  // ),
+                ),
+                const SizedBox(height: 30.0),
                 // form
                 Form(
                   key: _formKey,
@@ -159,20 +179,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             filled: true,
                             labelText: 'Name',
                             labelStyle: GoogleFonts.getFont(
-                              'Fira Sans',
+                              'Courgette',
                               fontSize: 16.0,
                               fontWeight: FontWeight.w500,
                               color: Theme.of(context).primaryColorDark,
                             ),
                             hintText: 'Enter your name...',
                             hintStyle: GoogleFonts.getFont(
-                              'Fira Sans',
+                              'Courgette',
                               fontSize: 16.0,
                               color: Colors.grey,
                               fontWeight: FontWeight.w500,
                             ),
                             errorStyle: GoogleFonts.getFont(
-                              'Fira Sans',
+                              'Courgette',
                               fontSize: 16.0,
                               color: Colors.redAccent,
                               fontWeight: FontWeight.w500,
@@ -215,20 +235,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             filled: true,
                             labelText: 'Email',
                             labelStyle: GoogleFonts.getFont(
-                              'Fira Sans',
+                              'Courgette',
                               fontSize: 16.0,
                               fontWeight: FontWeight.w500,
                               color: Theme.of(context).primaryColorDark,
                             ),
                             hintText: 'Enter your email...',
                             hintStyle: GoogleFonts.getFont(
-                              'Fira Sans',
+                              'Courgette',
                               fontSize: 16.0,
                               color: Colors.grey,
                               fontWeight: FontWeight.w500,
                             ),
                             errorStyle: GoogleFonts.getFont(
-                              'Fira Sans',
+                              'Courgette',
                               fontSize: 16.0,
                               color: Colors.redAccent,
                               fontWeight: FontWeight.w500,
@@ -272,20 +292,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             filled: true,
                             labelText: 'Password',
                             labelStyle: GoogleFonts.getFont(
-                              'Fira Sans',
+                              'Courgette',
                               fontSize: 16.0,
                               fontWeight: FontWeight.w500,
                               color: Theme.of(context).primaryColorDark,
                             ),
                             hintText: 'Enter your password...',
                             hintStyle: GoogleFonts.getFont(
-                              'Fira Sans',
+                              'Courgette',
                               fontSize: 16.0,
                               color: Colors.grey,
                               fontWeight: FontWeight.w500,
                             ),
                             errorStyle: GoogleFonts.getFont(
-                              'Fira Sans',
+                              'Courgette',
                               fontSize: 16.0,
                               fontWeight: FontWeight.w500,
                               color: Colors.redAccent,
@@ -311,125 +331,66 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           onSaved: (value) {
                             _password = value;
                           },
-                          onEditingComplete: () => FocusScope.of(context)
-                              .requestFocus(_phoneNumberFocusNode),
-                        ),
-                      ),
-                      // textformfield phone number
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: TextFormField(
-                          key: const ValueKey('phone'),
-                          validator: (phone) {
-                            if (phone.isEmpty) {
-                              return 'Please enter your phone number';
-                            } else if (phone.length != 10) {
-                              return 'Please enter a valid phone number';
-                            } else {
-                              return null;
-                            }
-                          },
-                          keyboardType: TextInputType.phone,
-                          focusNode: _phoneNumberFocusNode,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(10)
-                          ],
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColorDark),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            filled: true,
-                            labelText: 'Phone Number',
-                            labelStyle: GoogleFonts.getFont(
-                              'Fira Sans',
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context).primaryColorDark,
-                            ),
-                            hintText: 'Enter your phone number...',
-                            hintStyle: GoogleFonts.getFont(
-                              'Fira Sans',
-                              fontSize: 16.0,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            errorStyle: GoogleFonts.getFont(
-                              'Fira Sans',
-                              fontSize: 16.0,
-                              color: Colors.redAccent,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.redAccent),
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            prefixIcon: Icon(MaterialIcons.phone_android),
-                            fillColor: Theme.of(context).backgroundColor,
-                          ),
-                          onSaved: (value) {
-                            _phoneNumber = value;
-                          },
-                          onEditingComplete: _submitForm,
                         ),
                       ),
                       // signup button
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          InkWell(
-                            onTap: () {
-                              _submitForm();
-                              // Navigator.of(context).pushNamed(LoginScreen.routeName);
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(bottom: 15.0),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              height: 36.0,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.pinkAccent.shade100,
-                                    Colors.blueAccent.shade100,
-                                    Colors.yellowAccent.shade100,
-                                    Colors.redAccent.shade100,
-                                  ],
-                                  begin: Alignment.topRight,
-                                  end: Alignment.bottomLeft,
-                                ),
-                                borderRadius: BorderRadius.circular(12.0),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    offset: Offset(0.0, 1.5),
-                                    blurRadius: 1.5,
+                          Material(
+                            // color: Colors.lightBlueAccent,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(30.0)),
+                            elevation: 8.0,
+                            child: InkWell(
+                              onTap: () {
+                                _submitForm();
+                                // Navigator.of(context).pushNamed(LoginScreen.routeName);
+                              },
+                              child: Container(
+                                // margin: EdgeInsets.only(bottom: 15.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 30.0, vertical: 10.0),
+                                // height: 36.0,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.pinkAccent.shade100,
+                                      Colors.blueAccent.shade100,
+                                      Colors.yellowAccent.shade100,
+                                      Colors.redAccent.shade100,
+                                    ],
+                                    begin: Alignment.topRight,
+                                    end: Alignment.bottomLeft,
                                   ),
-                                ],
-                              ),
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Feather.user_plus,
-                                    size: 18.0,
-                                  ),
-                                  const SizedBox(width: 5.0),
-                                  Text(
-                                    'Sign Up',
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.getFont(
-                                      'Fira Sans',
-                                      fontSize: 20.0,
-                                      letterSpacing: 0.8,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w600,
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.grey,
+                                      offset: Offset(0.0, 1.5),
+                                      blurRadius: 1.5,
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Feather.user_plus, size: 18.0),
+                                    const SizedBox(width: 5.0),
+                                    Text(
+                                      'Sign Up',
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.getFont(
+                                        'Courgette',
+                                        fontSize: 20.0,
+                                        letterSpacing: 0.8,
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),

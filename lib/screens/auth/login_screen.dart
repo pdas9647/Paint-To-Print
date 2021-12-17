@@ -118,11 +118,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20.0),
                     image: const DecorationImage(
-                      image: AssetImage('assets/images/landing_page.png'),
+                      image: AssetImage('assets/images/app_icon.png'),
                       fit: BoxFit.cover,
                     ),
                     shape: BoxShape.rectangle,
                   ),
+                  // child: Hero(
+                  //   tag: 'logo',
+                  //   child: Container(
+                  //     height: 200.0,
+                  //     decoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(20.0),
+                  //       shape: BoxShape.rectangle,
+                  //     ),
+                  //     child: Image.asset('assets/images/app_icon.png'),
+                  //   ),
+                  // ),
                 ),
                 const SizedBox(height: 30.0),
                 Form(
@@ -153,20 +164,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             filled: true,
                             labelText: 'Email',
                             labelStyle: GoogleFonts.getFont(
-                              'Fira Sans',
+                              'Courgette',
                               fontSize: 16.0,
                               fontWeight: FontWeight.w500,
                               color: Theme.of(context).primaryColorDark,
                             ),
                             hintText: 'Enter your email...',
                             hintStyle: GoogleFonts.getFont(
-                              'Fira Sans',
+                              'Courgette',
                               fontSize: 16.0,
                               color: Colors.grey,
                               fontWeight: FontWeight.w500,
                             ),
                             errorStyle: GoogleFonts.getFont(
-                              'Fira Sans',
+                              'Courgette',
                               fontSize: 16.0,
                               color: Colors.redAccent,
                               fontWeight: FontWeight.w500,
@@ -210,20 +221,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             filled: true,
                             labelText: 'Password',
                             labelStyle: GoogleFonts.getFont(
-                              'Fira Sans',
+                              'Courgette',
                               fontSize: 16.0,
                               fontWeight: FontWeight.w500,
                               color: Theme.of(context).primaryColorDark,
                             ),
                             hintText: 'Enter your password...',
                             hintStyle: GoogleFonts.getFont(
-                              'Fira Sans',
+                              'Courgette',
                               fontSize: 16.0,
                               color: Colors.grey,
                               fontWeight: FontWeight.w500,
                             ),
                             errorStyle: GoogleFonts.getFont(
-                              'Fira Sans',
+                              'Courgette',
                               fontSize: 16.0,
                               fontWeight: FontWeight.w500,
                               color: Colors.redAccent,
@@ -255,56 +266,59 @@ class _LoginScreenState extends State<LoginScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          InkWell(
-                            onTap: () {
-                              _submitForm();
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(bottom: 15.0),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              height: 36.0,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.pinkAccent.shade100,
-                                    Colors.blueAccent.shade100,
-                                    Colors.yellowAccent.shade100,
-                                    Colors.redAccent.shade100,
-                                  ],
-                                  begin: Alignment.topRight,
-                                  end: Alignment.bottomLeft,
-                                ),
-                                borderRadius: BorderRadius.circular(12.0),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    offset: Offset(0.0, 1.5),
-                                    blurRadius: 1.5,
+                          Material(
+                            // color: Colors.lightBlueAccent,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(30.0)),
+                            elevation: 8.0,
+                            child: InkWell(
+                              onTap: () {
+                                _submitForm();
+                              },
+                              child: Container(
+                                // margin: EdgeInsets.only(bottom: 15.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 30.0, vertical: 10.0),
+                                // height: 36.0,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.pinkAccent.shade100,
+                                      Colors.blueAccent.shade100,
+                                      Colors.yellowAccent.shade100,
+                                      Colors.redAccent.shade100,
+                                    ],
+                                    begin: Alignment.topRight,
+                                    end: Alignment.bottomLeft,
                                   ),
-                                ],
-                              ),
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Feather.user_check,
-                                    size: 18.0,
-                                  ),
-                                  const SizedBox(width: 5.0),
-                                  Text(
-                                    'Login',
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.getFont(
-                                      'Fira Sans',
-                                      fontSize: 20.0,
-                                      color: Colors.black87,
-                                      letterSpacing: 0.8,
-                                      fontWeight: FontWeight.w600,
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.grey,
+                                      offset: Offset(0.0, 1.5),
+                                      blurRadius: 1.5,
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Feather.user_check, size: 18.0),
+                                    const SizedBox(width: 5.0),
+                                    Text(
+                                      'Login',
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.getFont(
+                                        'Courgette',
+                                        fontSize: 20.0,
+                                        color: Colors.black87,
+                                        letterSpacing: 0.8,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -330,7 +344,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               'Forget Password',
                               textAlign: TextAlign.end,
                               style: GoogleFonts.getFont(
-                                'Fira Sans',
+                                'Courgette',
                                 fontSize: 15.0,
                                 letterSpacing: 0.8,
                                 fontWeight: FontWeight.w500,

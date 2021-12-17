@@ -214,159 +214,178 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Paint to Print'),
-        elevation: 0.0,
-        centerTitle: true,
-      ),
-      body: Stack(
-        children: [
-          Container(color: Theme.of(context).primaryColor),
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        height: MediaQuery.of(context).size.height -
+            kBottomNavigationBarHeight -
+            kToolbarHeight,
+        child: Stack(
+          children: [
+            Container(color: Theme.of(context).primaryColor),
 
-          /// background gradient
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
-              // color: Colors.white,
-              gradient: const SweepGradient(
-                colors: [
-                  Color(0xFFFDFF8F),
-                  Color(0xFFF4E185),
-                  Color(0xFFFFFEA9),
-                ],
-                tileMode: TileMode.decal,
-                // begin: Alignment.topCenter,
-                // end: Alignment.bottomCenter,
+            /// background gradient
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
+                // color: Colors.white,
+                gradient: const SweepGradient(
+                  colors: [
+                    Color(0xFFFDFF8F),
+                    Color(0xFFF4E185),
+                    Color(0xFFFFFEA9),
+                  ],
+                  tileMode: TileMode.decal,
+                  // begin: Alignment.topCenter,
+                  // end: Alignment.bottomCenter,
+                ),
               ),
             ),
-          ),
 
-          /// column ----> canvas & row --> color picker, slider, clear canvas
-          Center(
-            child: SafeArea(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Flexible(flex: 1, child: SizedBox(height: 10.0)),
+            /// column ----> canvas & row --> color picker, slider, clear canvas
+            Center(
+              child: SafeArea(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Flexible(flex: 1, child: SizedBox(height: 10.0)),
 
-                  /// canvas
-                  Flexible(
-                    flex: 18,
-                    child: Container(
-                      width: width * 0.90,
-                      height: height * 0.90,
-                      child: Card(
-                        elevation: 10.0,
-                        shadowColor: Colors.purpleAccent.shade100,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        child: GestureDetector(
-                          // onPanDown: (details) {
-                          //   setState(() {
-                          //     points.add(
-                          //       DrawingArea(
-                          //         point: details.localPosition,
-                          //         areaPaint: Paint()
-                          //           ..color = selectedColor
-                          //           ..strokeWidth = strokeWidth
-                          //           ..isAntiAlias = true
-                          //           ..strokeCap = StrokeCap.round,
-                          //       ),
-                          //     );
-                          //   });
-                          // },
-                          onPanUpdate: (details) {
-                            setState(() {
-                              points.add(
-                                DrawingArea(
-                                  point: details.localPosition,
-                                  areaPaint: Paint()
-                                    ..color = selectedColor
-                                    ..strokeWidth = strokeWidth
-                                    ..isAntiAlias = true
-                                    ..strokeCap = StrokeCap.round,
-                                ),
-                              );
-                            });
-                          },
-                          onPanStart: (details) {
-                            setState(() {
-                              points.add(
-                                DrawingArea(
-                                  point: details.localPosition,
-                                  areaPaint: Paint()
-                                    ..strokeCap = StrokeCap.round
-                                    ..isAntiAlias = true
-                                    ..color = selectedColor
-                                    ..strokeWidth = strokeWidth,
-                                ),
-                              );
-                            });
-                          },
-                          onPanEnd: (details) {
-                            setState(() {
-                              points.add(null);
-                            });
-                          },
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(20.0)),
-                            child: RepaintBoundary(
-                              key: canvasKey,
-                              child: Stack(
-                                children: [
-                                  /// divider listview
-                                  Container(
-                                    child: ListView.builder(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: int.parse(
-                                          '${(height * 0.90 / 50).ceil()}'),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return const Divider(
-                                          color: Colors.black,
-                                          height: 50.0,
-                                          indent: 20.0,
-                                          endIndent: 20.0,
-                                        );
-                                      },
+                    /// canvas
+                    Flexible(
+                      flex: 18,
+                      child: Container(
+                        width: width * 0.90,
+                        height: height * 0.90,
+                        child: Card(
+                          elevation: 10.0,
+                          shadowColor: Colors.purpleAccent.shade100,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          child: GestureDetector(
+                            // onPanDown: (details) {
+                            //   setState(() {
+                            //     points.add(
+                            //       DrawingArea(
+                            //         point: details.localPosition,
+                            //         areaPaint: Paint()
+                            //           ..color = selectedColor
+                            //           ..strokeWidth = strokeWidth
+                            //           ..isAntiAlias = true
+                            //           ..strokeCap = StrokeCap.round,
+                            //       ),
+                            //     );
+                            //   });
+                            // },
+                            onPanUpdate: (details) {
+                              setState(() {
+                                points.add(
+                                  DrawingArea(
+                                    point: details.localPosition,
+                                    areaPaint: Paint()
+                                      ..color = selectedColor
+                                      ..strokeWidth = strokeWidth
+                                      ..isAntiAlias = true
+                                      ..strokeCap = StrokeCap.round,
+                                  ),
+                                );
+                              });
+                            },
+                            onPanStart: (details) {
+                              setState(() {
+                                points.add(
+                                  DrawingArea(
+                                    point: details.localPosition,
+                                    areaPaint: Paint()
+                                      ..strokeCap = StrokeCap.round
+                                      ..isAntiAlias = true
+                                      ..color = selectedColor
+                                      ..strokeWidth = strokeWidth,
+                                  ),
+                                );
+                              });
+                            },
+                            onPanEnd: (details) {
+                              setState(() {
+                                points.add(null);
+                              });
+                            },
+                            child: ClipRRect(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(20.0)),
+                              child: RepaintBoundary(
+                                key: canvasKey,
+                                child: Stack(
+                                  children: [
+                                    /// divider listview
+                                    Container(
+                                      child: ListView.builder(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: int.parse(
+                                            '${(height * 0.90 / 50).ceil()}'),
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return const Divider(
+                                            color: Colors.black,
+                                            height: 50.0,
+                                            indent: 20.0,
+                                            endIndent: 20.0,
+                                          );
+                                        },
+                                      ),
+                                      color: Colors.white,
                                     ),
-                                    color: Colors.white,
-                                  ),
-                                  CustomPaint(
-                                    size: Size.infinite,
-                                    painter:
-                                        OwnCustomPainter(pointsList: points),
-                                  ),
-                                ],
+                                    CustomPaint(
+                                      size: Size.infinite,
+                                      painter:
+                                          OwnCustomPainter(pointsList: points),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  const Flexible(flex: 1, child: SizedBox(height: 10.0)),
-                ],
+                    const Flexible(flex: 1, child: SizedBox(height: 10.0)),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+            Positioned(
+              bottom: kBottomNavigationBarHeight / 2,
+              right: 10.0,
+              child: AnimatedFloatingActionButton(
+                key: floatingActionButtonKey,
+                fabButtons: <Widget>[
+                  clearCanvasFloatingAction(),
+                  chooseStrokeWidthFloatingAction(),
+                  chooseColorFloatingAction(),
+                  saveCanvasFloatingAction(),
+                ],
+                colorStartAnimation: Theme.of(context).primaryColor,
+                colorEndAnimation: Colors.redAccent.shade100,
+                animatedIconData: AnimatedIcons.menu_close,
+              ),
+            ),
+          ],
+        ),
       ),
-      floatingActionButton: AnimatedFloatingActionButton(
-        key: floatingActionButtonKey,
-        fabButtons: <Widget>[
-          clearCanvasFloatingAction(),
-          chooseStrokeWidthFloatingAction(),
-          chooseColorFloatingAction(),
-          saveCanvasFloatingAction(),
-        ],
-        colorStartAnimation: Theme.of(context).primaryColor,
-        colorEndAnimation: Colors.redAccent.shade100,
-        animatedIconData: AnimatedIcons.menu_close,
-      ),
+      // floatingActionButton: Align(alignment: ,
+      //   child: AnimatedFloatingActionButton(
+      //     key: floatingActionButtonKey,
+      //     fabButtons: <Widget>[
+      //       clearCanvasFloatingAction(),
+      //       chooseStrokeWidthFloatingAction(),
+      //       chooseColorFloatingAction(),
+      //       saveCanvasFloatingAction(),
+      //     ],
+      //     colorStartAnimation: Theme.of(context).primaryColor,
+      //     colorEndAnimation: Colors.redAccent.shade100,
+      //     animatedIconData: AnimatedIcons.menu_close,
+      //   ),
+      // ),
     );
   }
 }

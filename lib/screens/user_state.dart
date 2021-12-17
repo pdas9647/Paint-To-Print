@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:paint_to_print/homescreen_canvas_pageview.dart';
 import 'package:paint_to_print/widgets/loading.dart';
 
+import 'bottom_bar_screen.dart';
 import 'landing_screen.dart';
 
 class UserState extends StatelessWidget {
@@ -24,7 +24,7 @@ class UserState extends StatelessWidget {
         } else if (userSnapshot.connectionState == ConnectionState.active) {
           if (userSnapshot.hasData) {
             print('The user has already logged in ${userSnapshot.data}');
-            return const HomeScreenCanvasPageView();
+            return const BottomBarScreen();
           } else {
             print('The user didn\'t log in');
             return const LandingScreen();

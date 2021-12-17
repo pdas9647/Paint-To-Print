@@ -1,4 +1,3 @@
-import 'package:backdrop/backdrop.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,27 +18,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BackdropScaffold(
-      headerHeight: MediaQuery.of(context).size.height * 0.45,
-      resizeToAvoidBottomInset: false,
-      appBar: BackdropAppBar(
-        title: Text('Paint to Print'),
-        leading: BackdropToggleButton(icon: AnimatedIcons.home_menu),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () async {
-              await _firebaseAuth.signOut();
-            },
-            icon: Icon(Icons.logout_rounded),
-          ),
-        ],
-      ),
-      backLayer: Center(
-        child: Text('Back Layer'),
-      ),
-      frontLayer: Center(
-        child: Column(
+    return Center(
+      child: Container(
+        height: MediaQuery.of(context).size.height -
+            kBottomNavigationBarHeight -
+            kToolbarHeight,
+        child: ListView(
           children: [
             /// row 1
             Flexible(
@@ -109,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 10.0),
+            // SizedBox(height: 10.0),
 
             /// row 3
             Flexible(
@@ -144,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 10.0),
+            SizedBox(height: kBottomNavigationBarHeight / 1.5),
           ],
         ),
       ),
