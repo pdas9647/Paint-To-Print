@@ -1,15 +1,16 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:paint_to_print/widgets/floating_action_button_text.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:simple_speed_dial/simple_speed_dial.dart';
 
 import 'own_custom_painter.dart';
 
@@ -27,61 +28,8 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
   List<DrawingArea> points = [];
   Color selectedColor;
   double strokeWidth;
+  // bool _isShowDial = false;
   // bool isDarkTheme = false;
-
-  Widget clearCanvasFloatingAction() {
-    return FloatActionButtonText(
-      onPressed: () {
-        floatingActionButtonKey.currentState.animate();
-        setState(() {
-          points.clear();
-        });
-      },
-      icon: Icons.clear_all_rounded,
-      color: selectedColor,
-      textLeft: -73,
-      text: 'Clear',
-    );
-  }
-
-  Widget chooseStrokeWidthFloatingAction() {
-    return FloatActionButtonText(
-      onPressed: () {
-        floatingActionButtonKey.currentState.animate();
-        selectStrokeWidth();
-      },
-      icon: Icons.brush_rounded,
-      color: selectedColor,
-      textLeft: -163,
-      text: 'Select Stroke Width',
-    );
-  }
-
-  Widget chooseColorFloatingAction() {
-    return FloatActionButtonText(
-      onPressed: () {
-        floatingActionButtonKey.currentState.animate();
-        selectColor();
-      },
-      icon: Icons.color_lens_rounded,
-      color: selectedColor,
-      textLeft: -125,
-      text: 'Choose Color',
-    );
-  }
-
-  Widget saveCanvasFloatingAction() {
-    return FloatActionButtonText(
-      onPressed: () {
-        floatingActionButtonKey.currentState.animate();
-        _saveCanvas();
-      },
-      icon: MdiIcons.contentSave,
-      color: selectedColor,
-      textLeft: -70,
-      text: 'Save',
-    );
-  }
 
   void selectColor() {
     showDialog(
@@ -132,33 +80,32 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     setState(() => selectedColor = color);
   }
 
-  void selectStrokeWidth() {
-    showDialog(
+  void selectStrokeWidth() async {
+    await showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           elevation: 8.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           title: Text(
-            'Choose Stroke Width',
-            style: GoogleFonts.courgette(
-              fontSize: 17.0,
-              color: selectedColor,
-            ),
+            'Select stroke width',
+            style: GoogleFonts.courgette(fontSize: 17.0, color: selectedColor),
           ),
           content: SingleChildScrollView(
-            child: Slider(
+            child: CupertinoSlider(
               min: 1.0,
               max: 7.0,
               value: strokeWidth,
+              // label: 'Stroke width',
               activeColor: selectedColor,
-              inactiveColor: Colors.blueGrey.shade200,
+              // inactiveColor: Colors.blueGrey.shade200,
               onChanged: (double value) {
-                // setState(() {
-                strokeWidth = value;
-                // });
+                setState(() {
+                  strokeWidth = value;
+                });
+                print(strokeWidth);
               },
             ),
           ),
@@ -181,7 +128,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     );
   }
 
-  Future<void> _saveCanvas() async {
+  Future<void> saveCanvas() async {
     RenderRepaintBoundary boundary =
         canvasKey.currentContext.findRenderObject();
     ui.Image image = await boundary.toImage();
@@ -221,33 +168,34 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
             kToolbarHeight,
         child: Stack(
           children: [
-            Container(color: Theme.of(context).primaryColor),
+            // Container(color: Colors.indigo),
 
             /// background gradient
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
                 // color: Colors.white,
-                gradient: const SweepGradient(
+                gradient: LinearGradient(
                   colors: [
-                    Color(0xFFFDFF8F),
-                    Color(0xFFF4E185),
-                    Color(0xFFFFFEA9),
+                    Theme.of(context).colorScheme.secondary,
+                    Theme.of(context).colorScheme.secondaryVariant,
+                    // Color(0xFFFFFEA9),
                   ],
                   tileMode: TileMode.decal,
-                  // begin: Alignment.topCenter,
-                  // end: Alignment.bottomCenter,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
               ),
+              // color: Theme.of(context).colorScheme.secondaryVariant,
             ),
 
-            /// column ----> canvas & row --> color picker, slider, clear canvas
+            /// column ----> canvas
             Center(
               child: SafeArea(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Flexible(flex: 1, child: SizedBox(height: 10.0)),
+                    const Flexible(flex: 1, child: SizedBox(height: 5.0)),
 
                     /// canvas
                     Flexible(
@@ -257,7 +205,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                         height: height * 0.90,
                         child: Card(
                           elevation: 10.0,
-                          shadowColor: Colors.purpleAccent.shade100,
+                          shadowColor: Colors.black,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
                           ),
@@ -348,44 +296,86 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                         ),
                       ),
                     ),
-                    const Flexible(flex: 1, child: SizedBox(height: 10.0)),
+                    const Flexible(flex: 1, child: SizedBox(height: 30.0)),
                   ],
                 ),
               ),
             ),
             Positioned(
-              bottom: kBottomNavigationBarHeight / 2,
+              bottom: kBottomNavigationBarHeight,
               right: 10.0,
-              child: AnimatedFloatingActionButton(
-                key: floatingActionButtonKey,
-                fabButtons: <Widget>[
-                  clearCanvasFloatingAction(),
-                  chooseStrokeWidthFloatingAction(),
-                  chooseColorFloatingAction(),
-                  saveCanvasFloatingAction(),
+              child: SpeedDial(
+                child: Icon(Icons.add, color: Colors.white),
+                closedForegroundColor: Colors.black,
+                openForegroundColor: Colors.white,
+                closedBackgroundColor: Theme.of(context).primaryColor,
+                openBackgroundColor: Theme.of(context).colorScheme.error,
+                labelsStyle: GoogleFonts.courgette(fontSize: 17.0),
+                speedDialChildren: <SpeedDialChild>[
+                  /// clear
+                  SpeedDialChild(
+                    child: Icon(Icons.clear_all_rounded),
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.red,
+                    label: 'Clear',
+                    onPressed: () {
+                      setState(() {
+                        points.clear();
+                      });
+                    },
+                    closeSpeedDialOnPressed: true,
+                  ),
+
+                  /// select stoke width
+                  SpeedDialChild(
+                    child: Icon(Icons.brush_rounded),
+                    foregroundColor: selectedColor,
+                    backgroundColor:
+                        Theme.of(context).colorScheme.secondaryVariant,
+                    label: 'Select stroke width',
+                    onPressed: () {
+                      setState(() {
+                        selectStrokeWidth();
+                      });
+                    },
+                    closeSpeedDialOnPressed: true,
+                  ),
+
+                  /// choose color
+                  SpeedDialChild(
+                    child: Icon(Icons.color_lens_rounded),
+                    foregroundColor: selectedColor,
+                    backgroundColor:
+                        Theme.of(context).colorScheme.secondaryVariant,
+                    label: 'Choose color',
+                    onPressed: () {
+                      setState(() {
+                        selectColor();
+                      });
+                    },
+                    closeSpeedDialOnPressed: true,
+                  ),
+
+                  /// save
+                  SpeedDialChild(
+                    child: Icon(Icons.save_rounded),
+                    foregroundColor: Colors.black,
+                    backgroundColor:
+                        Theme.of(context).colorScheme.secondaryVariant,
+                    label: 'Save',
+                    onPressed: () {
+                      setState(() {
+                        saveCanvas();
+                      });
+                    },
+                    closeSpeedDialOnPressed: true,
+                  ),
                 ],
-                colorStartAnimation: Theme.of(context).primaryColor,
-                colorEndAnimation: Colors.redAccent.shade100,
-                animatedIconData: AnimatedIcons.menu_close,
               ),
             ),
           ],
         ),
       ),
-      // floatingActionButton: Align(alignment: ,
-      //   child: AnimatedFloatingActionButton(
-      //     key: floatingActionButtonKey,
-      //     fabButtons: <Widget>[
-      //       clearCanvasFloatingAction(),
-      //       chooseStrokeWidthFloatingAction(),
-      //       chooseColorFloatingAction(),
-      //       saveCanvasFloatingAction(),
-      //     ],
-      //     colorStartAnimation: Theme.of(context).primaryColor,
-      //     colorEndAnimation: Colors.redAccent.shade100,
-      //     animatedIconData: AnimatedIcons.menu_close,
-      //   ),
-      // ),
     );
   }
 }

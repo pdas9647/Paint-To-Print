@@ -39,18 +39,20 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               appBarTheme: AppBarTheme(
-                color: Color(0xFF1F3A40),
+                color: Color(0xFF29335C),
                 centerTitle: true,
                 titleTextStyle: GoogleFonts.satisfy(
                   fontSize: 30.0,
                   letterSpacing: 1.5,
                 ),
               ),
-              primaryColor: Color(0xFF1F3A40),
+              primaryColor: Color(0xFF29335C),
               colorScheme: ColorScheme.fromSwatch().copyWith(
-                secondary: Color(0xFFF2BA52),
-                error: Color(0xFFF05454),
-                // 0xFF26A3BF
+                secondary: Color(0xFFffc854),
+                secondaryVariant: Color(0xFFF0CEA0),
+                // primaryVariant: Color(0xFF),
+                error: Color(0xFFDB2B39),
+                // 0xFF26A3BF 0xFF534D41
               ),
             ),
             home: const SplashScreen(),

@@ -4,13 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CreateHomeIcon extends StatelessWidget {
   final String iconName;
-  final IconData iconData;
+  final String image;
   final Color shadowColor;
   final Function() onTap;
   const CreateHomeIcon({
     Key key,
     this.iconName,
-    this.iconData,
+    this.image,
     this.shadowColor,
     this.onTap,
   }) : super(key: key);
@@ -25,27 +25,28 @@ class CreateHomeIcon extends StatelessWidget {
           elevation: 10.0,
           shadowColor: shadowColor,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           child: Container(
             padding: EdgeInsets.all(10.0),
             width: MediaQuery.of(context).size.width / 2,
+            height: MediaQuery.of(context).size.height / 4.2,
+            // color: Colors.indigo,
             child: Column(
-              // mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Flexible(
                   flex: 5,
-                  child: Icon(
-                    iconData,
-                    size: 80.0,
-                    color: Theme.of(context).primaryColor,
-                  ),
+                  child: Image.asset(image),
                 ),
                 SizedBox(height: 10.0),
                 AutoSizeText(
                   iconName,
                   maxLines: 1,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.courgette(fontSize: 20.0),
+                  style: GoogleFonts.sriracha(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),

@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Timer(Duration(seconds: 5), navigateToUserState);
+    Timer(Duration(seconds: 4), navigateToUserState);
   }
 
   void navigateToUserState() {
@@ -46,14 +46,16 @@ class _SplashScreenState extends State<SplashScreen> {
               padding: const EdgeInsets.all(12.0),
               child: Center(
                 child: DefaultTextStyle(
+                  maxLines: 1,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.alexBrush(
                     fontSize: 45.0,
-                    letterSpacing: 5,
+                    // letterSpacing: 5,
                     color: Colors.redAccent,
                     fontWeight: FontWeight.bold,
                   ),
-                  child: AnimatedTextKit(
+                  child:
+                      /*AnimatedTextKit(
                     animatedTexts: [
                       TyperAnimatedText(
                         'Paint to Print',
@@ -63,6 +65,18 @@ class _SplashScreenState extends State<SplashScreen> {
                     ],
                     repeatForever: true,
                     // pause: const Duration(milliseconds: 2),
+                  ),*/
+                      Align(
+                    alignment: Alignment.center,
+                    child: TypewriterAnimatedTextKit(
+                      text: ['Paint to Print'],
+                      speed: Duration(milliseconds: 100),
+                      textStyle: GoogleFonts.courgette(
+                        fontSize: 35.0,
+                        // overflow: TextOverflow.fade,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
                   ),
                 ),
               ),

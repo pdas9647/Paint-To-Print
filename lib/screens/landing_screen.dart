@@ -47,11 +47,9 @@ class _LandingScreenState extends State<LandingScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-    controller = AnimationController(
-      duration: Duration(seconds: 1),
-      vsync: this,
-    );
-    animation = CurvedAnimation(parent: controller, curve: Curves.decelerate);
+    controller =
+        AnimationController(duration: Duration(seconds: 1), vsync: this);
+    animation = CurvedAnimation(parent: controller, curve: Curves.easeInCirc);
     controller.forward();
     animation.addStatusListener((status) {
       print(status);
@@ -335,14 +333,39 @@ class _LandingScreenState extends State<LandingScreen>
                     ),
                     SizedBox(width: 10.0),
                     Flexible(
-                      child: TypewriterAnimatedTextKit(
-                        text: ['Paint to Print'],
-                        textStyle: GoogleFonts.courgette(
-                          fontSize: 45.0,
-                          // overflow: TextOverflow.fade,
-                          fontWeight: FontWeight.w900,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: TypewriterAnimatedTextKit(
+                          text: ['Paint to Print'],
+                          speed: Duration(milliseconds: 100),
+                          textStyle: GoogleFonts.courgette(
+                            fontSize: 35.0,
+                            // overflow: TextOverflow.fade,
+                            fontWeight: FontWeight.w900,
+                          ),
                         ),
                       ),
+                      /*DefaultTextStyle(
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.alexBrush(
+                          fontSize: 45.0,
+                          letterSpacing: 5,
+                          color: Colors.redAccent,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        child: AnimatedTextKit(
+                          animatedTexts: [
+                            TyperAnimatedText(
+                              'Paint to Print',
+                              curve: Curves.easeInCubic,
+                              speed: Duration(milliseconds: 50),
+                            ),
+                          ],
+                          repeatForever: true,
+                          // pause: const Duration(milliseconds: 2),
+                        ),
+                      ),*/
                     ),
                   ],
                 ),
@@ -374,7 +397,11 @@ class _LandingScreenState extends State<LandingScreen>
                           SizedBox(width: 10.0),
                           Text(
                             'Sign In',
-                            style: GoogleFonts.courgette(fontSize: 18.0),
+                            style: GoogleFonts.courgette(
+                              fontSize: 18.0,
+                              letterSpacing: 1.2,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
                         ],
                       ),
@@ -408,7 +435,11 @@ class _LandingScreenState extends State<LandingScreen>
                           SizedBox(width: 10.0),
                           Text(
                             'Sign Up',
-                            style: GoogleFonts.courgette(fontSize: 18.0),
+                            style: GoogleFonts.courgette(
+                              fontSize: 18.0,
+                              letterSpacing: 1.2,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
                         ],
                       ),

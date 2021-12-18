@@ -45,19 +45,19 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.home),
         title: ('Home'),
-        activeColorPrimary: Theme.of(context).colorScheme.secondary,
+        activeColorPrimary: Color(0xFFF3A712),
         inactiveColorPrimary: Theme.of(context).disabledColor,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(MaterialCommunityIcons.draw),
         title: ('Canvas'),
-        activeColorPrimary: Colors.purpleAccent,
+        activeColorPrimary: Color(0xFFDB2B39),
         inactiveColorPrimary: Theme.of(context).disabledColor,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(MdiIcons.fileDocument),
         title: ('All Docs'),
-        activeColorPrimary: Colors.indigo.shade400,
+        activeColorPrimary: Color(0xFF344CB7),
         inactiveColorPrimary: Theme.of(context).disabledColor,
       ),
     ];
@@ -87,9 +87,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
       frontLayer: DoubleBackToCloseApp(
         snackBar: SnackBar(
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-            top: Radius.circular(18.0),
-          )),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(18.0))),
           content: Text(
             'Tap back again to exit',
             style: GoogleFonts.courgette(fontSize: 17.0),
@@ -101,7 +99,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
           screens: _buildScreens(),
           items: _navBarsItems(),
           confineInSafeArea: true,
-          navBarStyle: NavBarStyle.neumorphic,
+          navBarStyle: NavBarStyle.style9,
           backgroundColor: Colors.white,
           handleAndroidBackButtonPress: true,
           resizeToAvoidBottomInset: true,
@@ -109,12 +107,12 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
           hideNavigationBarWhenKeyboardShows: true,
           itemAnimationProperties: ItemAnimationProperties(
             curve: Curves.easeInToLinear,
-            duration: Duration(milliseconds: 1000),
+            duration: Duration(milliseconds: 500),
           ),
           screenTransitionAnimation: ScreenTransitionAnimation(
             animateTabTransition: true,
             curve: Curves.easeInToLinear,
-            duration: Duration(milliseconds: 1000),
+            duration: Duration(milliseconds: 500),
           ),
           navBarHeight: MediaQuery.of(context).viewInsets.bottom > 0
               ? 0.0

@@ -1,9 +1,6 @@
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:paint_to_print/widgets/create_home_icon.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,30 +21,31 @@ class _HomeScreenState extends State<HomeScreen> {
             kBottomNavigationBarHeight -
             kToolbarHeight,
         child: ListView(
+          // shrinkWrap: true,
           children: [
             /// row 1
             Flexible(
               flex: 1,
               child: Container(
-                padding: EdgeInsets.all(15.0),
-                height: MediaQuery.of(context).size.height / 3.5,
+                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 4.0),
+                height: MediaQuery.of(context).size.height / 3.9,
                 width: MediaQuery.of(context).size.width,
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CreateHomeIcon(
-                      iconName: 'Smart Scan',
-                      iconData: Icons.camera_alt,
+                      iconName: 'Scan',
+                      image: 'assets/images/scan.png',
                       shadowColor: Colors.orangeAccent,
                       onTap: () {
-                        print('Smart Scan');
-                        Fluttertoast.showToast(msg: 'Smart Scan');
+                        print('Scan');
+                        Fluttertoast.showToast(msg: 'Scan');
                       },
                     ),
                     CreateHomeIcon(
                       iconName: 'Import Picture',
-                      iconData: EvaIcons.image2,
+                      image: 'assets/images/import_picture.png',
                       shadowColor: Colors.greenAccent,
                       onTap: () {
                         print('Import Picture');
@@ -64,8 +62,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Flexible(
               flex: 1,
               child: Container(
-                padding: EdgeInsets.all(15.0),
-                height: MediaQuery.of(context).size.height / 3.5,
+                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 4.0),
+                height: MediaQuery.of(context).size.height / 3.9,
                 width: MediaQuery.of(context).size.width,
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
@@ -73,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     CreateHomeIcon(
                       iconName: 'Import File',
-                      iconData: MaterialCommunityIcons.file_upload,
+                      image: 'assets/images/import_file.png',
                       shadowColor: Colors.purpleAccent.shade200,
                       onTap: () {
                         print('Import File');
@@ -82,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     CreateHomeIcon(
                       iconName: 'Scan ID Card',
-                      iconData: MdiIcons.idCard,
+                      image: 'assets/images/scan_id_card.png',
                       shadowColor: Colors.yellowAccent.shade100,
                       onTap: () {
                         print('Scan ID Card');
@@ -99,8 +97,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Flexible(
               flex: 1,
               child: Container(
-                padding: EdgeInsets.all(15.0),
-                height: MediaQuery.of(context).size.height / 3.5,
+                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 4.0),
+                height: MediaQuery.of(context).size.height / 3.9,
                 width: MediaQuery.of(context).size.width,
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
@@ -108,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     CreateHomeIcon(
                       iconName: 'Handwriting to Text',
-                      iconData: MdiIcons.textRecognition,
+                      image: 'assets/images/handwriting_to_text.png',
                       shadowColor: Colors.teal.shade600,
                       onTap: () {
                         print('Handwriting to Text');
@@ -116,12 +114,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     ),
                     CreateHomeIcon(
-                      iconName: 'Import Picture',
-                      iconData: EvaIcons.image2,
+                      iconName: 'Merge Pdf',
+                      image: 'assets/images/merge_pdf.png',
                       shadowColor: Colors.lightBlueAccent,
                       onTap: () {
-                        print('Import Picture');
-                        Fluttertoast.showToast(msg: 'Import Picture');
+                        print('Merge Pdf');
+                        Fluttertoast.showToast(msg: 'Merge Pdf');
                       },
                     ),
                   ],
