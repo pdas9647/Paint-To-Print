@@ -9,7 +9,7 @@ class Loading extends StatelessWidget {
     return Container(
       child: Center(
         child: SpinKitFadingCircle(
-          color: Theme.of(context).colorScheme.primary,
+          color: Theme.of(context).primaryColor,
           size: 200.0,
         ),
       ),
