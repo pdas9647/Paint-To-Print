@@ -43,7 +43,7 @@ class CreateHomeIcon extends StatelessWidget {
                   iconName,
                   maxLines: 1,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.sriracha(
+                  style: GoogleFonts.arimo(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
                   ),

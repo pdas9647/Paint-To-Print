@@ -28,13 +28,23 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/app_icon.png'),
-                fit: BoxFit.contain,
+          Center(
+            child: Container(
+              // height: MediaQuery.of(context).size.height * 0.90,
+              width: MediaQuery.of(context).size.width * 0.90,
+              // decoration: BoxDecoration(
+              //   image: DecorationImage(
+              //     image: AssetImage('assets/images/app_icon.png'),
+              //     fit: BoxFit.contain,
+              //   ),
+              // ),
+              child: Image.asset(
+                'assets/images/app_icon.png',
+                height: MediaQuery.of(context).size.height * 0.90,
+                width: MediaQuery.of(context).size.width * 0.90,
               ),
             ),
           ),
@@ -50,23 +60,18 @@ class _SplashScreenState extends State<SplashScreen> {
                   textAlign: TextAlign.center,
                   style: GoogleFonts.alexBrush(
                     fontSize: 45.0,
-                    // letterSpacing: 5,
-                    color: Colors.redAccent,
+                    letterSpacing: 1.7,
+                    color: Theme.of(context).colorScheme.error,
                     fontWeight: FontWeight.bold,
-                  ),
-                  child:
-                      /*AnimatedTextKit(
-                    animatedTexts: [
-                      TyperAnimatedText(
-                        'Paint to Print',
-                        curve: Curves.easeInCubic,
-                        speed: Duration(milliseconds: 50),
+                    shadows: [
+                      Shadow(
+                        offset: Offset(2.5, 2.5),
+                        blurRadius: 5.0,
+                        color: Color(0xFF3F0713),
                       ),
                     ],
-                    repeatForever: true,
-                    // pause: const Duration(milliseconds: 2),
-                  ),*/
-                      Align(
+                  ),
+                  child: Align(
                     alignment: Alignment.center,
                     child: TypewriterAnimatedTextKit(
                       text: ['Paint to Print'],

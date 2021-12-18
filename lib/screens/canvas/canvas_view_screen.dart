@@ -42,7 +42,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
           ),
           title: Text(
             'Color Chooser',
-            style: GoogleFonts.courgette(
+            style: GoogleFonts.arimo(
               fontSize: 17.0,
               color: selectedColor,
             ),
@@ -64,7 +64,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
               },
               child: Text(
                 'Okay',
-                style: GoogleFonts.courgette(
+                style: GoogleFonts.arimo(
                   fontSize: 17.0,
                   color: selectedColor,
                 ),
@@ -91,7 +91,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           title: Text(
             'Select stroke width',
-            style: GoogleFonts.courgette(fontSize: 17.0, color: selectedColor),
+            style: GoogleFonts.arimo(fontSize: 17.0, color: selectedColor),
           ),
           content: SingleChildScrollView(
             child: CupertinoSlider(
@@ -116,7 +116,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
               },
               child: Text(
                 'Okay',
-                style: GoogleFonts.courgette(
+                style: GoogleFonts.arimo(
                   fontSize: 17.0,
                   color: selectedColor,
                 ),
@@ -308,9 +308,9 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                 child: Icon(Icons.add, color: Colors.white),
                 closedForegroundColor: Colors.black,
                 openForegroundColor: Colors.white,
+                labelsStyle: GoogleFonts.arimo(fontSize: 15.0),
                 closedBackgroundColor: Theme.of(context).primaryColor,
                 openBackgroundColor: Theme.of(context).colorScheme.error,
-                labelsStyle: GoogleFonts.courgette(fontSize: 17.0),
                 speedDialChildren: <SpeedDialChild>[
                   /// clear
                   SpeedDialChild(
