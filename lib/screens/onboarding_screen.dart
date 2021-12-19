@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:paint_to_print/screens/landing_screen.dart';
+import 'package:paint_to_print/screens/user_state.dart';
 
 class OnBoardingScreen extends StatelessWidget {
   OnBoardingScreen({Key key}) : super(key: key);
@@ -15,7 +15,7 @@ class OnBoardingScreen extends StatelessWidget {
       onFinish: () {
         Navigator.pushReplacement(
           context,
-          PageTransition(type: PageTransitionType.fade, child: LandingScreen()),
+          PageTransition(type: PageTransitionType.fade, child: UserState()),
         );
       },
       // finishButtonColor: Theme.of(context).primaryColor,

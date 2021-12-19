@@ -7,6 +7,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:paint_to_print/screens/all_docs.dart';
+import 'package:paint_to_print/widgets/back_layer_menu.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../main.dart';
@@ -66,7 +67,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
   @override
   Widget build(BuildContext context) {
     return BackdropScaffold(
-      headerHeight: MediaQuery.of(context).size.height * 0.45,
+      headerHeight: MediaQuery.of(context).size.height * 0.30,
       resizeToAvoidBottomInset: false,
       appBar: BackdropAppBar(
         title: Text('Paint to Print'),
@@ -81,9 +82,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
           ),
         ],
       ),
-      backLayer: Center(
-        child: Text('Back Layer'),
-      ),
+      backLayer: BackLayerMenu(context: context),
       frontLayer: DoubleBackToCloseApp(
         snackBar: SnackBar(
           shape: RoundedRectangleBorder(
