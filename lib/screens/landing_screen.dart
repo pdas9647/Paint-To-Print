@@ -122,7 +122,7 @@ class _LandingScreenState extends State<LandingScreen>
                 ),
                 child: Column(
                   children: [
-                    /// Welcome to Paint to Print
+                    /// Welcome to App
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 20.0),

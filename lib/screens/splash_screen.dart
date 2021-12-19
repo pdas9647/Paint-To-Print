@@ -1,8 +1,10 @@
 import 'dart:async';
 
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:paint_to_print/screens/onboarding_screen.dart';
+import 'package:paint_to_print/services/first_time_open.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'user_state.dart';
 
@@ -14,11 +16,41 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  FirstTimeOpen firstTimeOpen = FirstTimeOpen();
+  SharedPreferences sharedPreferences;
+  bool isFirstTimeOpening = true;
+
+  Future<void> getFirstTimeOpenValue() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    isFirstTimeOpening = sharedPreferences.getBool('FIRST_TIME_OPEN') ?? true;
+    if (isFirstTimeOpening == null) {
+      firstTimeOpen.setFirstTimeOpenValue(true);
+    } else if (isFirstTimeOpening == true) {
+      firstTimeOpen.setFirstTimeOpenValue(false);
+    } else if (isFirstTimeOpening == false) {
+      firstTimeOpen.setFirstTimeOpenValue(false);
+    }
+    isFirstTimeOpening
+        ? Timer(Duration(seconds: 4), navigateToOnBoardingScreen)
+        : Timer(Duration(seconds: 4), navigateToUserState);
+    print('43. isFirstTimeOpening: $isFirstTimeOpening');
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    Timer(Duration(seconds: 4), navigateToUserState);
+    getFirstTimeOpenValue();
+  }
+
+  void navigateToOnBoardingScreen() {
+    Navigator.pushReplacement(
+      context,
+      PageTransition(
+        child: OnBoardingScreen(),
+        type: PageTransitionType.fade,
+      ),
+    );
   }
 
   void navigateToUserState() {
@@ -30,6 +62,40 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
+        children: [
+          Positioned(
+            // top: 0.0,
+            right: -100.0,
+            // left: 0.0,
+            bottom: MediaQuery.of(context).size.height / 3,
+            child: CircleAvatar(
+              radius: 400.0,
+              backgroundColor: Color(0xFF534D41),
+            ),
+          ),
+          Positioned(
+            // top: 0.0,
+            right: 30.0,
+            // left: 0.0,
+            bottom: MediaQuery.of(context).size.height / 2,
+            child: CircleAvatar(
+              radius: 250.0,
+              backgroundColor: Color(0xFFFEE53E),
+            ),
+          ),
+          Positioned(
+            // top: 0.0,
+            right: MediaQuery.of(context).size.width / 2,
+            // left: 0.0,
+            bottom: MediaQuery.of(context).size.height / 1.5,
+            child: CircleAvatar(
+              radius: 155.0,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+            ),
+          ),
+        ],
+      ),
+      /*Stack(
         children: [
           Center(
             child: Container(
@@ -89,6 +155,8 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
         ],
       ),
+
+       */
     );
   }
 }

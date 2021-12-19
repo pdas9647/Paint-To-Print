@@ -1,8 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:paint_to_print/screens/splash_screen.dart';
 import 'package:paint_to_print/screens/user_state.dart';
+
+import 'screens/splash_screen.dart';
 
 void main() async {
   // await Firebase.initializeApp(
@@ -56,6 +57,7 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
             home: const SplashScreen(),
+            // home: OnBoardingScreen(),
             routes: {
               UserState.routeName: (ctx) => UserState(),
             },
