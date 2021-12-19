@@ -39,13 +39,15 @@ class CreateHomeIcon extends StatelessWidget {
                   child: Image.asset(image),
                 ),
                 SizedBox(height: 10.0),
-                AutoSizeText(
-                  iconName,
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.arimo(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
+                Flexible(
+                  child: AutoSizeText(
+                    iconName,
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.arimo(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],

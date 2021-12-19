@@ -23,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   String _emailAddress = '';
   String _password = '';
+  String _errorMsg = '';
   bool _obscureText = true;
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
@@ -40,11 +41,12 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         await _firebaseAuth
             .signInWithEmailAndPassword(
-              email: _emailAddress.toLowerCase().trim(),
-              password: _password.trim(),
-            )
-            .then((value) =>
-                Navigator.canPop(context) ? Navigator.pop(context) : null);
+          email: _emailAddress.toLowerCase().trim(),
+          password: _password.trim(),
+        )
+            .then((value) {
+          Navigator.canPop(context) ? Navigator.pop(context) : null;
+        });
       } catch (error) {
         GlobalMethods.authErrorDialog(
           context,
@@ -94,16 +96,20 @@ class _LoginScreenState extends State<LoginScreen> {
               top: 30.0,
               left: 0.0,
               right: 0.0,
-              child: Center(
-                child: AutoSizeText(
-                  'Sign In',
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.arimo(
-                    fontSize: 50.0,
-                    color: Colors.black,
-                    shadows: [Shadow(color: Colors.black, blurRadius: 10.0)],
-                    fontWeight: FontWeight.bold,
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.16,
+                // color: Colors.redAccent,
+                child: Center(
+                  child: AutoSizeText(
+                    'Sign In',
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.arimo(
+                      fontSize: 50.0,
+                      color: Colors.white,
+                      // shadows: [Shadow(color: Colors.black, blurRadius: 10.0)],
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -116,8 +122,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.70,
                 decoration: BoxDecoration(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(30.0))),
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(30.0)),
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 20.0,
+                      color: Colors.black,
+                      offset: Offset(3, 3),
+                      blurStyle: BlurStyle.outer,
+                    ),
+                  ],
+                ),
                 child: Card(
                   elevation: 10.0,
                   margin: EdgeInsets.all(0.0),
@@ -140,10 +155,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             key: const ValueKey('email'),
                             validator: (email) {
                               if (email.isEmpty || !email.contains('@')) {
-                                return 'Please enter your email';
+                                _errorMsg = 'Please enter your email';
                               } else {
-                                return null;
+                                _errorMsg = null;
                               }
+                              return _errorMsg;
                             },
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.emailAddress,
@@ -194,12 +210,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             key: const ValueKey('password'),
                             validator: (password) {
                               if (password.isEmpty) {
-                                return 'Please enter your password';
+                                _errorMsg = 'Please enter your password';
                               } else if (password.length < 6) {
-                                return 'Password should contain at least 6 characters';
+                                _errorMsg =
+                                    'Password should contain at least 6 characters';
                               } else {
-                                return null;
+                                _errorMsg = null;
                               }
+                              return _errorMsg;
                             },
                             keyboardType: TextInputType.name,
                             focusNode: _passwordFocusNode,
@@ -259,58 +277,30 @@ class _LoginScreenState extends State<LoginScreen> {
             /// forgot password & sign in ->
             Positioned(
               bottom: 15.0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  // forget password
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.fade,
-                            child: ForgotPasswordScreen(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Forget Password',
-                        textAlign: TextAlign.end,
-                        style: GoogleFonts.arimo(
-                          fontSize: 15.0,
-                          letterSpacing: 0.8,
-                          fontWeight: FontWeight.w500,
-                          fontStyle: FontStyle.italic,
-                          decoration: TextDecoration.underline,
-                          color: Color(0xFF141E61),
-                        ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.fade,
+                        child: ForgotPasswordScreen(),
                       ),
+                    );
+                  },
+                  child: Text(
+                    'Forgot Password?',
+                    style: GoogleFonts.arimo(
+                      fontSize: 15.0,
+                      letterSpacing: 0.8,
+                      fontWeight: FontWeight.w500,
+                      fontStyle: FontStyle.italic,
+                      decoration: TextDecoration.underline,
+                      color: Color(0xFF141E61),
                     ),
                   ),
-                  // login button
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 90.0),
-                    child: MaterialButton(
-                      onPressed: () {
-                        _submitForm();
-                      },
-                      height: 50.0,
-                      // minWidth: 200.0,
-                      elevation: 10.0,
-                      animationDuration: Duration(milliseconds: 100),
-                      shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(30.0))),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 25.0, vertical: 10.0),
-                      color: Theme.of(context).colorScheme.secondary,
-                      child: Icon(Icons.arrow_forward, color: Colors.white),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
 
@@ -327,6 +317,14 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        elevation: 10.0,
+        onPressed: _submitForm,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(30.0))),
+        child: Icon(Icons.arrow_forward, color: Colors.white),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
       ),
     );
   }

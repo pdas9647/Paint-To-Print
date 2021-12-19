@@ -90,7 +90,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
               borderRadius: BorderRadius.vertical(top: Radius.circular(18.0))),
           content: Text(
             'Tap back again to exit',
-            style: GoogleFonts.courgette(fontSize: 17.0),
+            style: GoogleFonts.arimo(fontSize: 17.0),
           ),
         ),
         child: PersistentTabView(

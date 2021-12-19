@@ -92,7 +92,7 @@ class _LandingScreenState extends State<LandingScreen>
                 TypewriterAnimatedTextKit(
                   text: ['Paint to Print'],
                   speed: Duration(milliseconds: 100),
-                  textStyle: GoogleFonts.courgette(
+                  textStyle: GoogleFonts.arimo(
                     fontSize: 35.0,
                     color: Theme.of(context).colorScheme.error,
                     // overflow: TextOverflow.fade,
@@ -127,11 +127,11 @@ class _LandingScreenState extends State<LandingScreen>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 20.0),
                       child: AutoSizeText(
-                        'Welcome to Paint to Print',
+                        'Welcome to App',
                         maxLines: 1,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.arimo(
-                          fontSize: 30.0,
+                          fontSize: 40.0,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),

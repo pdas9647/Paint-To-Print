@@ -111,16 +111,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
               top: 30.0,
               left: 0.0,
               right: 0.0,
-              child: Center(
-                child: AutoSizeText(
-                  'Sign Up',
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.arimo(
-                    fontSize: 50.0,
-                    color: Colors.black,
-                    shadows: [Shadow(color: Colors.black, blurRadius: 10.0)],
-                    fontWeight: FontWeight.bold,
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.16,
+                // color: Colors.greenAccent,
+                child: Center(
+                  child: AutoSizeText(
+                    'Sign Up',
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.arimo(
+                      fontSize: 50.0,
+                      color: Colors.white,
+                      // shadows: [Shadow(color: Colors.black, blurRadius: 10.0)],
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -133,8 +137,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.70,
                 decoration: BoxDecoration(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(30.0))),
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(30.0)),
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 20.0,
+                      color: Colors.black,
+                      offset: Offset(3, 3),
+                      blurStyle: BlurStyle.outer,
+                    ),
+                  ],
+                ),
                 child: Card(
                   elevation: 10.0,
                   margin: EdgeInsets.all(0.0),
@@ -330,74 +343,46 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
 
-            /// forgot password & sign in ->
+            /// don't have an account? sign in
             Positioned(
               bottom: 15.0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  /// already have an account? sign in
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.fade,
-                            child: LoginScreen(),
-                          ),
-                        );
-                      },
-                      child: RichText(
-                        text: TextSpan(
-                          style: DefaultTextStyle.of(context).style,
-                          children: [
-                            TextSpan(
-                              text: 'Already have an account?',
-                              style: GoogleFonts.arimo(
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.w500,
-                                decoration: TextDecoration.none,
-                              ),
-                            ),
-                            TextSpan(
-                              text: '\nSign In',
-                              style: GoogleFonts.arimo(
-                                fontSize: 17.0,
-                                color: Color(0xFFF34964),
-                                fontWeight: FontWeight.w700,
-                                decoration: TextDecoration.none,
-                              ),
-                            ),
-                          ],
-                        ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.fade,
+                        child: LoginScreen(),
                       ),
+                    );
+                  },
+                  child: RichText(
+                    text: TextSpan(
+                      style: DefaultTextStyle.of(context).style,
+                      children: [
+                        TextSpan(
+                          text: 'Already have an account?',
+                          style: GoogleFonts.arimo(
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.w500,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                        TextSpan(
+                          text: '\nSign In',
+                          style: GoogleFonts.arimo(
+                            fontSize: 17.0,
+                            color: Color(0xFFF34964),
+                            fontWeight: FontWeight.w700,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-
-                  /// sign up button
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                    child: MaterialButton(
-                      onPressed: () {
-                        _submitForm();
-                      },
-                      height: 50.0,
-                      // minWidth: 200.0,
-                      elevation: 10.0,
-                      animationDuration: Duration(milliseconds: 100),
-                      shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(30.0))),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 25.0, vertical: 10.0),
-                      color: Color(0xFFF34964),
-                      child: Icon(Icons.arrow_forward, color: Colors.white),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
 
@@ -414,6 +399,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        elevation: 10.0,
+        onPressed: _submitForm,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(30.0))),
+        child: Icon(Icons.arrow_forward, color: Colors.white),
+        backgroundColor: Color(0xFFF34964),
       ),
     );
   }

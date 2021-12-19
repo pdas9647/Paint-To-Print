@@ -28,7 +28,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
   List<DrawingArea> points = [];
   Color selectedColor;
   double strokeWidth;
-  // bool _isShowDial = false;
+
   // bool isDarkTheme = false;
 
   void selectColor() {
@@ -85,44 +85,48 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          elevation: 8.0,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-          title: Text(
-            'Select stroke width',
-            style: GoogleFonts.arimo(fontSize: 17.0, color: selectedColor),
-          ),
-          content: SingleChildScrollView(
-            child: CupertinoSlider(
-              min: 1.0,
-              max: 7.0,
-              value: strokeWidth,
-              // label: 'Stroke width',
-              activeColor: selectedColor,
-              // inactiveColor: Colors.blueGrey.shade200,
-              onChanged: (double value) {
-                setState(() {
-                  strokeWidth = value;
-                });
-                print(strokeWidth);
-              },
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                'Okay',
-                style: GoogleFonts.arimo(
-                  fontSize: 17.0,
-                  color: selectedColor,
+        return StatefulBuilder(
+          builder: (BuildContext context, setState) {
+            return AlertDialog(
+              elevation: 8.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0)),
+              title: Text(
+                'Select stroke width',
+                style: GoogleFonts.arimo(fontSize: 17.0, color: selectedColor),
+              ),
+              content: SingleChildScrollView(
+                child: CupertinoSlider(
+                  min: 1.0,
+                  max: 7.0,
+                  value: strokeWidth,
+                  // label: 'Stroke width',
+                  activeColor: selectedColor,
+                  // inactiveColor: Colors.blueGrey.shade200,
+                  onChanged: (double value) {
+                    setState(() {
+                      strokeWidth = value;
+                    });
+                    print(strokeWidth);
+                  },
                 ),
               ),
-            ),
-          ],
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'Okay',
+                    style: GoogleFonts.arimo(
+                      fontSize: 17.0,
+                      color: selectedColor,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -301,6 +305,8 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                 ),
               ),
             ),
+
+            /// custom floatingactionbutton
             Positioned(
               bottom: kBottomNavigationBarHeight,
               right: 10.0,

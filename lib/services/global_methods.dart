@@ -22,8 +22,7 @@ class GlobalMethods {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   title,
-                  style: GoogleFonts.getFont(
-                    'Fira Sans',
+                  style: GoogleFonts.arimo(
                     color: Colors.redAccent,
                     letterSpacing: 1.1,
                     fontWeight: FontWeight.bold,
@@ -35,8 +34,7 @@ class GlobalMethods {
           ),
           content: Text(
             subtitle,
-            style: GoogleFonts.getFont(
-              'Fira Sans',
+            style: GoogleFonts.arimo(
               fontSize: 14.0,
               letterSpacing: 0.8,
               fontWeight: FontWeight.w500,
@@ -49,8 +47,7 @@ class GlobalMethods {
               },
               child: Text(
                 'Cancel',
-                style: GoogleFonts.getFont(
-                  'Fira Sans',
+                style: GoogleFonts.arimo(
                   fontSize: 15.0,
                   fontWeight: FontWeight.w500,
                 ),
@@ -62,8 +59,7 @@ class GlobalMethods {
               },
               child: Text(
                 'Delete',
-                style: GoogleFonts.getFont(
-                  'Fira Sans',
+                style: GoogleFonts.arimo(
                   fontSize: 15.0,
                   fontWeight: FontWeight.w500,
                 ),
@@ -95,8 +91,7 @@ class GlobalMethods {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   title,
-                  style: GoogleFonts.getFont(
-                    'Fira Sans',
+                  style: GoogleFonts.arimo(
                     color: Colors.redAccent,
                     letterSpacing: 1.1,
                     fontWeight: FontWeight.bold,
@@ -108,8 +103,7 @@ class GlobalMethods {
           ),
           content: Text(
             subtitle,
-            style: GoogleFonts.getFont(
-              'Fira Sans',
+            style: GoogleFonts.arimo(
               fontSize: 14.0,
               letterSpacing: 0.8,
               fontWeight: FontWeight.w500,
@@ -122,8 +116,7 @@ class GlobalMethods {
               },
               child: Text(
                 'Okay',
-                style: GoogleFonts.getFont(
-                  'Fira Sans',
+                style: GoogleFonts.arimo(
                   fontSize: 15.0,
                   fontWeight: FontWeight.w500,
                 ),
@@ -155,8 +148,7 @@ class GlobalMethods {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   title,
-                  style: GoogleFonts.getFont(
-                    'Fira Sans',
+                  style: GoogleFonts.arimo(
                     color: Colors.redAccent,
                     letterSpacing: 1.1,
                     fontWeight: FontWeight.bold,
@@ -168,8 +160,7 @@ class GlobalMethods {
           ),
           content: Text(
             subtitle,
-            style: GoogleFonts.getFont(
-              'Fira Sans',
+            style: GoogleFonts.arimo(
               fontSize: 14.0,
               letterSpacing: 0.8,
               fontWeight: FontWeight.w500,
@@ -182,8 +173,7 @@ class GlobalMethods {
               },
               child: Text(
                 'No',
-                style: GoogleFonts.getFont(
-                  'Fira Sans',
+                style: GoogleFonts.arimo(
                   fontSize: 15.0,
                   fontWeight: FontWeight.w500,
                 ),
@@ -195,8 +185,7 @@ class GlobalMethods {
               },
               child: Text(
                 'Yes',
-                style: GoogleFonts.getFont(
-                  'Fira Sans',
+                style: GoogleFonts.arimo(
                   fontSize: 15.0,
                   fontWeight: FontWeight.w500,
                 ),
