@@ -92,7 +92,7 @@ class _LandingScreenState extends State<LandingScreen>
                 TypewriterAnimatedTextKit(
                   text: ['Paint to Print'],
                   speed: Duration(milliseconds: 100),
-                  textStyle: GoogleFonts.arimo(
+                  textStyle: GoogleFonts.courgette(
                     fontSize: 35.0,
                     color: Theme.of(context).colorScheme.error,
                     // overflow: TextOverflow.fade,

@@ -111,7 +111,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
           ),
           screenTransitionAnimation: ScreenTransitionAnimation(
             animateTabTransition: true,
-            curve: Curves.elasticInOut,
+            curve: Curves.easeOutCirc,
             duration: Duration(milliseconds: 500),
           ),
           navBarHeight: MediaQuery.of(context).viewInsets.bottom > 0
