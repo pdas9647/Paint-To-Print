@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AllDocsScreen extends StatefulWidget {
@@ -8,12 +9,12 @@ class AllDocsScreen extends StatefulWidget {
 }
 
 class _AllDocsScreenState extends State<AllDocsScreen> {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text('All Docs'),
-      ),
+    return Center(
+      child: Text('All Docs'),
     );
   }
 }

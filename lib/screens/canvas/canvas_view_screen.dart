@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -15,7 +16,9 @@ import 'package:simple_speed_dial/simple_speed_dial.dart';
 import 'own_custom_painter.dart';
 
 class CanvasViewScreen extends StatefulWidget {
-  const CanvasViewScreen({Key key}) : super(key: key);
+  final bool navigateFromHomeScreen;
+  const CanvasViewScreen({Key key, @required this.navigateFromHomeScreen})
+      : super(key: key);
 
   @override
   _CanvasViewScreenState createState() => _CanvasViewScreenState();
@@ -24,12 +27,11 @@ class CanvasViewScreen extends StatefulWidget {
 class _CanvasViewScreenState extends State<CanvasViewScreen> {
   final GlobalKey<AnimatedFloatingActionButtonState> floatingActionButtonKey =
       GlobalKey();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GlobalKey canvasKey = GlobalKey();
   List<DrawingArea> points = [];
   Color selectedColor;
   double strokeWidth;
-
-  // bool isDarkTheme = false;
 
   void selectColor() {
     showDialog(
@@ -160,53 +162,61 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      appBar: widget.navigateFromHomeScreen
+          ? AppBar(
+              title: Text(
+                'PDF NAME',
+                style: GoogleFonts.arimo(fontSize: 17.0),
+              ),
+              elevation: 0.0,
+              actions: [
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.picture_as_pdf_rounded),
+                ),
+              ],
+            )
+          : null,
       body: Container(
-        height: MediaQuery.of(context).size.height -
-            kBottomNavigationBarHeight -
-            kToolbarHeight,
+        height: MediaQuery.of(context).size.height,
         child: Stack(
           children: [
-            // Container(color: Colors.indigo),
-
             /// background gradient
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
-                // color: Colors.white,
+                borderRadius: widget.navigateFromHomeScreen
+                    ? BorderRadius.zero
+                    : BorderRadius.vertical(top: Radius.circular(15.0)),
                 gradient: LinearGradient(
                   colors: [
                     Theme.of(context).colorScheme.secondary,
                     Theme.of(context).colorScheme.secondaryVariant,
-                    // Color(0xFFFFFEA9),
                   ],
                   tileMode: TileMode.decal,
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
               ),
-              // color: Theme.of(context).colorScheme.secondaryVariant,
             ),
 
-            /// column ----> canvas
+            /// column --> canvas
             Center(
               child: SafeArea(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Flexible(flex: 1, child: SizedBox(height: 5.0)),
+                    const Flexible(flex: 1, child: SizedBox(height: 10.0)),
 
                     /// canvas
                     Flexible(
-                      flex: 18,
+                      flex: 20,
                       child: Container(
                         width: width * 0.90,
-                        height: height * 0.90,
+                        // height: height * 0.90,
                         child: Card(
                           elevation: 10.0,
                           shadowColor: Colors.black,
@@ -300,84 +310,154 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                         ),
                       ),
                     ),
-                    const Flexible(flex: 1, child: SizedBox(height: 30.0)),
+                    const Flexible(flex: 1, child: SizedBox(height: 10.0)),
                   ],
                 ),
               ),
             ),
 
             /// custom floatingactionbutton
-            Positioned(
-              bottom: kBottomNavigationBarHeight,
-              right: 10.0,
-              child: SpeedDial(
-                child: Icon(Icons.add, color: Colors.white),
-                closedForegroundColor: Colors.black,
-                openForegroundColor: Colors.white,
-                labelsStyle: GoogleFonts.arimo(fontSize: 15.0),
-                closedBackgroundColor: Theme.of(context).primaryColor,
-                openBackgroundColor: Theme.of(context).colorScheme.error,
-                speedDialChildren: <SpeedDialChild>[
-                  /// clear
-                  SpeedDialChild(
-                    child: Icon(Icons.clear_all_rounded),
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.red,
-                    label: 'Clear',
-                    onPressed: () {
-                      setState(() {
-                        points.clear();
-                      });
-                    },
-                    closeSpeedDialOnPressed: true,
-                  ),
+            // Positioned(
+            //   bottom: kBottomNavigationBarHeight / 1.5,
+            //   right: 10.0,
+            //   child: SpeedDial(
+            //     child: Icon(Icons.add, color: Colors.white),
+            //     closedForegroundColor: Colors.black,
+            //     openForegroundColor: Colors.white,
+            //     labelsStyle: GoogleFonts.arimo(fontSize: 15.0),
+            //     closedBackgroundColor: Theme.of(context).primaryColor,
+            //     openBackgroundColor: Theme.of(context).colorScheme.error,
+            //     speedDialChildren: <SpeedDialChild>[
+            //       /// clear
+            //       SpeedDialChild(
+            //         child: Icon(Icons.clear_all_rounded),
+            //         foregroundColor: Colors.white,
+            //         backgroundColor: Colors.red,
+            //         label: 'Clear',
+            //         onPressed: () {
+            //           setState(() {
+            //             points.clear();
+            //           });
+            //         },
+            //         closeSpeedDialOnPressed: true,
+            //       ),
+            //
+            //       /// select stoke width
+            //       SpeedDialChild(
+            //         child: Icon(Icons.brush_rounded),
+            //         foregroundColor: selectedColor,
+            //         backgroundColor:
+            //             Theme.of(context).colorScheme.secondaryVariant,
+            //         label: 'Select stroke width',
+            //         onPressed: () {
+            //           setState(() {
+            //             selectStrokeWidth();
+            //           });
+            //         },
+            //         closeSpeedDialOnPressed: true,
+            //       ),
+            //
+            //       /// choose color
+            //       SpeedDialChild(
+            //         child: Icon(Icons.color_lens_rounded),
+            //         foregroundColor: selectedColor,
+            //         backgroundColor:
+            //             Theme.of(context).colorScheme.secondaryVariant,
+            //         label: 'Choose color',
+            //         onPressed: () {
+            //           setState(() {
+            //             selectColor();
+            //           });
+            //         },
+            //         closeSpeedDialOnPressed: true,
+            //       ),
+            //
+            //       /// save
+            //       SpeedDialChild(
+            //         child: Icon(Icons.save_rounded),
+            //         foregroundColor: Colors.black,
+            //         backgroundColor:
+            //             Theme.of(context).colorScheme.secondaryVariant,
+            //         label: 'Save',
+            //         onPressed: () {
+            //           setState(() {
+            //             saveCanvas();
+            //           });
+            //         },
+            //         closeSpeedDialOnPressed: true,
+            //       ),
+            //     ],
+            //   ),
+            // ),
+          ],
+        ),
+      ),
+      floatingActionButton: Padding(
+        padding: widget.navigateFromHomeScreen
+            ? EdgeInsets.only(bottom: 10.0)
+            : EdgeInsets.only(bottom: 50.0),
+        child: SpeedDial(
+          child: Icon(Icons.add, color: Colors.white),
+          closedForegroundColor: Colors.black,
+          openForegroundColor: Colors.white,
+          labelsStyle: GoogleFonts.arimo(fontSize: 15.0),
+          closedBackgroundColor: Theme.of(context).primaryColor,
+          openBackgroundColor: Theme.of(context).colorScheme.error,
+          speedDialChildren: <SpeedDialChild>[
+            /// clear
+            SpeedDialChild(
+              child: Icon(Icons.clear_all_rounded),
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.red,
+              label: 'Clear',
+              onPressed: () {
+                setState(() {
+                  points.clear();
+                });
+              },
+              closeSpeedDialOnPressed: true,
+            ),
 
-                  /// select stoke width
-                  SpeedDialChild(
-                    child: Icon(Icons.brush_rounded),
-                    foregroundColor: selectedColor,
-                    backgroundColor:
-                        Theme.of(context).colorScheme.secondaryVariant,
-                    label: 'Select stroke width',
-                    onPressed: () {
-                      setState(() {
-                        selectStrokeWidth();
-                      });
-                    },
-                    closeSpeedDialOnPressed: true,
-                  ),
+            /// select stoke width
+            SpeedDialChild(
+              child: Icon(Icons.brush_rounded),
+              foregroundColor: selectedColor,
+              backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
+              label: 'Select stroke width',
+              onPressed: () {
+                setState(() {
+                  selectStrokeWidth();
+                });
+              },
+              closeSpeedDialOnPressed: true,
+            ),
 
-                  /// choose color
-                  SpeedDialChild(
-                    child: Icon(Icons.color_lens_rounded),
-                    foregroundColor: selectedColor,
-                    backgroundColor:
-                        Theme.of(context).colorScheme.secondaryVariant,
-                    label: 'Choose color',
-                    onPressed: () {
-                      setState(() {
-                        selectColor();
-                      });
-                    },
-                    closeSpeedDialOnPressed: true,
-                  ),
+            /// choose color
+            SpeedDialChild(
+              child: Icon(Icons.color_lens_rounded),
+              foregroundColor: selectedColor,
+              backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
+              label: 'Choose color',
+              onPressed: () {
+                setState(() {
+                  selectColor();
+                });
+              },
+              closeSpeedDialOnPressed: true,
+            ),
 
-                  /// save
-                  SpeedDialChild(
-                    child: Icon(Icons.save_rounded),
-                    foregroundColor: Colors.black,
-                    backgroundColor:
-                        Theme.of(context).colorScheme.secondaryVariant,
-                    label: 'Save',
-                    onPressed: () {
-                      setState(() {
-                        saveCanvas();
-                      });
-                    },
-                    closeSpeedDialOnPressed: true,
-                  ),
-                ],
-              ),
+            /// save
+            SpeedDialChild(
+              child: Icon(Icons.save_rounded),
+              foregroundColor: Colors.black,
+              backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
+              label: 'Save',
+              onPressed: () {
+                setState(() {
+                  saveCanvas();
+                });
+              },
+              closeSpeedDialOnPressed: true,
             ),
           ],
         ),

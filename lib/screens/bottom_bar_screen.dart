@@ -5,12 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:paint_to_print/screens/all_docs.dart';
 import 'package:paint_to_print/widgets/back_layer_menu.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
-import '../main.dart';
 import 'canvas/canvas_view_screen.dart';
 import 'home_screen.dart';
 
@@ -22,53 +21,35 @@ class BottomBarScreen extends StatefulWidget {
 }
 
 class _BottomBarScreenState extends State<BottomBarScreen> {
-  PersistentTabController _persistentTabController;
-  bool _hideNavBar;
+  PageController _pageController;
+  int _currentIndex = 0;
+  DateTime backButtonPressTime;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   @override
   void initState() {
     super.initState();
-    _persistentTabController = PersistentTabController(initialIndex: 0);
-    _hideNavBar = false;
+    _pageController = PageController();
   }
 
-  List<Widget> _buildScreens() {
-    return [
-      HomeScreen(),
-      CanvasViewScreen(),
-      AllDocsScreen(),
-    ];
+  @override
+  void dispose() {
+    super.dispose();
+    _pageController.dispose();
   }
 
-  List<PersistentBottomNavBarItem> _navBarsItems() {
-    return [
-      PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.home),
-        title: ('Home'),
-        activeColorPrimary: Color(0xFFF3A712),
-        inactiveColorPrimary: Theme.of(context).disabledColor,
-      ),
-      PersistentBottomNavBarItem(
-        icon: Icon(MaterialCommunityIcons.draw),
-        title: ('Canvas'),
-        activeColorPrimary: Color(0xFFDB2B39),
-        inactiveColorPrimary: Theme.of(context).disabledColor,
-      ),
-      PersistentBottomNavBarItem(
-        icon: Icon(MdiIcons.fileDocument),
-        title: ('All Docs'),
-        activeColorPrimary: Color(0xFF344CB7),
-        inactiveColorPrimary: Theme.of(context).disabledColor,
-      ),
-    ];
-  }
+  List<Widget> _buildScreens = [
+    CanvasViewScreen(navigateFromHomeScreen: false),
+    HomeScreen(),
+    AllDocsScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return BackdropScaffold(
-      headerHeight: MediaQuery.of(context).size.height * 0.30,
       resizeToAvoidBottomInset: false,
+      extendBody: true,
+      headerHeight: MediaQuery.of(context).size.height * 0.30,
       appBar: BackdropAppBar(
         title: Text('Paint to Print'),
         leading: BackdropToggleButton(icon: AnimatedIcons.home_menu),
@@ -92,41 +73,86 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
             style: GoogleFonts.arimo(fontSize: 17.0),
           ),
         ),
-        child: PersistentTabView(
-          context,
-          controller: _persistentTabController,
-          screens: _buildScreens(),
-          items: _navBarsItems(),
-          confineInSafeArea: true,
-          navBarStyle: NavBarStyle.style9,
-          backgroundColor: Colors.white,
-          handleAndroidBackButtonPress: true,
-          resizeToAvoidBottomInset: true,
-          stateManagement: true,
-          hideNavigationBarWhenKeyboardShows: true,
-          itemAnimationProperties: ItemAnimationProperties(
-            curve: Curves.easeInToLinear,
-            duration: Duration(milliseconds: 500),
+        child: _buildScreens.elementAt(_currentIndex),
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 20.0,
+              color: Colors.black.withOpacity(.1),
+            )
+          ],
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+            child: GNav(
+              rippleColor: Colors.grey[300],
+              hoverColor: Colors.grey[100],
+              gap: 8.0,
+              iconSize: 24,
+              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+              duration: Duration(milliseconds: 400),
+              curve: Curves.easeInOutCubic,
+              tabBorderRadius: 20.0,
+              tabs: [
+                /// home
+                GButton(
+                  icon: CupertinoIcons.home,
+                  text: 'Home',
+                  textStyle: GoogleFonts.arimo(
+                      fontSize: 17.0, fontWeight: FontWeight.w800),
+                  iconColor: Theme.of(context).colorScheme.secondary,
+                  backgroundGradient: LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.secondary.withOpacity(0.8),
+                      Theme.of(context).colorScheme.secondary.withOpacity(0.4),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+
+                /// canvas
+                GButton(
+                  icon: MaterialCommunityIcons.draw,
+                  text: 'Canvas',
+                  textStyle: GoogleFonts.arimo(
+                      fontSize: 17.0, fontWeight: FontWeight.w800),
+                  iconColor: Color(0xFFDB2B39),
+                  backgroundGradient: LinearGradient(
+                    colors: [
+                      Color(0xFFDB2B39).withOpacity(0.8),
+                      Color(0xFFDB2B39).withOpacity(0.4),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+
+                /// all docs
+                GButton(
+                  icon: MdiIcons.fileDocument,
+                  text: 'All Docs',
+                  textStyle: GoogleFonts.arimo(
+                      fontSize: 17.0, fontWeight: FontWeight.w800),
+                  iconColor: Color(0xFF344CB7),
+                  backgroundGradient: LinearGradient(
+                    colors: [
+                      Color(0xFF344CB7).withOpacity(0.8),
+                      Color(0xFF344CB7).withOpacity(0.4),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+              ],
+              selectedIndex: _currentIndex,
+              onTabChange: (index) => setState(() => _currentIndex = index),
+            ),
           ),
-          screenTransitionAnimation: ScreenTransitionAnimation(
-            animateTabTransition: true,
-            curve: Curves.easeOutCirc,
-            duration: Duration(milliseconds: 500),
-          ),
-          navBarHeight: MediaQuery.of(context).viewInsets.bottom > 0
-              ? 0.0
-              : kBottomNavigationBarHeight,
-          margin: EdgeInsets.all(0.0),
-          popActionScreens: PopActionScreensType.all,
-          bottomScreenMargin: 0.0,
-          hideNavigationBar: _hideNavBar,
-          decoration: NavBarDecoration(
-              colorBehindNavBar: Colors.indigo,
-              borderRadius: BorderRadius.circular(20.0)),
-          popAllScreensOnTapOfSelectedTab: true,
-          selectedTabScreenContext: (context) {
-            testContext = context;
-          },
         ),
       ),
     );

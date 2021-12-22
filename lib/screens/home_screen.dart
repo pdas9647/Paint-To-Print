@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:paint_to_print/screens/canvas/canvas_view_screen.dart';
 import 'package:paint_to_print/widgets/create_home_icon.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -102,7 +104,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     shadowColor: Colors.teal.shade600,
                     onTap: () {
                       print('Handwriting to Text');
-                      Fluttertoast.showToast(msg: 'Handwriting to Text');
+                      // persistentTabController =
+                      //     PersistentTabController(initialIndex: 1);
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          child: CanvasViewScreen(navigateFromHomeScreen: true),
+                          type: PageTransitionType.fade,
+                        ),
+                      );
                     },
                   ),
                   CreateHomeIcon(

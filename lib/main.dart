@@ -7,14 +7,6 @@ import 'package:paint_to_print/screens/user_state.dart';
 import 'screens/splash_screen.dart';
 
 void main() async {
-  // await Firebase.initializeApp(
-  // options: FirebaseOptions(
-  //   apiKey: "AIzaSyCoymMJXZzdhmduwp5JWgwURw5nARmJFNc", // Your apiKey
-  //   appId: "1:123107637220:web:786d26970421203c88b9f1", // Your appId
-  //   messagingSenderId: "123107637220", // Your messagingSenderId
-  //   projectId: "paint-to-print-chayan19062000", // Your projectId
-  // ),
-  // );
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
     [
