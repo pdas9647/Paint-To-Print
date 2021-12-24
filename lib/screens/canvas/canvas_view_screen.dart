@@ -9,16 +9,28 @@ import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:paint_to_print/models/pdf_model.dart';
 import 'package:paint_to_print/widgets/floating_action_button_text.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
 
+import '../pdf_images_screen.dart';
 import 'own_custom_painter.dart';
 
 class CanvasViewScreen extends StatefulWidget {
-  final bool navigateFromHomeScreen;
-  const CanvasViewScreen({Key key, @required this.navigateFromHomeScreen})
-      : super(key: key);
+  final bool isNavigatedFromHomeScreen;
+  final bool isNavigatedFromPdfImagesScreen;
+  final List<Uint8List> canvasImages;
+  final PdfModel pdfModel;
+
+  const CanvasViewScreen({
+    Key key,
+    @required this.isNavigatedFromHomeScreen,
+    @required this.isNavigatedFromPdfImagesScreen,
+    this.canvasImages,
+    @required this.pdfModel,
+  }) : super(key: key);
 
   @override
   _CanvasViewScreenState createState() => _CanvasViewScreenState();
@@ -30,6 +42,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GlobalKey canvasKey = GlobalKey();
   List<DrawingArea> points = [];
+  List<Uint8List> canvasImages = [];
   Color selectedColor;
   double strokeWidth;
 
@@ -141,15 +154,53 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     Uint8List pngBytes = byteData.buffer.asUint8List();
 
-    //Request permissions if not already granted
-    if (!(await Permission.storage.status.isGranted))
-      await Permission.storage.request();
+    /// if canvas is navigated from home_screen (handwriting to text) --> navigate to pdf images screen
+    if (widget.isNavigatedFromHomeScreen) {
+      // final bytes = File(byteData.path).readAsBytesSync();
+      canvasImages.clear();
+      canvasImages.add(Uint8List.fromList(pngBytes));
+      Navigator.pushReplacement(
+        context,
+        PageTransition(
+          child: PdfImagesScreen(
+            isNavigatedFromHomeScreen: true,
+            canvasImages: canvasImages,
+          ),
+          type: PageTransitionType.fade,
+        ),
+      );
+    }
 
-    final result = await ImageGallerySaver.saveImage(
-        Uint8List.fromList(pngBytes),
-        quality: 100,
-        name: '${DateTime.now()}');
-    print(result);
+    /// if canvas is navigated from pdf_images_screen (handwriting to text) --> navigate to pdf images screen
+    else if (widget.isNavigatedFromPdfImagesScreen) {
+      // canvasImages list shouldn't be cleared
+      canvasImages = widget.canvasImages;
+      canvasImages.add(Uint8List.fromList(pngBytes));
+      Navigator.pushReplacement(
+        context,
+        PageTransition(
+          child: PdfImagesScreen(
+            isNavigatedFromHomeScreen: false,
+            canvasImages: canvasImages,
+            pdfModel: widget.pdfModel,
+          ),
+          type: PageTransitionType.fade,
+        ),
+      );
+    }
+
+    /// if canvas is navigated from bottom nav bar ---> save file
+    else {
+      //Request permissions if not already granted
+      if (!(await Permission.storage.status.isGranted))
+        await Permission.storage.request();
+
+      final result = await ImageGallerySaver.saveImage(
+          Uint8List.fromList(pngBytes),
+          quality: 100,
+          name: '${DateTime.now()}');
+      print(result);
+    }
   }
 
   @override
@@ -166,19 +217,20 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: widget.navigateFromHomeScreen
+      appBar: widget.isNavigatedFromHomeScreen ||
+              widget.isNavigatedFromPdfImagesScreen
           ? AppBar(
               title: Text(
-                'PDF NAME',
+                'CANVAS',
                 style: GoogleFonts.arimo(fontSize: 17.0),
               ),
               elevation: 0.0,
-              actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.picture_as_pdf_rounded),
-                ),
-              ],
+              leading: IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(Icons.arrow_back_ios),
+              ),
             )
           : null,
       body: Container(
@@ -188,7 +240,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
             /// background gradient
             Container(
               decoration: BoxDecoration(
-                borderRadius: widget.navigateFromHomeScreen
+                borderRadius: widget.isNavigatedFromHomeScreen
                     ? BorderRadius.zero
                     : BorderRadius.vertical(top: Radius.circular(15.0)),
                 gradient: LinearGradient(
@@ -315,85 +367,12 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                 ),
               ),
             ),
-
-            /// custom floatingactionbutton
-            // Positioned(
-            //   bottom: kBottomNavigationBarHeight / 1.5,
-            //   right: 10.0,
-            //   child: SpeedDial(
-            //     child: Icon(Icons.add, color: Colors.white),
-            //     closedForegroundColor: Colors.black,
-            //     openForegroundColor: Colors.white,
-            //     labelsStyle: GoogleFonts.arimo(fontSize: 15.0),
-            //     closedBackgroundColor: Theme.of(context).primaryColor,
-            //     openBackgroundColor: Theme.of(context).colorScheme.error,
-            //     speedDialChildren: <SpeedDialChild>[
-            //       /// clear
-            //       SpeedDialChild(
-            //         child: Icon(Icons.clear_all_rounded),
-            //         foregroundColor: Colors.white,
-            //         backgroundColor: Colors.red,
-            //         label: 'Clear',
-            //         onPressed: () {
-            //           setState(() {
-            //             points.clear();
-            //           });
-            //         },
-            //         closeSpeedDialOnPressed: true,
-            //       ),
-            //
-            //       /// select stoke width
-            //       SpeedDialChild(
-            //         child: Icon(Icons.brush_rounded),
-            //         foregroundColor: selectedColor,
-            //         backgroundColor:
-            //             Theme.of(context).colorScheme.secondaryVariant,
-            //         label: 'Select stroke width',
-            //         onPressed: () {
-            //           setState(() {
-            //             selectStrokeWidth();
-            //           });
-            //         },
-            //         closeSpeedDialOnPressed: true,
-            //       ),
-            //
-            //       /// choose color
-            //       SpeedDialChild(
-            //         child: Icon(Icons.color_lens_rounded),
-            //         foregroundColor: selectedColor,
-            //         backgroundColor:
-            //             Theme.of(context).colorScheme.secondaryVariant,
-            //         label: 'Choose color',
-            //         onPressed: () {
-            //           setState(() {
-            //             selectColor();
-            //           });
-            //         },
-            //         closeSpeedDialOnPressed: true,
-            //       ),
-            //
-            //       /// save
-            //       SpeedDialChild(
-            //         child: Icon(Icons.save_rounded),
-            //         foregroundColor: Colors.black,
-            //         backgroundColor:
-            //             Theme.of(context).colorScheme.secondaryVariant,
-            //         label: 'Save',
-            //         onPressed: () {
-            //           setState(() {
-            //             saveCanvas();
-            //           });
-            //         },
-            //         closeSpeedDialOnPressed: true,
-            //       ),
-            //     ],
-            //   ),
-            // ),
           ],
         ),
       ),
       floatingActionButton: Padding(
-        padding: widget.navigateFromHomeScreen
+        padding: widget.isNavigatedFromHomeScreen ||
+                widget.isNavigatedFromPdfImagesScreen
             ? EdgeInsets.only(bottom: 10.0)
             : EdgeInsets.only(bottom: 50.0),
         child: SpeedDial(

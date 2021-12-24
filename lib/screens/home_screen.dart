@@ -109,7 +109,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         PageTransition(
-                          child: CanvasViewScreen(navigateFromHomeScreen: true),
+                          child: CanvasViewScreen(
+                            isNavigatedFromHomeScreen: true,
+                            isNavigatedFromPdfImagesScreen: false,
+                          ),
                           type: PageTransitionType.fade,
                         ),
                       );
@@ -127,7 +130,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            SizedBox(height: kBottomNavigationBarHeight / 1.5),
           ],
         ),
       ),
