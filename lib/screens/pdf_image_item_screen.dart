@@ -17,15 +17,19 @@ enum MODE {
 class PdfImageItemScreen extends StatefulWidget {
   final PdfModel pdfModel;
   final List<Uint8List> canvasImages;
-  final Uint8List canvasImage;
+  final List<String> convertedTexts;
+  // final Uint8List canvasImage;
   final String convertedText;
+  final int index;
 
   const PdfImageItemScreen({
     Key key,
     @required this.pdfModel,
     @required this.canvasImages,
-    @required this.canvasImage,
+    @required this.convertedTexts,
+    // @required this.canvasImage,
     @required this.convertedText,
+    @required this.index,
   }) : super(key: key);
 
   @override
@@ -35,8 +39,60 @@ class PdfImageItemScreen extends StatefulWidget {
 class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
   PdfModel pdfModel;
   MODE editViewMode;
+  int index;
+  List<Uint8List> canvasImages = [];
+  List<String> convertedTexts = [];
   TextEditingController _convertedTextController;
   String convertedText;
+
+  Future<void> _showPopAlertDialog() async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0)),
+            title: Text(
+              'Do you want to discard?',
+              style: GoogleFonts.arimo(
+                fontSize: 17.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            elevation: 8.0,
+            actions: [
+              /// yes button
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'Yes',
+                  style: GoogleFonts.arimo(
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+
+              /// no button
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'No',
+                  style: GoogleFonts.arimo(
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
+  }
 
   Future<void> _showEditModalBottomSheet() async {
     _convertedTextController = TextEditingController(text: convertedText);
@@ -154,7 +210,11 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
     super.initState();
     pdfModel = widget.pdfModel;
     editViewMode = MODE.VIEW_MODE;
+    index = widget.index;
+    canvasImages = widget.canvasImages;
+    convertedTexts = widget.convertedTexts;
     convertedText = widget.convertedText;
+    print('init called');
   }
 
   @override
@@ -162,19 +222,7 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
     print(editViewMode);
     return WillPopScope(
       onWillPop: () {
-        print(convertedText);
-        Navigator.pushReplacement(
-          context,
-          PageTransition(
-            child: PdfImagesScreen(
-              isNavigatedFromHomeScreen: false,
-              canvasImages: widget.canvasImages,
-              pdfModel: widget.pdfModel,
-              convertedText: convertedText,
-            ),
-            type: PageTransitionType.fade,
-          ),
-        );
+        if (widget.convertedText != convertedText) _showPopAlertDialog();
         return Future.value(true);
       },
       child: Scaffold(
@@ -193,19 +241,10 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
           ),
           leading: IconButton(
             onPressed: () {
-              print(convertedText);
-              Navigator.pushReplacement(
-                context,
-                PageTransition(
-                  child: PdfImagesScreen(
-                    isNavigatedFromHomeScreen: false,
-                    canvasImages: widget.canvasImages,
-                    pdfModel: widget.pdfModel,
-                    convertedText: convertedText,
-                  ),
-                  type: PageTransitionType.fade,
-                ),
-              );
+              if (widget.convertedText != convertedText)
+                _showPopAlertDialog();
+              else
+                Navigator.of(context).pop();
             },
             icon: Icon(Icons.close, color: Theme.of(context).primaryColor),
           ),
@@ -227,18 +266,45 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
                   )
                 :
 
-                /// view icon
-                IconButton(
-                    onPressed: () {
-                      setState(() {
-                        editViewMode = MODE.VIEW_MODE;
-                      });
-                    },
-                    icon: Icon(
-                      MaterialCommunityIcons.eye_circle,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
+                /// view icon / check
+                widget.convertedText == convertedText
+                    ? IconButton(
+                        onPressed: () {
+                          setState(() {
+                            editViewMode = MODE.VIEW_MODE;
+                          });
+                        },
+                        icon: Icon(
+                          MaterialCommunityIcons.eye_circle,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      )
+                    : IconButton(
+                        onPressed: () {
+                          convertedTexts.removeAt(index);
+                          convertedTexts.insert(index, convertedText);
+                          Navigator.pushReplacement(
+                            context,
+                            PageTransition(
+                              child: PdfImagesScreen(
+                                isNavigatedFromHomeScreen: false,
+                                canvasImages: canvasImages,
+                                pdfModel: pdfModel,
+                                convertedTexts: convertedTexts,
+                              ),
+                              type: PageTransitionType.fade,
+                            ),
+                          ).then((value) {
+                            setState(() {
+                              convertedTexts;
+                            });
+                          });
+                        },
+                        icon: Icon(
+                          MaterialCommunityIcons.check,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
           ],
         ),
         body: Column(
@@ -248,7 +314,7 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
               flex: 7,
               child: Container(
                 padding: EdgeInsets.all(5.0),
-                // height: MediaQuery.of(context).size.height * 0.60,
+                height: MediaQuery.of(context).size.height * 0.60,
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
@@ -257,7 +323,10 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15.0),
-                  child: Image.memory(widget.canvasImage, fit: BoxFit.contain),
+                  child: Image.memory(
+                    canvasImages[index],
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ),
@@ -271,59 +340,61 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
             /// converted text
             Flexible(
               flex: 3,
-              child: Container(
-                padding: EdgeInsets.all(10.0),
-                // height: MediaQuery.of(context).size.height * 0.20,
-                width: MediaQuery.of(context).size.width,
-                margin: EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  color:
-                      Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-                ),
-                child: SingleChildScrollView(
-                  child: GestureDetector(
-                    onTap: () {
-                      editViewMode == MODE.VIEW_MODE
-                          ?
-                          // viewmode --> show toast, press 1 sec to copy
+              child: GestureDetector(
+                onTap: () {
+                  editViewMode == MODE.VIEW_MODE
+                      ?
+                      // viewmode --> show toast, press 1 sec to copy
+                      Fluttertoast.showToast(
+                          msg: 'Hold long to copy',
+                          backgroundColor: Colors.lightBlueAccent.shade100,
+                          textColor: Colors.black,
+                          gravity: ToastGravity.BOTTOM,
+                          toastLength: Toast.LENGTH_SHORT,
+                        )
+                      :
+                      // editmode --> show modal sheet to edit
+                      _showEditModalBottomSheet();
+                },
+                onLongPress: () {
+                  editViewMode == MODE.VIEW_MODE
+                      ?
+                      // viewmode --> copy
+                      Clipboard.setData(
+                          ClipboardData(text: convertedTexts[index]),
+                        ).then((value) {
                           Fluttertoast.showToast(
-                              msg: 'Hold long to copy',
-                              backgroundColor: Colors.lightBlueAccent.shade100,
-                              textColor: Colors.black,
-                              gravity: ToastGravity.BOTTOM,
-                              toastLength: Toast.LENGTH_SHORT,
-                            )
-                          :
-                          // editmode --> show modal sheet to edit
-                          _showEditModalBottomSheet();
-                    },
-                    onLongPress: () {
-                      editViewMode == MODE.VIEW_MODE
-                          ?
-                          // viewmode --> copy
-                          Clipboard.setData(
-                              ClipboardData(text: widget.convertedText),
-                            ).then((value) {
-                              Fluttertoast.showToast(
-                                msg: 'Copied to clipboard',
-                                backgroundColor: Colors.greenAccent,
-                                textColor: Colors.black,
-                                gravity: ToastGravity.BOTTOM,
-                                toastLength: Toast.LENGTH_LONG,
-                              );
-                              print('Copied to clipboard');
-                            })
-                          :
-                          // editmode --> show toast, you are editing
-                          Fluttertoast.showToast(
-                              msg: 'You are editing',
-                              backgroundColor: Colors.lightBlueAccent.shade100,
-                              textColor: Colors.black,
-                              gravity: ToastGravity.BOTTOM,
-                              toastLength: Toast.LENGTH_SHORT,
-                            );
-                    },
+                            msg: 'Copied to clipboard',
+                            backgroundColor: Colors.greenAccent,
+                            textColor: Colors.black,
+                            gravity: ToastGravity.BOTTOM,
+                            toastLength: Toast.LENGTH_LONG,
+                          );
+                          print('Copied to clipboard');
+                        })
+                      :
+                      // editmode --> show toast, you are editing
+                      Fluttertoast.showToast(
+                          msg: 'You are editing',
+                          backgroundColor: Colors.lightBlueAccent.shade100,
+                          textColor: Colors.black,
+                          gravity: ToastGravity.BOTTOM,
+                          toastLength: Toast.LENGTH_SHORT,
+                        );
+                },
+                child: Container(
+                  padding: EdgeInsets.all(10.0),
+                  height: MediaQuery.of(context).size.height * 0.20,
+                  width: MediaQuery.of(context).size.width,
+                  margin: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .secondary
+                        .withOpacity(0.5),
+                  ),
+                  child: SingleChildScrollView(
                     child: Text(
                       convertedText,
                       textAlign: TextAlign.justify,

@@ -9,23 +9,23 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/models/pdf_model.dart';
-import 'package:paint_to_print/pdf_image_item_screen.dart';
 import 'package:paint_to_print/screens/canvas/canvas_view_screen.dart';
+import 'package:paint_to_print/screens/pdf_image_item_screen.dart';
 
 import 'bottom_bar_screen.dart';
 
 class PdfImagesScreen extends StatefulWidget {
   final bool isNavigatedFromHomeScreen;
   final List<Uint8List> canvasImages;
+  final List<String> convertedTexts;
   final PdfModel pdfModel;
-  final String convertedText;
 
   const PdfImagesScreen({
     Key key,
     @required this.isNavigatedFromHomeScreen,
     @required this.canvasImages,
+    this.convertedTexts,
     this.pdfModel,
-    this.convertedText,
   }) : super(key: key);
 
   @override
@@ -35,9 +35,9 @@ class PdfImagesScreen extends StatefulWidget {
 class _PdfImagesScreenState extends State<PdfImagesScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   List<Uint8List> canvasImages = [];
+  List<String> convertedTexts = [];
   String pdfCreationDate;
   Timestamp timestamp;
-  String convertedText;
   PdfModel pdfModel;
   bool back = false;
 
@@ -65,11 +65,10 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
     else {
       pdfModel = widget.pdfModel;
     }
-    if (widget.convertedText == null) {
-      convertedText =
-          'Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text Converted Text ';
+    if (widget.convertedTexts == null) {
+      convertedTexts = ['0', '1', '2', '3'];
     } else {
-      convertedText = widget.convertedText;
+      convertedTexts = widget.convertedTexts;
     }
   }
 
@@ -332,8 +331,10 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                                       child: PdfImageItemScreen(
                                         pdfModel: pdfModel,
                                         canvasImages: canvasImages,
-                                        canvasImage: canvasImages[index],
-                                        convertedText: convertedText,
+                                        convertedTexts: convertedTexts,
+                                        // canvasImage: canvasImages[index],
+                                        convertedText: convertedTexts[index],
+                                        index: index,
                                       ),
                                       type: PageTransitionType.fade,
                                     ),
@@ -397,7 +398,7 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(5.0))),
                                         child: Text(
-                                          convertedText,
+                                          convertedTexts[index],
                                           textAlign: TextAlign.justify,
                                           style: TextStyle(
                                             fontSize: 15.0,
@@ -420,6 +421,7 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
+                  print(convertedTexts);
                   Navigator.push(
                     context,
                     PageTransition(
@@ -427,6 +429,7 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                         isNavigatedFromHomeScreen: false,
                         isNavigatedFromPdfImagesScreen: true,
                         canvasImages: canvasImages,
+                        convertedTexts: convertedTexts,
                         pdfModel: pdfModel,
                       ),
                       type: PageTransitionType.fade,

@@ -35,19 +35,30 @@ class OnBoardingScreen extends StatelessWidget {
       controllerColor: Theme.of(context).colorScheme.secondary,
       totalPage: 3,
       headerBackgroundColor: Colors.white,
+      // pageBackgroundColor: Color(0xFFFAFAFA),
       pageBackgroundColor: Colors.white,
       background: [
-        Image.asset('assets/images/app_icon.png',
-            height: MediaQuery.of(context).size.height / 2),
-        Image.asset('assets/images/handwriting_to_text.png',
-            height: MediaQuery.of(context).size.height / 2),
-        Image.asset('assets/images/merge_pdf.png',
-            height: MediaQuery.of(context).size.height / 2),
+        Image.asset(
+          'assets/images/app_icon.png',
+          height: MediaQuery.of(context).size.height / 2,
+          width: MediaQuery.of(context).size.width,
+        ),
+        Image.asset(
+          'assets/images/scan_onboarding.png',
+          height: MediaQuery.of(context).size.height / 2,
+          width: MediaQuery.of(context).size.width,
+        ),
+        Image.asset(
+          'assets/images/ocr_onboarding.png',
+          height: MediaQuery.of(context).size.height / 2,
+          width: MediaQuery.of(context).size.width,
+        ),
       ],
       speed: 1.8,
       pageBodies: [
+        // page 1
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 40),
+          padding: EdgeInsets.symmetric(horizontal: 40.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -75,8 +86,9 @@ class OnBoardingScreen extends StatelessWidget {
             ],
           ),
         ),
+        // page 2
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 40),
+          padding: EdgeInsets.symmetric(horizontal: 40.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -104,8 +116,9 @@ class OnBoardingScreen extends StatelessWidget {
             ],
           ),
         ),
+        // page 3
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 40),
+          padding: EdgeInsets.symmetric(horizontal: 40.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

@@ -22,6 +22,7 @@ class CanvasViewScreen extends StatefulWidget {
   final bool isNavigatedFromHomeScreen;
   final bool isNavigatedFromPdfImagesScreen;
   final List<Uint8List> canvasImages;
+  final List<String> convertedTexts;
   final PdfModel pdfModel;
 
   const CanvasViewScreen({
@@ -29,6 +30,7 @@ class CanvasViewScreen extends StatefulWidget {
     @required this.isNavigatedFromHomeScreen,
     @required this.isNavigatedFromPdfImagesScreen,
     this.canvasImages,
+    this.convertedTexts,
     @required this.pdfModel,
   }) : super(key: key);
 
@@ -43,6 +45,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
   final GlobalKey canvasKey = GlobalKey();
   List<DrawingArea> points = [];
   List<Uint8List> canvasImages = [];
+  List<String> convertedTexts = [];
   Color selectedColor;
   double strokeWidth;
 
@@ -159,6 +162,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
       // final bytes = File(byteData.path).readAsBytesSync();
       canvasImages.clear();
       canvasImages.add(Uint8List.fromList(pngBytes));
+
       Navigator.pushReplacement(
         context,
         PageTransition(
@@ -176,6 +180,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
       // canvasImages list shouldn't be cleared
       canvasImages = widget.canvasImages;
       canvasImages.add(Uint8List.fromList(pngBytes));
+      print(convertedTexts);
       Navigator.pushReplacement(
         context,
         PageTransition(
@@ -183,6 +188,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
             isNavigatedFromHomeScreen: false,
             canvasImages: canvasImages,
             pdfModel: widget.pdfModel,
+            convertedTexts: convertedTexts,
           ),
           type: PageTransitionType.fade,
         ),
@@ -209,6 +215,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     super.initState();
     selectedColor = Colors.black;
     strokeWidth = 2.0;
+    convertedTexts = widget.convertedTexts;
   }
 
   @override

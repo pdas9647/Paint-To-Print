@@ -94,20 +94,13 @@ class BackLayerMenu extends StatelessWidget {
             /// app_icon
             Center(
               child: Container(
-                // padding: const EdgeInsets.all(8.0),
-                height: 100.0,
-                width: 100.0,
+                height: 150.0,
+                width: 150.0,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).backgroundColor,
                   borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/app_icon.png'),
-                      fit: BoxFit.fill,
-                    ),
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/app_icon_without_bg.png'),
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
