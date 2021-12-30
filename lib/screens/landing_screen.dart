@@ -1,12 +1,10 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/screens/auth/login_screen.dart';
@@ -28,7 +26,7 @@ class _LandingScreenState extends State<LandingScreen>
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   bool _isLoading = false;
 
-  Future<void> _googleSignIn() async {
+  /*Future<void> _googleSignIn() async {
     final googleSignIn = GoogleSignIn();
     final googleAccount = await googleSignIn.signIn();
     if (googleAccount != null) {
@@ -66,7 +64,7 @@ class _LandingScreenState extends State<LandingScreen>
         }
       }
     }
-  }
+  }*/
 
   Future<void> _loginAnonymously() async {
     setState(() {
@@ -330,7 +328,7 @@ class _LandingScreenState extends State<LandingScreen>
             top: 40.0,
             child: MaterialButton(
               onPressed: () {
-                _googleSignIn();
+                // _googleSignIn();
               },
               height: 50.0,
               // minWidth: 200.0,

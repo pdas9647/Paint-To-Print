@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/models/pdf_model.dart';
 import 'package:paint_to_print/screens/canvas/canvas_view_screen.dart';
@@ -143,6 +144,60 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                   style: GoogleFonts.arimo(
                       fontSize: 17.0, fontWeight: FontWeight.bold),
                 ),
+                actions: [
+                  PopupMenuButton(
+                      elevation: 8.0,
+                      onSelected: (value) {
+                        print(value);
+                      },
+                      itemBuilder: (context) {
+                        return [
+                          /// share
+                          PopupMenuItem(
+                            value: 'Share',
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Share',
+                                  style: GoogleFonts.arimo(
+                                    fontSize: 14.0,
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Icon(
+                                  MaterialCommunityIcons.share,
+                                  color: Colors.orange,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          /// docx
+                          PopupMenuItem(
+                            value: 'Docx',
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Docx',
+                                  style: GoogleFonts.arimo(
+                                    fontSize: 14.0,
+                                    color: Colors.indigoAccent,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Icon(
+                                  MdiIcons.fileWord,
+                                  color: Colors.indigoAccent,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ];
+                      }),
+                ],
               ),
               body: AnimationLimiter(
                 child: ListView.builder(

@@ -62,6 +62,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
           IconButton(
             onPressed: () async {
               await _firebaseAuth.signOut();
+              setState(() {});
             },
             icon: Icon(Icons.logout_rounded),
           ),
