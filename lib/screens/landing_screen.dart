@@ -324,7 +324,7 @@ class _LandingScreenState extends State<LandingScreen>
           ),
 
           /// google sign in
-          Positioned(
+          /*Positioned(
             top: 40.0,
             child: MaterialButton(
               onPressed: () {
@@ -358,7 +358,7 @@ class _LandingScreenState extends State<LandingScreen>
                 ],
               ),
             ),
-          ),
+          ),*/
 
           /// loading while signing in anonymously
           Positioned(

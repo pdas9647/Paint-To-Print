@@ -22,9 +22,12 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
+  ScrollController _scrollController;
+  var top = 0.0;
   String _name = '';
   String _emailAddress = '';
   String _password = '';
+  String _errorMsg = '';
   bool _obscureText = true;
   final FocusNode _passwordFocusNode = FocusNode();
   final FocusNode _emailFocusNode = FocusNode();
@@ -78,10 +81,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
   void dispose() {
     // TODO: implement dispose
     _passwordFocusNode.dispose();
     _emailFocusNode.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -89,324 +103,381 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // resizeToAvoidBottomInset: false,
-      backgroundColor: Color(0xFFF34964),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            /// back button
-            Positioned(
-              top: 5.0,
-              left: 10.0,
-              child: IconButton(
-                icon: Icon(Icons.arrow_back_ios),
-                color: Colors.white,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-
-            /// sign up
-            Positioned(
-              top: 30.0,
-              left: 0.0,
-              right: 0.0,
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.16,
-                // color: Colors.greenAccent,
-                child: Center(
-                  child: AutoSizeText(
-                    'Sign Up',
-                    maxLines: 1,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.arimo(
-                      fontSize: 50.0,
-                      color: Colors.white,
-                      // shadows: [Shadow(color: Colors.black, blurRadius: 10.0)],
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            /// container --> card --> form
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.70,
-                decoration: BoxDecoration(
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(30.0)),
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 20.0,
-                      color: Colors.black,
-                      offset: Offset(3, 3),
-                      blurStyle: BlurStyle.outer,
-                    ),
-                  ],
-                ),
-                child: Card(
-                  elevation: 10.0,
-                  margin: EdgeInsets.all(0.0),
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(30.0)),
-                  ),
-                  child: Form(
-                    key: _formKey,
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        SizedBox(height: 60.0),
-
-                        /// textformfield name
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: TextFormField(
-                            key: const ValueKey('name'),
-                            validator: (name) {
-                              if (name.isEmpty) {
-                                return 'Please enter your name';
-                              } else {
-                                return null;
-                              }
-                            },
-                            textInputAction: TextInputAction.next,
-                            keyboardType: TextInputType.name,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColorDark),
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                              // filled: true,
-                              labelText: 'Name',
-                              labelStyle: GoogleFonts.arimo(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                              hintText: 'Name',
-                              hintStyle: GoogleFonts.arimo(
-                                fontSize: 16.0,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              errorStyle: GoogleFonts.arimo(
-                                fontSize: 16.0,
-                                color: Colors.redAccent,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.redAccent),
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                              prefixIcon: Icon(MaterialIcons.person),
-                              // fillColor: Theme.of(context).backgroundColor,
-                              contentPadding: EdgeInsets.all(15.0),
-                            ),
-                            onSaved: (value) {
-                              _name = value;
-                            },
-                            onEditingComplete: () => FocusScope.of(context)
-                                .requestFocus(_emailFocusNode),
-                          ),
-                        ),
-
-                        /// textformfield email
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: TextFormField(
-                            key: const ValueKey('email'),
-                            validator: (email) {
-                              if (email.isEmpty || !email.contains('@')) {
-                                return 'Please enter your email';
-                              } else {
-                                return null;
-                              }
-                            },
-                            textInputAction: TextInputAction.next,
-                            keyboardType: TextInputType.emailAddress,
-                            focusNode: _emailFocusNode,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColorDark),
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                              // filled: true,
-                              labelText: 'Email',
-                              labelStyle: GoogleFonts.arimo(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                              hintText: 'Enter your email...',
-                              hintStyle: GoogleFonts.arimo(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                              errorStyle: GoogleFonts.arimo(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.redAccent),
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                              prefixIcon: Icon(MaterialCommunityIcons.email),
-                              // fillColor: Theme.of(context).backgroundColor,
-                              contentPadding: EdgeInsets.all(15.0),
-                            ),
-                            onSaved: (value) {
-                              _emailAddress = value;
-                            },
-                            onEditingComplete: () => FocusScope.of(context)
-                                .requestFocus(_passwordFocusNode),
-                          ),
-                        ),
-
-                        /// textformfield password
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: TextFormField(
-                            key: const ValueKey('password'),
-                            validator: (password) {
-                              if (password.isEmpty) {
-                                return 'Please enter your password';
-                              } else if (password.length < 6) {
-                                return 'Password should contain at least 6 characters';
-                              } else {
-                                return null;
-                              }
-                            },
-                            keyboardType: TextInputType.name,
-                            focusNode: _passwordFocusNode,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColorDark),
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                              // filled: true,
-                              labelText: 'Password',
-                              labelStyle: GoogleFonts.arimo(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                              hintText: 'Password',
-                              hintStyle: GoogleFonts.arimo(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                              errorStyle: GoogleFonts.arimo(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                                color: Theme.of(context).primaryColorDark,
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.redAccent),
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                              prefixIcon: Icon(MaterialIcons.security),
-                              contentPadding: EdgeInsets.all(15.0),
-                              suffixIcon: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _obscureText = !_obscureText;
-                                  });
-                                },
-                                child: _obscureText
-                                    ? Icon(MaterialIcons.visibility)
-                                    : Icon(MaterialIcons.visibility_off),
-                              ),
-                              // fillColor: Theme.of(context).backgroundColor,
-                            ),
-                            obscureText: _obscureText,
-                            onSaved: (value) {
-                              _password = value;
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            /// don't have an account? sign in
-            Positioned(
-              bottom: 15.0,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                child: TextButton(
+      // backgroundColor: Color(0xFFF34964),
+      body: Stack(
+        children: [
+          CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              /// sliver appbar
+              SliverAppBar(
+                expandedHeight: MediaQuery.of(context).size.height * 0.35,
+                collapsedHeight: kToolbarHeight,
+                centerTitle: true,
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back_ios_new_rounded),
                   onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      PageTransition(
-                        type: PageTransitionType.fade,
-                        child: LoginScreen(),
+                    Navigator.of(context).pop();
+                  },
+                ),
+                floating: true,
+                pinned: true,
+                flexibleSpace: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    top = constraints.biggest.height;
+                    return Container(
+                      color: Color(0xFFDB6B97),
+                      child: FlexibleSpaceBar(
+                        collapseMode: CollapseMode.parallax,
+                        centerTitle: true,
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            AnimatedOpacity(
+                              opacity: top <= 110.0 ? 1.0 : 0.0,
+                              duration: const Duration(milliseconds: 300),
+                              child: AutoSizeText(
+                                'Sign Up',
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                style: GoogleFonts.arimo(
+                                  color: Color(0xFFEEF2FF),
+                                  fontSize: 25.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        background: Center(
+                          child: AutoSizeText(
+                            'Sign Up',
+                            maxLines: 1,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.arimo(
+                              fontSize: 70.0,
+                              color: Color(0xFFEEF2FF),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                     );
                   },
-                  child: RichText(
-                    text: TextSpan(
-                      style: DefaultTextStyle.of(context).style,
-                      children: [
-                        TextSpan(
-                          text: 'Already have an account?',
-                          style: GoogleFonts.arimo(
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.w500,
-                            decoration: TextDecoration.none,
+                ),
+              ),
+
+              /// sliver body
+              SliverToBoxAdapter(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 15.0),
+
+                      /// textformfield name
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: TextFormField(
+                          key: const ValueKey('name'),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (name) {
+                            if (name.isEmpty) {
+                              return 'Please enter your name';
+                            } else {
+                              return null;
+                            }
+                          },
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.name,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 2.0,
+                              ),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.error,
+                                width: 2.0,
+                              ),
+                            ),
+                            labelText: 'Name',
+                            labelStyle: GoogleFonts.arimo(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w500,
+                              color: Theme.of(context).primaryColorDark,
+                            ),
+                            hintText: 'Enter your name...',
+                            hintStyle: GoogleFonts.arimo(
+                              fontSize: 16.0,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            errorStyle: GoogleFonts.arimo(
+                              fontSize: 16.0,
+                              color: Colors.redAccent,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.redAccent,
+                                width: 2.0,
+                              ),
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            prefixIcon: Icon(MaterialIcons.person),
+                            contentPadding: EdgeInsets.all(15.0),
                           ),
+                          onSaved: (value) {
+                            _name = value;
+                          },
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(_emailFocusNode),
                         ),
-                        TextSpan(
-                          text: '\nSign In',
-                          style: GoogleFonts.arimo(
-                            fontSize: 17.0,
-                            color: Color(0xFFF34964),
-                            fontWeight: FontWeight.w700,
-                            decoration: TextDecoration.none,
+                      ),
+
+                      /// textformfield email
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: TextFormField(
+                          key: const ValueKey('email'),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (email) {
+                            if (email.isEmpty || !email.contains('@')) {
+                              _errorMsg = 'Please enter a valid email';
+                            } else {
+                              _errorMsg = null;
+                            }
+                            return _errorMsg;
+                          },
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.emailAddress,
+                          focusNode: _emailFocusNode,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 2.0,
+                              ),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.error,
+                                width: 2.0,
+                              ),
+                            ),
+                            labelText: 'Email',
+                            labelStyle: GoogleFonts.arimo(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w500,
+                              color: Theme.of(context).primaryColorDark,
+                            ),
+                            hintText: 'Enter your email...',
+                            hintStyle: GoogleFonts.arimo(
+                              fontSize: 16.0,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            errorStyle: GoogleFonts.arimo(
+                              fontSize: 16.0,
+                              color: Colors.redAccent,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.redAccent,
+                                width: 2.0,
+                              ),
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            prefixIcon: Icon(MaterialCommunityIcons.email),
+                            contentPadding: EdgeInsets.all(15.0),
                           ),
+                          onSaved: (value) {
+                            _emailAddress = value;
+                          },
+                          onEditingComplete: () => FocusScope.of(context)
+                              .requestFocus(_passwordFocusNode),
                         ),
-                      ],
-                    ),
+                      ),
+
+                      /// textformfield password
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: TextFormField(
+                          key: const ValueKey('password'),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (password) {
+                            if (password.isEmpty) {
+                              _errorMsg = 'Please enter your password';
+                            } else if (password.length < 6) {
+                              _errorMsg =
+                                  'Password should contain at least 6 characters';
+                            } else {
+                              _errorMsg = null;
+                            }
+                            return _errorMsg;
+                          },
+                          keyboardType: TextInputType.visiblePassword,
+                          focusNode: _passwordFocusNode,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 2.0,
+                              ),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.error,
+                                width: 2.0,
+                              ),
+                            ),
+                            labelText: 'Password',
+                            labelStyle: GoogleFonts.arimo(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w500,
+                              color: Theme.of(context).primaryColorDark,
+                            ),
+                            hintText: 'Enter your password...',
+                            hintStyle: GoogleFonts.arimo(
+                              fontSize: 16.0,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            errorStyle: GoogleFonts.arimo(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.redAccent,
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.redAccent,
+                                width: 2.0,
+                              ),
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            prefixIcon: Icon(MaterialIcons.security),
+                            contentPadding: EdgeInsets.all(15.0),
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _obscureText = !_obscureText;
+                                });
+                              },
+                              child: _obscureText
+                                  ? Icon(MaterialIcons.visibility)
+                                  : Icon(MaterialIcons.visibility_off),
+                            ),
+                          ),
+                          obscureText: _obscureText,
+                          onSaved: (value) {
+                            _password = value;
+                          },
+                        ),
+                      ),
+                      // Spacer(),
+
+                      /// don't have an account? sign up
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          /// already have an account
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 14.0),
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.fade,
+                                    child: LoginScreen(),
+                                  ),
+                                );
+                              },
+                              child: RichText(
+                                text: TextSpan(
+                                  style: DefaultTextStyle.of(context).style,
+                                  children: [
+                                    TextSpan(
+                                      text: 'Already have an account?',
+                                      style: GoogleFonts.arimo(
+                                        fontSize: 15.0,
+                                        color: Color(0xFFDB6B97),
+                                        fontWeight: FontWeight.w500,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '\nSign In',
+                                      style: GoogleFonts.arimo(
+                                        fontSize: 17.0,
+                                        color: Color(0xFFDB6B97),
+                                        fontWeight: FontWeight.w700,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          /// sign up
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: FloatingActionButton(
+                              elevation: 10.0,
+                              onPressed: _submitForm,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(30.0))),
+                              child: Icon(Icons.arrow_forward,
+                                  color: Colors.white),
+                              backgroundColor: Color(0xFFDB6B97),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
+            ],
+          ),
 
-            /// while signing up loading
-            Positioned(
-              top: 0.0,
-              bottom: 0.0,
-              left: 0.0,
-              right: 0.0,
-              child: Visibility(
-                visible: _isLoading,
-                child: Loading(),
-              ),
+          /// while signing in loading
+          Positioned(
+            top: 0.0,
+            bottom: 0.0,
+            left: 0.0,
+            right: 0.0,
+            child: Visibility(
+              visible: _isLoading,
+              child: Loading(),
             ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        elevation: 10.0,
-        onPressed: _submitForm,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30.0))),
-        child: Icon(Icons.arrow_forward, color: Colors.white),
-        backgroundColor: Color(0xFFF34964),
+          ),
+        ],
       ),
     );
   }

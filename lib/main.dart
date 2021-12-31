@@ -49,15 +49,16 @@ class _MyAppState extends State<MyApp> {
               ),
               primaryColor: Color(0xFF29335C),
               colorScheme: ColorScheme.fromSwatch().copyWith(
+                primary: Color(0xFF29335C),
                 secondary: Color(0xFFffc854),
                 secondaryVariant: Color(0xFFF0CEA0),
                 // primaryVariant: Color(0xFF),
                 error: Color(0xFFDB2B39),
                 // 0xFF26A3BF 0xFF534D41
               ),
+              visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
             home: const SplashScreen(),
-            // home: OnBoardingScreen(),
             routes: {
               UserState.routeName: (ctx) => UserState(),
             },
