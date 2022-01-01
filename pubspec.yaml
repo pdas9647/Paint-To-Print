@@ -45,7 +45,6 @@ dependencies:
   google_sign_in: ^5.2.1
   cloud_firestore: ^3.1.0
   firebase_storage: ^10.1.0
-  email_validator: ^2.0.1
   page_transition: ^2.0.4
   flutter_spinkit: ^5.1.0
   google_fonts: ^2.1.0

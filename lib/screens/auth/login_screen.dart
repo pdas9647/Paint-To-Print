@@ -9,6 +9,7 @@ import 'package:paint_to_print/services/global_methods.dart';
 import 'package:paint_to_print/widgets/loading.dart';
 
 import 'forgot_password_screen.dart';
+import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login_screen';
@@ -358,6 +359,58 @@ class _LoginScreenState extends State<LoginScreen> {
                                   color: Colors.white),
                               backgroundColor:
                                   Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      /// don't have an account? sign up
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          /// don't have an account
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 14.0),
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.fade,
+                                    child: SignUpScreen(),
+                                  ),
+                                );
+                              },
+                              child: RichText(
+                                text: TextSpan(
+                                  style: DefaultTextStyle.of(context).style,
+                                  children: [
+                                    TextSpan(
+                                      text: 'Don\'t have an account?',
+                                      style: GoogleFonts.arimo(
+                                        fontSize: 15.0,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        fontWeight: FontWeight.w500,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '\tSign Up',
+                                      style: GoogleFonts.arimo(
+                                        fontSize: 17.0,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        fontWeight: FontWeight.w700,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ],

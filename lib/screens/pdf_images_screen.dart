@@ -67,7 +67,7 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
       pdfModel = widget.pdfModel;
     }
     if (widget.convertedTexts == null) {
-      convertedTexts = ['0', '1', '2', '3'];
+      convertedTexts = ['Padmanabha Das', 'Swagato Bag', '2', '3'];
     } else {
       convertedTexts = widget.convertedTexts;
     }
@@ -252,118 +252,32 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                       onDismissed: (direction) {
                         print(direction);
                         Uint8List deletedImage;
+                        String deletedConvertedText;
                         setState(() {
                           deletedImage = canvasImages.removeAt(index);
+                          deletedConvertedText = convertedTexts.removeAt(index);
                         });
 
                         /// undo action
-                        // setState(
-                        //       () => canvasImages.insert(index, deletedImage),
-                        // );
-                        /*final SnackBar snackBar = SnackBar(
-                          elevation: 8.0,
-                          backgroundColor: Theme.of(context).colorScheme.error,
-                          content: Text(
-                            'Deleted',
-                            style: GoogleFonts.arimo(
-                              fontSize: 15.0,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          duration: Duration(seconds: 3),
-                          action: SnackBarAction(
-                            label: 'Undo',
-                            textColor: Theme.of(context).colorScheme.secondary,
-                            onPressed: () => setState(
-                              () => canvasImages.insert(index, deletedImage),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content:
+                                Text('Deleted', style: GoogleFonts.arimo()),
+                            duration: Duration(seconds: 3),
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              onPressed: () {
+                                setState(
+                                  () {
+                                    canvasImages.insert(index, deletedImage);
+                                    convertedTexts.insert(
+                                        index, deletedConvertedText);
+                                  },
+                                );
+                              },
                             ),
                           ),
                         );
-
-                        print(index);
-                        showModalBottomSheet(
-                            context: context,
-                            isDismissible: true,
-                            elevation: 8.0,
-                            backgroundColor: Colors.transparent,
-                            builder: (context) {
-                              return SingleChildScrollView(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Delete',
-                                        style: GoogleFonts.arimo(
-                                          fontSize: 20.0,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .error,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Do you want to delete?',
-                                        style: GoogleFonts.arimo(
-                                          fontSize: 15.0,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .error,
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          /// cancel
-                                          MaterialButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            elevation: 8.0,
-                                            color: Colors.white,
-                                            child: Text(
-                                              'Cancel',
-                                              style: GoogleFonts.arimo(
-                                                fontSize: 15.0,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .error,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ),
-
-                                          /// Delete
-                                          MaterialButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                deletedImage = canvasImages
-                                                    .removeAt(index);
-                                              });
-                                            },
-                                            elevation: 8.0,
-                                            color: Colors.white,
-                                            child: Text(
-                                              'Delete',
-                                              style: GoogleFonts.arimo(
-                                                fontSize: 15.0,
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            });*/
                       },
                       child: AnimationConfiguration.staggeredList(
                         position: index,
@@ -417,7 +331,7 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(5.0)),
                                         child: Image.memory(
-                                          widget.canvasImages[index],
+                                          canvasImages[index],
                                           fit: BoxFit.cover,
                                         ),
                                       ),
