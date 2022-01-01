@@ -126,7 +126,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   builder: (BuildContext context, BoxConstraints constraints) {
                     top = constraints.biggest.height;
                     return Container(
-                      color: Color(0xFFDB6B97),
+                      // color: Color(0xFFDB6B97),
+                      color: Color(0xFFF96E46),
                       child: FlexibleSpaceBar(
                         collapseMode: CollapseMode.parallax,
                         centerTitle: true,
@@ -423,7 +424,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       text: 'Already have an account?',
                                       style: GoogleFonts.arimo(
                                         fontSize: 15.0,
-                                        color: Color(0xFFDB6B97),
+                                        color: Color(0xFFF96E46),
                                         fontWeight: FontWeight.w500,
                                         decoration: TextDecoration.none,
                                       ),
@@ -432,7 +433,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       text: '\nSign In',
                                       style: GoogleFonts.arimo(
                                         fontSize: 17.0,
-                                        color: Color(0xFFDB6B97),
+                                        color: Color(0xFFF96E46),
                                         fontWeight: FontWeight.w700,
                                         decoration: TextDecoration.none,
                                       ),
@@ -454,7 +455,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       BorderRadius.all(Radius.circular(30.0))),
                               child: Icon(Icons.arrow_forward,
                                   color: Colors.white),
-                              backgroundColor: Color(0xFFDB6B97),
+                              backgroundColor: Color(0xFFF96E46),
                             ),
                           ),
                         ],

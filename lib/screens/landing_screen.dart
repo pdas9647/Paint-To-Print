@@ -167,11 +167,11 @@ class _LandingScreenState extends State<LandingScreen>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 20.0),
                       child: AutoSizeText(
-                        'Welcome to App',
+                        'Welcome to Paint to Print',
                         maxLines: 1,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.arimo(
-                          fontSize: 40.0,
+                          fontSize: 30.0,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),

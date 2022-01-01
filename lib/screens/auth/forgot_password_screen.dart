@@ -111,17 +111,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        AnimatedOpacity(
-                          opacity: top <= 110.0 ? 1.0 : 0.0,
-                          duration: const Duration(milliseconds: 300),
-                          child: AutoSizeText(
-                            'Forgot your password?',
-                            textAlign: TextAlign.center,
-                            maxLines: 1,
-                            style: GoogleFonts.arimo(
-                              color: Color(0xFFEEF2FF),
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
+                        Flexible(
+                          child: AnimatedOpacity(
+                            opacity: top <= 110.0 ? 1.0 : 0.0,
+                            duration: const Duration(milliseconds: 300),
+                            child: AutoSizeText(
+                              'Forgot your password?',
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              style: GoogleFonts.arimo(
+                                color: Color(0xFFEEF2FF),
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
