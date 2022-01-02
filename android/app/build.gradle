@@ -35,6 +35,11 @@ if (keystorePropertiesFile.exists()) {
 android {
     compileSdkVersion 30
 
+    aaptOptions {
+        noCompress "tflite"
+        noCompress 'lite'
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

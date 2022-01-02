@@ -1,17 +1,19 @@
 import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/models/pdf_model.dart';
+import 'package:paint_to_print/models/prediction_model.dart';
+import 'package:paint_to_print/services/recognizer.dart';
+import 'package:paint_to_print/utils/constants.dart';
 import 'package:paint_to_print/widgets/floating_action_button_text.dart';
+import 'package:paint_to_print/widgets/prediction_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
 
@@ -24,14 +26,16 @@ class CanvasViewScreen extends StatefulWidget {
   final List<Uint8List> canvasImages;
   final List<String> convertedTexts;
   final PdfModel pdfModel;
+  double strokeWidth;
 
-  const CanvasViewScreen({
+  CanvasViewScreen({
     Key key,
     @required this.isNavigatedFromHomeScreen,
     @required this.isNavigatedFromPdfImagesScreen,
     this.canvasImages,
     this.convertedTexts,
     @required this.pdfModel,
+    this.strokeWidth = 2.0,
   }) : super(key: key);
 
   @override
@@ -46,8 +50,8 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
   List<DrawingArea> points = [];
   List<Uint8List> canvasImages = [];
   List<String> convertedTexts = [];
+  List<PredictionModel> predictions;
   Color selectedColor;
-  double strokeWidth;
 
   void selectColor() {
     showDialog(
@@ -117,15 +121,15 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                 child: CupertinoSlider(
                   min: 1.0,
                   max: 7.0,
-                  value: strokeWidth,
+                  value: widget.strokeWidth,
                   // label: 'Stroke width',
                   activeColor: selectedColor,
                   // inactiveColor: Colors.blueGrey.shade200,
                   onChanged: (double value) {
                     setState(() {
-                      strokeWidth = value;
+                      widget.strokeWidth = value;
                     });
-                    print(strokeWidth);
+                    print(widget.strokeWidth);
                   },
                 ),
               ),
@@ -150,19 +154,35 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     );
   }
 
+  void _recognize() async {
+    print('_recognize called');
+    print('points: ${points.first.point}');
+    List<dynamic> _predictions = await Recognizer().recognize(points);
+    setState(() {
+      predictions =
+          _predictions.map((json) => PredictionModel.fromJson(json)).toList();
+    });
+    print(_predictions.first);
+  }
+
   Future<void> saveCanvas() async {
-    RenderRepaintBoundary boundary =
-        canvasKey.currentContext.findRenderObject();
-    ui.Image image = await boundary.toImage();
-    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    Uint8List pngBytes = byteData.buffer.asUint8List();
+    // RenderRepaintBoundary boundary =
+    //     canvasKey.currentContext.findRenderObject();
+    // ui.Image image = await boundary.toImage();
+    // ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    // Uint8List pngBytes = byteData.buffer.asUint8List();
+
+    final picture = Recognizer().pointsToPicture(points);
+    Uint8List pngBytes = await Recognizer()
+        .imageToByteListUint8(picture, Constants.mnistImageSize);
 
     /// if canvas is navigated from home_screen (handwriting to text) --> navigate to pdf images screen
     if (widget.isNavigatedFromHomeScreen) {
       // final bytes = File(byteData.path).readAsBytesSync();
       canvasImages.clear();
       canvasImages.add(Uint8List.fromList(pngBytes));
-
+      // TODO: _recognize()
+      await _recognize();
       Navigator.pushReplacement(
         context,
         PageTransition(
@@ -181,6 +201,8 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
       canvasImages = widget.canvasImages;
       canvasImages.add(Uint8List.fromList(pngBytes));
       print(convertedTexts);
+      // TODO: _recognize()
+      _recognize();
       Navigator.pushReplacement(
         context,
         PageTransition(
@@ -209,12 +231,16 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     }
   }
 
+  Future<void> _initMLModel() async {
+    await Recognizer().loadModel();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _initMLModel();
     selectedColor = Colors.black;
-    strokeWidth = 2.0;
     convertedTexts = widget.convertedTexts;
   }
 
@@ -238,6 +264,16 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                 },
                 icon: Icon(Icons.arrow_back_ios),
               ),
+              // TODO: Remove actions
+              actions: [
+                IconButton(
+                    onPressed: () {
+                      setState(() {
+                        points.clear();
+                      });
+                    },
+                    icon: Icon(Icons.clear_all_rounded)),
+              ],
             )
           : null,
       body: Container(
@@ -304,7 +340,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                                     point: details.localPosition,
                                     areaPaint: Paint()
                                       ..color = selectedColor
-                                      ..strokeWidth = strokeWidth
+                                      ..strokeWidth = widget.strokeWidth
                                       ..isAntiAlias = true
                                       ..strokeCap = StrokeCap.round,
                                   ),
@@ -320,7 +356,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                                       ..strokeCap = StrokeCap.round
                                       ..isAntiAlias = true
                                       ..color = selectedColor
-                                      ..strokeWidth = strokeWidth,
+                                      ..strokeWidth = widget.strokeWidth,
                                   ),
                                 );
                               });
@@ -329,40 +365,34 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                               setState(() {
                                 points.add(null);
                               });
+                              _recognize();
                             },
                             child: ClipRRect(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(20.0)),
-                              child: RepaintBoundary(
-                                key: canvasKey,
-                                child: Stack(
-                                  children: [
-                                    /// divider listview
-                                    Container(
-                                      child: ListView.builder(
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        itemCount: int.parse(
-                                            '${(height * 0.90 / 50).ceil()}'),
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return const Divider(
-                                            color: Colors.black,
-                                            height: 50.0,
-                                            indent: 20.0,
-                                            endIndent: 20.0,
-                                          );
-                                        },
-                                      ),
-                                      color: Colors.white,
-                                    ),
-                                    CustomPaint(
-                                      size: Size.infinite,
-                                      painter:
-                                          OwnCustomPainter(pointsList: points),
-                                    ),
-                                  ],
+
+                              /// divider listview
+                              /*Container(
+                                child: ListView.builder(
+                                  physics:
+                                  const NeverScrollableScrollPhysics(),
+                                  itemCount: int.parse(
+                                      '${(height * 0.90 / 50).ceil()}'),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return const Divider(
+                                      color: Colors.black,
+                                      height: 50.0,
+                                      indent: 20.0,
+                                      endIndent: 20.0,
+                                    );
+                                  },
                                 ),
+                                color: Colors.white,
+                              ),*/
+                              child: CustomPaint(
+                                size: Size.infinite,
+                                painter: OwnCustomPainter(pointsList: points),
                               ),
                             ),
                           ),
@@ -370,6 +400,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                       ),
                     ),
                     const Flexible(flex: 1, child: SizedBox(height: 10.0)),
+                    PredictionWidget(predictions: predictions),
                   ],
                 ),
               ),

@@ -1,8 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-
-import 'canvas_view_screen.dart';
+import 'package:paint_to_print/screens/canvas/canvas_view_screen.dart';
 
 class OwnCustomPainter extends CustomPainter {
   OwnCustomPainter({this.pointsList});
