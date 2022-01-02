@@ -42,6 +42,40 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
   PdfModel pdfModel;
   bool back = false;
 
+  Future<void> showRenameDialog({BuildContext context, String name}) async {
+    TextEditingController _nameController = TextEditingController(text: name);
+    showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            content: TextFormField(
+              controller: _nameController,
+              style: GoogleFonts.arimo(fontWeight: FontWeight.w400),
+              decoration: InputDecoration(
+                  // labelStyle: GoogleFonts.arimo(fontWeight: FontWeight.w600),
+                  // hintStyle: GoogleFonts.arimo(fontWeight: FontWeight.w600),
+                  ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  // name = _nameController.text;
+                  print(_nameController.text);
+                  setState(() {
+                    pdfModel.pdfName = _nameController.text;
+                  });
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'Save',
+                  style: GoogleFonts.arimo(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -137,12 +171,24 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
             child: Scaffold(
               key: scaffoldKey,
               appBar: AppBar(
-                title: AutoSizeText(
-                  pdfModel.pdfCreationDate,
-                  overflow: TextOverflow.fade,
-                  maxFontSize: 17.0,
-                  style: GoogleFonts.arimo(
-                      fontSize: 17.0, fontWeight: FontWeight.bold),
+                title: GestureDetector(
+                  onTap: () {
+                    print('onTap');
+                    showRenameDialog(
+                      context: context,
+                      name: pdfModel.pdfName,
+                    );
+                  },
+                  child: AutoSizeText(
+                    pdfModel.pdfName == null
+                        ? pdfModel
+                            .pdfCreationDate // navigating from canvas screen first time, for canvasImages[0]
+                        : pdfModel.pdfName,
+                    overflow: TextOverflow.fade,
+                    maxFontSize: 17.0,
+                    style: GoogleFonts.arimo(
+                        fontSize: 17.0, fontWeight: FontWeight.bold),
+                  ),
                 ),
                 actions: [
                   PopupMenuButton(
@@ -203,7 +249,6 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                 child: ListView.builder(
                   itemCount: canvasImages.length,
                   itemBuilder: (BuildContext context, int index) {
-                    final canvasImage = canvasImages[index];
                     return Dismissible(
                       key: Key('${canvasImages[index]}'),
                       background: Container(
@@ -219,36 +264,6 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                         ),
                       ),
                       direction: DismissDirection.endToStart, // right to left
-                      // confirmDismiss: (direction) {
-                      //   print(direction);
-                      //   setState(() {
-                      //     Uint8List deletedImage = canvasImages.removeAt(index);
-                      //     ScaffoldMessenger.of(context).showSnackBar(
-                      //       SnackBar(
-                      //         elevation: 8.0,
-                      //         backgroundColor:
-                      //             Theme.of(context).colorScheme.error,
-                      //         content: Text(
-                      //           'Deleted',
-                      //           style: GoogleFonts.arimo(
-                      //             fontSize: 15.0,
-                      //             color: Colors.white,
-                      //             fontWeight: FontWeight.w500,
-                      //           ),
-                      //         ),
-                      //         action: SnackBarAction(
-                      //           label: 'Undo',
-                      //           textColor:
-                      //               Theme.of(context).colorScheme.secondary,
-                      //           onPressed: () => setState(
-                      //             () =>
-                      //                 canvasImages.insert(index, deletedImage),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     );
-                      //   });
-                      // },
                       onDismissed: (direction) {
                         print(direction);
                         Uint8List deletedImage;

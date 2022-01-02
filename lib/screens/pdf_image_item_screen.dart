@@ -231,15 +231,6 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0.0,
-          title: Text(
-            pdfModel.pdfName,
-            overflow: TextOverflow.fade,
-            style: GoogleFonts.arimo(
-              fontSize: 16.0,
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).primaryColor,
-            ),
-          ),
           leading: IconButton(
             onPressed: () {
               if (widget.convertedText != convertedText)

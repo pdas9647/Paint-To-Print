@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -128,8 +129,8 @@ class GlobalMethods {
     );
   }
 
-  static Future<void> signOutDialog(BuildContext context, String title,
-      String subtitle, Function func) async {
+  static Future<void> signOutDialog(
+      BuildContext context, String title, String subtitle) async {
     showDialog(
       context: context,
       builder: (BuildContext ctx) {
@@ -149,10 +150,10 @@ class GlobalMethods {
                 child: Text(
                   title,
                   style: GoogleFonts.arimo(
-                    color: Colors.redAccent,
-                    letterSpacing: 1.1,
-                    fontWeight: FontWeight.bold,
                     fontSize: 18.0,
+                    letterSpacing: 1.1,
+                    color: Colors.redAccent,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -163,9 +164,11 @@ class GlobalMethods {
             style: GoogleFonts.arimo(
               fontSize: 14.0,
               letterSpacing: 0.8,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w700,
             ),
           ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           actions: [
             TextButton(
               onPressed: () {
@@ -180,8 +183,9 @@ class GlobalMethods {
               ),
             ),
             TextButton(
-              onPressed: () {
-                func();
+              onPressed: () async {
+                Navigator.canPop(context) ? Navigator.pop(context) : null;
+                await FirebaseAuth.instance.signOut();
               },
               child: Text(
                 'Yes',

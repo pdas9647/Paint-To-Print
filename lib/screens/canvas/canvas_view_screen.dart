@@ -11,7 +11,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/models/pdf_model.dart';
 import 'package:paint_to_print/models/prediction_model.dart';
 import 'package:paint_to_print/services/recognizer.dart';
-import 'package:paint_to_print/utils/constants.dart';
 import 'package:paint_to_print/widgets/floating_action_button_text.dart';
 import 'package:paint_to_print/widgets/prediction_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -172,9 +171,23 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     // ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     // Uint8List pngBytes = byteData.buffer.asUint8List();
 
-    final picture = Recognizer().pointsToPicture(points);
-    Uint8List pngBytes = await Recognizer()
-        .imageToByteListUint8(picture, Constants.mnistImageSize);
+    // final picture = Recognizer().pointsToPicture(points);
+    // Uint8List pngBytes = await Recognizer()
+    //     .imageToByteListUint8(picture, Constants.mnistImageSize);
+    // print(pngBytes);
+
+    // ui.PictureRecorder recorder = ui.PictureRecorder();
+    // ui.Picture p = recorder.endRecording();
+    // ui.Image image = await p.toImage(MediaQuery.of(context).size.width.toInt(),
+    //     MediaQuery.of(context).size.height.toInt());
+    // ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    // Uint8List pngBytes = byteData.buffer.asUint8List();
+    // Uint8List pngBytes = await Recognizer().imageToByteListUint8(
+    //   Recognizer().pointsToPicture(points),
+    //   Constants.mnistImageSize,
+    // );
+    Uint8List pngBytes = await Recognizer().previewImage(points);
+    print(pngBytes);
 
     /// if canvas is navigated from home_screen (handwriting to text) --> navigate to pdf images screen
     if (widget.isNavigatedFromHomeScreen) {
@@ -319,20 +332,6 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                             borderRadius: BorderRadius.circular(15.0),
                           ),
                           child: GestureDetector(
-                            // onPanDown: (details) {
-                            //   setState(() {
-                            //     points.add(
-                            //       DrawingArea(
-                            //         point: details.localPosition,
-                            //         areaPaint: Paint()
-                            //           ..color = selectedColor
-                            //           ..strokeWidth = strokeWidth
-                            //           ..isAntiAlias = true
-                            //           ..strokeCap = StrokeCap.round,
-                            //       ),
-                            //     );
-                            //   });
-                            // },
                             onPanUpdate: (details) {
                               setState(() {
                                 points.add(

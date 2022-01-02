@@ -193,6 +193,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           },
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.name,
+                          style: GoogleFonts.arimo(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).primaryColor,
+                          ),
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30.0),
@@ -262,6 +267,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           },
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.emailAddress,
+                          style: GoogleFonts.arimo(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).primaryColor,
+                          ),
                           focusNode: _emailFocusNode,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
@@ -334,6 +344,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             return _errorMsg;
                           },
                           keyboardType: TextInputType.visiblePassword,
+                          style: GoogleFonts.arimo(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).primaryColor,
+                          ),
                           focusNode: _passwordFocusNode,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(

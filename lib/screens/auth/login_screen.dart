@@ -178,6 +178,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.emailAddress,
+                          style: GoogleFonts.arimo(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).primaryColor,
+                          ),
                           focusNode: _emailFocusNode,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
@@ -251,6 +256,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           keyboardType: TextInputType.name,
                           focusNode: _passwordFocusNode,
+                          style: GoogleFonts.arimo(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).primaryColor,
+                          ),
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30.0),

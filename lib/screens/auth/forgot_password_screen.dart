@@ -172,6 +172,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       },
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.emailAddress,
+                      style: GoogleFonts.arimo(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).primaryColor,
+                      ),
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
