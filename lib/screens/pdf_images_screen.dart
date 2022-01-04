@@ -34,7 +34,6 @@ class PdfImagesScreen extends StatefulWidget {
 }
 
 class _PdfImagesScreenState extends State<PdfImagesScreen> {
-  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   List<Uint8List> canvasImages = [];
   List<String> convertedTexts = [];
   String pdfCreationDate;
@@ -169,7 +168,6 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
               return true;
             },
             child: Scaffold(
-              key: scaffoldKey,
               appBar: AppBar(
                 title: GestureDetector(
                   onTap: () {
@@ -342,12 +340,21 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                                             .primaryColor
                                             .withOpacity(0.5),
                                       ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0)),
-                                        child: Image.memory(
-                                          canvasImages[index],
-                                          fit: BoxFit.cover,
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0))),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5.0)),
+                                          child: Image.memory(
+                                            canvasImages[index],
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     ),

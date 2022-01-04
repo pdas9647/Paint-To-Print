@@ -67,6 +67,13 @@ dependencies:
   google_nav_bar: ^5.0.5
   flutter_staggered_animations: ^1.0.0
   tflite: ^1.1.2
+  file_picker: ^4.3.0
+  intl: ^0.17.0
+  pdf_render: ^1.0.19
+  native_pdf_renderer: ^4.0.1
+  image: ^3.1.0
+  flutter_cache_manager: ^3.3.0
+  internet_file: ^1.0.0+1
 
 dev_dependencies:
   flutter_test:
@@ -100,6 +107,8 @@ flutter:
   assets:
     - assets/images/
     - assets/ml_models/
+    - assets/cs_gate_syllabus_2022.pdf
+    - assets/
     - icons/
   #   - images/a_dot_ham.jpeg
 

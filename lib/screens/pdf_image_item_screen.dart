@@ -360,19 +360,27 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
             Flexible(
               flex: 7,
               child: Container(
-                padding: EdgeInsets.all(5.0),
+                padding: EdgeInsets.all(3.0),
                 height: MediaQuery.of(context).size.height * 0.60,
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
+                  borderRadius: BorderRadius.circular(20.0),
                   color: Theme.of(context).primaryColor.withOpacity(0.5),
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15.0),
-                  child: Image.memory(
-                    canvasImages[index],
-                    fit: BoxFit.contain,
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15.0),
+                    child: Image.memory(
+                      canvasImages[index],
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),

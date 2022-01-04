@@ -7,7 +7,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:paint_to_print/screens/all_docs.dart';
+import 'package:paint_to_print/screens/all_docs_screen.dart';
 import 'package:paint_to_print/services/global_methods.dart';
 import 'package:paint_to_print/widgets/back_layer_menu.dart';
 

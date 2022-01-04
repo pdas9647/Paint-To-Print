@@ -10,7 +10,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/screens/auth/login_screen.dart';
 import 'package:paint_to_print/screens/auth/signup_screen.dart';
 import 'package:paint_to_print/services/global_methods.dart';
-import 'package:paint_to_print/widgets/loading.dart';
+import 'package:paint_to_print/widgets/loading_fading_circle.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({Key key}) : super(key: key);
@@ -366,7 +366,8 @@ class _LandingScreenState extends State<LandingScreen>
             top: 0.0,
             right: 0.0,
             left: 0.0,
-            child: Visibility(visible: _isLoading, child: Loading()),
+            child:
+                Visibility(visible: _isLoading, child: LoadingFadingCircle()),
           ),
         ],
       ),

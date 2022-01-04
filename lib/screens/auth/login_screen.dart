@@ -6,7 +6,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/services/global_methods.dart';
-import 'package:paint_to_print/widgets/loading.dart';
+import 'package:paint_to_print/widgets/loading_fading_circle.dart';
 
 import 'forgot_password_screen.dart';
 import 'signup_screen.dart';
@@ -440,7 +440,7 @@ class _LoginScreenState extends State<LoginScreen> {
             right: 0.0,
             child: Visibility(
               visible: _isLoading,
-              child: Loading(),
+              child: LoadingFadingCircle(),
             ),
           ),
         ],

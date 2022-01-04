@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:paint_to_print/widgets/loading.dart';
+import 'package:paint_to_print/widgets/loading_fading_circle.dart';
 
 import 'bottom_bar_screen.dart';
 import 'landing_screen.dart';
@@ -19,7 +19,7 @@ class UserState extends StatelessWidget {
         print('userSnapshot: $userSnapshot');
         if (userSnapshot.connectionState == ConnectionState.waiting) {
           return const Center(
-            child: Loading(),
+            child: LoadingFadingCircle(),
           );
         } else if (userSnapshot.connectionState == ConnectionState.active) {
           if (userSnapshot.hasData) {

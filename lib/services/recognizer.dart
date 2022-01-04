@@ -9,6 +9,7 @@ import 'package:tflite/tflite.dart';
 final _canvasCullRect = Rect.fromPoints(
   Offset(0, 0),
   Offset(Constants.imageSize, Constants.imageSize),
+  // Offset(1080, 4460),
 );
 
 final _whitePaint = Paint()
@@ -18,7 +19,8 @@ final _whitePaint = Paint()
     isNavigatedFromHomeScreen: false,
     isNavigatedFromPdfImagesScreen: false,
     pdfModel: null,
-  ).strokeWidth;
+  ).strokeWidth
+  ..filterQuality = FilterQuality.high;
 
 final _bgPaint = Paint()..color = Colors.black;
 
@@ -36,17 +38,19 @@ class Recognizer {
     Tflite.close();
   }
 
-  Future<Uint8List> previewImage(List<DrawingArea> points) async {
-    final picture = pointsToPicture(points);
+  Future<Uint8List> previewImage(
+      BuildContext context, List<DrawingArea> points) async {
+    final picture = pointsToPicture(context, points);
     final image = await picture.toImage(
-        Constants.mnistImageSize, Constants.mnistImageSize);
+      Constants.mnistImageSize,
+      Constants.mnistImageSize,
+    );
     var pngBytes = await image.toByteData(format: ImageByteFormat.png);
-
     return pngBytes.buffer.asUint8List();
   }
 
-  Future recognize(List<DrawingArea> points) async {
-    final picture = pointsToPicture(points);
+  Future recognize(BuildContext context, List<DrawingArea> points) async {
+    final picture = pointsToPicture(context, points);
     Uint8List bytes =
         await imageToByteListUint8(picture, Constants.mnistImageSize);
     return _predict(bytes);
@@ -71,12 +75,17 @@ class Recognizer {
     return resultBytes.buffer.asUint8List();
   }
 
-  Picture pointsToPicture(List<DrawingArea> points) {
+  Picture pointsToPicture(BuildContext context, List<DrawingArea> points) {
     final recorder = PictureRecorder();
     final canvas = Canvas(recorder, _canvasCullRect)
       ..scale(Constants.mnistImageSize / Constants.canvasSize);
     canvas.drawRect(
-        Rect.fromLTWH(0, 0, Constants.imageSize, Constants.imageSize),
+        Rect.fromLTWH(
+          0,
+          0,
+          MediaQuery.of(context).size.width.toDouble(),
+          MediaQuery.of(context).size.height.toDouble(),
+        ),
         _bgPaint);
     for (int i = 0; i < points.length - 1; i++) {
       if (points[i] != null && points[i + 1] != null) {

@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/models/pdf_model.dart';
 import 'package:paint_to_print/models/prediction_model.dart';
 import 'package:paint_to_print/services/recognizer.dart';
+import 'package:paint_to_print/utils/constants.dart';
 import 'package:paint_to_print/widgets/floating_action_button_text.dart';
 import 'package:paint_to_print/widgets/prediction_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -49,7 +51,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
   List<DrawingArea> points = [];
   List<Uint8List> canvasImages = [];
   List<String> convertedTexts = [];
-  List<PredictionModel> predictions;
+  List<PredictionModel> predictions = [];
   Color selectedColor;
 
   void selectColor() {
@@ -153,14 +155,12 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     );
   }
 
-  void _recognize() async {
+  Future<void> _recognize() async {
     print('_recognize called');
     print('points: ${points.first.point}');
-    List<dynamic> _predictions = await Recognizer().recognize(points);
-    setState(() {
-      predictions =
-          _predictions.map((json) => PredictionModel.fromJson(json)).toList();
-    });
+    List<dynamic> _predictions = await Recognizer().recognize(context, points);
+    predictions =
+        _predictions.map((json) => PredictionModel.fromJson(json)).toList();
     print(_predictions.first);
   }
 
@@ -176,9 +176,9 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     //     .imageToByteListUint8(picture, Constants.mnistImageSize);
     // print(pngBytes);
 
-    // ui.PictureRecorder recorder = ui.PictureRecorder();
-    // ui.Picture p = recorder.endRecording();
-    // ui.Image image = await p.toImage(MediaQuery.of(context).size.width.toInt(),
+    // ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    // ui.Picture picture = pictureRecorder.endRecording();
+    // ui.Image image = await picture.toImage(MediaQuery.of(context).size.width.toInt(),
     //     MediaQuery.of(context).size.height.toInt());
     // ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     // Uint8List pngBytes = byteData.buffer.asUint8List();
@@ -186,22 +186,34 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     //   Recognizer().pointsToPicture(points),
     //   Constants.mnistImageSize,
     // );
-    Uint8List pngBytes = await Recognizer().previewImage(points);
+    ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    Canvas canvas = new Canvas(pictureRecorder);
+    OwnCustomPainter(pointsList: points).paint(canvas, Size.infinite);
+    ui.Picture picture = pictureRecorder.endRecording();
+    ui.Image image = await picture.toImage(
+      // MediaQuery.of(context).size.width.toInt(),
+      // MediaQuery.of(context).size.height.toInt(),
+      Constants.canvasSize.toInt(),
+      Constants.canvasSize.toInt(),
+    );
+    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    Uint8List pngBytes = byteData.buffer.asUint8List();
     print(pngBytes);
 
     /// if canvas is navigated from home_screen (handwriting to text) --> navigate to pdf images screen
     if (widget.isNavigatedFromHomeScreen) {
       // final bytes = File(byteData.path).readAsBytesSync();
       canvasImages.clear();
-      canvasImages.add(Uint8List.fromList(pngBytes));
-      // TODO: _recognize()
       await _recognize();
+      canvasImages.add(Uint8List.fromList(pngBytes));
+      convertedTexts.add('${predictions.first.label}');
       Navigator.pushReplacement(
         context,
         PageTransition(
           child: PdfImagesScreen(
             isNavigatedFromHomeScreen: true,
             canvasImages: canvasImages,
+            convertedTexts: convertedTexts,
           ),
           type: PageTransitionType.fade,
         ),
@@ -212,9 +224,10 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     else if (widget.isNavigatedFromPdfImagesScreen) {
       // canvasImages list shouldn't be cleared
       canvasImages = widget.canvasImages;
+      convertedTexts = widget.convertedTexts;
+      await _recognize();
       canvasImages.add(Uint8List.fromList(pngBytes));
-      print(convertedTexts);
-      // TODO: _recognize()
+      convertedTexts.add('${predictions.first.label}');
       _recognize();
       Navigator.pushReplacement(
         context,
@@ -254,7 +267,6 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     super.initState();
     _initMLModel();
     selectedColor = Colors.black;
-    convertedTexts = widget.convertedTexts;
   }
 
   @override
@@ -283,6 +295,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                     onPressed: () {
                       setState(() {
                         points.clear();
+                        predictions.clear();
                       });
                     },
                     icon: Icon(Icons.clear_all_rounded)),
@@ -319,7 +332,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                   children: [
                     const Flexible(flex: 1, child: SizedBox(height: 10.0)),
 
-                    /// canvas
+                    /// dividers & canvas
                     Flexible(
                       flex: 20,
                       child: Container(
@@ -364,34 +377,37 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                               setState(() {
                                 points.add(null);
                               });
-                              _recognize();
                             },
                             child: ClipRRect(
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(20.0)),
-
-                              /// divider listview
-                              /*Container(
-                                child: ListView.builder(
-                                  physics:
-                                  const NeverScrollableScrollPhysics(),
-                                  itemCount: int.parse(
-                                      '${(height * 0.90 / 50).ceil()}'),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return const Divider(
-                                      color: Colors.black,
-                                      height: 50.0,
-                                      indent: 20.0,
-                                      endIndent: 20.0,
-                                    );
-                                  },
-                                ),
-                                color: Colors.white,
-                              ),*/
-                              child: CustomPaint(
-                                size: Size.infinite,
-                                painter: OwnCustomPainter(pointsList: points),
+                              child: Stack(
+                                children: [
+                                  /// divider listview
+                                  Container(
+                                    child: ListView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: int.parse(
+                                          '${(height * 0.90 / 50).ceil()}'),
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return const Divider(
+                                          color: Colors.black,
+                                          height: 50.0,
+                                          indent: 20.0,
+                                          endIndent: 20.0,
+                                        );
+                                      },
+                                    ),
+                                    color: Colors.white,
+                                  ),
+                                  CustomPaint(
+                                    size: Size.infinite,
+                                    painter:
+                                        OwnCustomPainter(pointsList: points),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -429,6 +445,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
               onPressed: () {
                 setState(() {
                   points.clear();
+                  predictions.clear();
                 });
               },
               closeSpeedDialOnPressed: true,

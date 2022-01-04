@@ -36,8 +36,9 @@ android {
     compileSdkVersion 30
 
     aaptOptions {
-        noCompress "tflite"
+        noCompress 'tflite'
         noCompress 'lite'
+//        noCompress "pdf"
     }
 
     compileOptions {
