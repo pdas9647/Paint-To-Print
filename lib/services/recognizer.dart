@@ -6,11 +6,11 @@ import 'package:paint_to_print/screens/canvas/canvas_view_screen.dart';
 import 'package:paint_to_print/utils/constants.dart';
 import 'package:tflite/tflite.dart';
 
-final _canvasCullRect = Rect.fromPoints(
-  Offset(0, 0),
-  Offset(Constants.imageSize, Constants.imageSize),
-  // Offset(1080, 4460),
-);
+// final _canvasCullRect = Rect.fromPoints(
+//   Offset(0, 0),
+//   Offset(Constants.imageSize, Constants.imageSize),
+//   // Offset(1080, 4460),
+// );
 
 final _whitePaint = Paint()
   ..strokeCap = StrokeCap.round
@@ -38,16 +38,16 @@ class Recognizer {
     Tflite.close();
   }
 
-  Future<Uint8List> previewImage(
-      BuildContext context, List<DrawingArea> points) async {
-    final picture = pointsToPicture(context, points);
-    final image = await picture.toImage(
-      Constants.mnistImageSize,
-      Constants.mnistImageSize,
-    );
-    var pngBytes = await image.toByteData(format: ImageByteFormat.png);
-    return pngBytes.buffer.asUint8List();
-  }
+  // Future<Uint8List> previewImage(
+  //     BuildContext context, List<DrawingArea> points) async {
+  //   final picture = pointsToPicture(context, points);
+  //   final image = await picture.toImage(
+  //     Constants.mnistImageSize,
+  //     Constants.mnistImageSize,
+  //   );
+  //   var pngBytes = await image.toByteData(format: ImageByteFormat.png);
+  //   return pngBytes.buffer.asUint8List();
+  // }
 
   Future recognize(BuildContext context, List<DrawingArea> points) async {
     final picture = pointsToPicture(context, points);
@@ -77,8 +77,10 @@ class Recognizer {
 
   Picture pointsToPicture(BuildContext context, List<DrawingArea> points) {
     final recorder = PictureRecorder();
-    final canvas = Canvas(recorder, _canvasCullRect)
-      ..scale(Constants.mnistImageSize / Constants.canvasSize);
+    final canvas = Canvas(recorder);
+    // ..scale(
+    //     Constants.mnistImageSize / MediaQuery.of(context).size.width.toInt(),
+    // );
     canvas.drawRect(
         Rect.fromLTWH(
           0,

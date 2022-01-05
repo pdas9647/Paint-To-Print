@@ -40,13 +40,13 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
   }
 
   List<Widget> _buildScreens = [
+    AllDocsScreen(),
     HomeScreen(),
     CanvasViewScreen(
       isNavigatedFromHomeScreen: false,
       isNavigatedFromPdfImagesScreen: false,
       pdfModel: null,
     ),
-    AllDocsScreen(),
   ];
 
   @override

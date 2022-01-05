@@ -60,32 +60,6 @@ class _RenderedImagesScreenState extends State<RenderedImagesScreen> {
     );
   }
 
-  Future<void> initPdf() async {
-    final Uint8List bytes = await InternetFile.get(
-      'https://github.com/rbcprolabs/packages.flutter/raw/fd0c92ac83ee355255acb306251b1adfeb2f2fd6/packages/native_pdf_renderer/example/assets/sample.pdf',
-      process: (percentage) {
-        print('downloadPercentage: $percentage');
-      },
-    );
-    doc = await pdfrender.PdfDocument.openData(bytes);
-    pageCount = doc.pageCount;
-    print(doc);
-    print(pageCount);
-    // // get images from all the pages
-    // for (int i = 1; i <= pages; i++) {
-    //   PdfPage page = await doc.getPage(i);
-    //   PdfPageImage pageImage = await page.render();
-    //   await pageImage.createImageIfNotAvailable();
-    //   var img = await pageImage.createImageDetached();
-    //   var imgBytes = await img.toByteData(format: ImageByteFormat.png);
-    //   var libImage = imglib.decodeImage(imgBytes.buffer.asUint8List(
-    //       // imgBytes.offsetInBytes, imgBytes.lengthInBytes
-    //       ));
-    //   images.add(libImage);
-    //   print(images[0].getBytes());
-    // }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -88,13 +88,14 @@ class _HomeScreenState extends State<HomeScreen> {
     await _firebaseFirestore
         .collection('users')
         .doc(_firebaseAuth.currentUser.uid)
-        .collection('files')
+        .collection('importedfiles')
         .doc(fileName) // Kaagaz_20211122_002734779755.pdf
         .set({
       'file_url': uploadedFileUrl,
       'file_name': fileName,
       'file_name_trimmed': fileName.substring(0, fileName.length - 27),
       'file_creation_datetime': fileCreationDateTime,
+      'timestamp': fileName.split('.pdf_')[1],
     });
   }
 

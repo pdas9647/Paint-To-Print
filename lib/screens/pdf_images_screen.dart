@@ -12,6 +12,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/models/pdf_model.dart';
 import 'package:paint_to_print/screens/canvas/canvas_view_screen.dart';
 import 'package:paint_to_print/screens/pdf_image_item_screen.dart';
+import 'package:paint_to_print/services/global_methods.dart';
 
 import 'bottom_bar_screen.dart';
 
@@ -88,7 +89,8 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
     /// for the first time... canvasImages[0]
     if (widget.pdfModel == null) {
       pdfModel = PdfModel(
-        pdfName: pdfCreationDate,
+        // pdfName: pdfCreationDate,
+        pdfName: pdfCreationDate + '.pdf_' + pdfCreationDate,
         canvasImages: canvasImages,
         pdfCreationDate: pdfCreationDate,
         timestamp: timestamp,
@@ -113,58 +115,7 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
         : WillPopScope(
             onWillPop: () async {
               print('back pressed');
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0)),
-                      title: Text(
-                        'Do you want to discard?',
-                        style: GoogleFonts.arimo(
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      elevation: 8.0,
-                      actions: [
-                        /// yes button
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            Navigator.pushReplacement(
-                              context,
-                              PageTransition(
-                                child: BottomBarScreen(),
-                                type: PageTransitionType.fade,
-                              ),
-                            );
-                          },
-                          child: Text(
-                            'Yes',
-                            style: GoogleFonts.arimo(
-                              fontSize: 17.0,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-
-                        /// no button
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(
-                            'No',
-                            style: GoogleFonts.arimo(
-                              fontSize: 17.0,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  });
+              GlobalMethods.buildDiscardWarningDialog(context);
               return true;
             },
             child: Scaffold(
@@ -178,21 +129,42 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                     );
                   },
                   child: AutoSizeText(
-                    pdfModel.pdfName == null
-                        ? pdfModel
-                            .pdfCreationDate // navigating from canvas screen first time, for canvasImages[0]
-                        : pdfModel.pdfName,
+                    // pdfModel.pdfName == null
+                    //     ? pdfModel.pdfCreationDate +
+                    //         '.pdf_' +
+                    //         pdfCreationDate // navigating from canvas screen first time, for canvasImages[0]
+                    //     :
+                    pdfModel.pdfName,
                     overflow: TextOverflow.fade,
                     maxFontSize: 17.0,
                     style: GoogleFonts.arimo(
                         fontSize: 17.0, fontWeight: FontWeight.bold),
                   ),
                 ),
+                elevation: 0.0,
+                leading: IconButton(
+                  onPressed: () {
+                    GlobalMethods.buildDiscardWarningDialog(context);
+                  },
+                  icon: Icon(Icons.arrow_back_ios),
+                ),
                 actions: [
                   PopupMenuButton(
                       elevation: 8.0,
-                      onSelected: (value) {
-                        print(value);
+                      onSelected: (selectedItem) async {
+                        print(selectedItem);
+                        switch (selectedItem) {
+                          case 'Docx':
+                            await GlobalMethods.createAndSavePdfFile(
+                              context: context,
+                              images: canvasImages,
+                              convertedTexts: convertedTexts,
+                              pdfName: pdfModel.pdfName,
+                            );
+                            break;
+                          default:
+                            return;
+                        }
                       },
                       itemBuilder: (context) {
                         return [
