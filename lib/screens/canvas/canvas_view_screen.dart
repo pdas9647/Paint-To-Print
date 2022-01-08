@@ -11,6 +11,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/models/pdf_model.dart';
 import 'package:paint_to_print/models/prediction_model.dart';
 import 'package:paint_to_print/services/recognizer.dart';
+import 'package:paint_to_print/utils/constants.dart';
 import 'package:paint_to_print/widgets/floating_action_button_text.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
@@ -185,13 +186,12 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     // );
     ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     Canvas canvas = new Canvas(pictureRecorder);
-    OwnCustomPainter(pointsList: points).paint(canvas, Size.infinite);
+    OwnCustomPainter(pointsList: points)..paint(canvas, Size.infinite);
     ui.Picture picture = pictureRecorder.endRecording();
     ui.Image image = await picture.toImage(
-      MediaQuery.of(context).size.width.toInt(),
-      MediaQuery.of(context).size.height.toInt(),
-      // Constants.canvasSize.toInt(),
-      // Constants.canvasSize.toInt(),
+      (Constants.blockSizeHorizontal * 0.90).toInt(),
+      (Constants.blockSizeVertical * 0.90 - kBottomNavigationBarHeight * 2)
+          .toInt(),
     );
     ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     Uint8List pngBytes = byteData.buffer.asUint8List();
@@ -274,8 +274,9 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    Constants().init(context);
+    final height = Constants.blockSizeVertical;
+    final width = Constants.blockSizeHorizontal;
 
     return Scaffold(
       appBar: widget.isNavigatedFromHomeScreen ||
@@ -292,21 +293,11 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                 },
                 icon: Icon(Icons.arrow_back_ios),
               ),
-              // TODO: Remove actions
-              actions: [
-                IconButton(
-                    onPressed: () {
-                      setState(() {
-                        points.clear();
-                        predictions.clear();
-                      });
-                    },
-                    icon: Icon(Icons.clear_all_rounded)),
-              ],
             )
           : null,
       body: Container(
-        height: MediaQuery.of(context).size.height,
+        height: height,
+        width: width,
         child: Stack(
           children: [
             /// background gradient
@@ -339,22 +330,28 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                     const Flexible(flex: 1, child: SizedBox(height: 10.0)),
 
                     /// dividers & canvas
-                    Flexible(
-                      flex: 20,
-                      child: Container(
-                        width: width * 0.90,
-                        height: !widget.isNavigatedFromHomeScreen &&
-                                !widget.isNavigatedFromPdfImagesScreen
-                            ? height * 0.90
-                            : height * 0.90 - kBottomNavigationBarHeight * 2,
-                        child: Card(
-                          elevation: 10.0,
-                          shadowColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          child: GestureDetector(
-                            onPanUpdate: (details) {
+                    // Flexible(
+                    //   flex: 20,child:
+                    Container(
+                      width: width * 0.90,
+                      height: !widget.isNavigatedFromHomeScreen &&
+                              !widget.isNavigatedFromPdfImagesScreen
+                          ? height * 0.90
+                          : height * 0.90 - kBottomNavigationBarHeight * 2,
+                      child: Card(
+                        elevation: 10.0,
+                        shadowColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0)),
+                        child: GestureDetector(
+                          onPanUpdate: (details) {
+                            Offset _localPosition = details.localPosition;
+                            if (_localPosition.dx >= 0 &&
+                                _localPosition.dx <= width * 0.90 &&
+                                _localPosition.dy >= 0 &&
+                                _localPosition.dy <=
+                                    height * 0.90 -
+                                        kBottomNavigationBarHeight * 2) {
                               setState(() {
                                 points.add(
                                   DrawingArea(
@@ -367,8 +364,16 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                                   ),
                                 );
                               });
-                            },
-                            onPanStart: (details) {
+                            }
+                          },
+                          onPanStart: (details) {
+                            Offset _localPosition = details.localPosition;
+                            if (_localPosition.dx >= 0 &&
+                                _localPosition.dx <= width * 0.90 &&
+                                _localPosition.dy >= 0 &&
+                                _localPosition.dy <=
+                                    height * 0.90 -
+                                        kBottomNavigationBarHeight * 2) {
                               setState(() {
                                 points.add(
                                   DrawingArea(
@@ -381,52 +386,50 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                                   ),
                                 );
                               });
-                            },
-                            onPanEnd: (details) {
-                              setState(() {
-                                points.add(null);
-                              });
-                            },
-                            child: ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(20.0)),
-                              child: RepaintBoundary(
-                                key: canvasKey,
-                                child: Stack(
-                                  children: [
-                                    /// divider listview
-                                    Container(
-                                      child: ListView.builder(
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        itemCount: int.parse(
-                                            '${(height * 0.90 / 50).ceil()}'),
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return const Divider(
-                                            color: Colors.black,
-                                            height: 50.0,
-                                            indent: 20.0,
-                                            endIndent: 20.0,
-                                          );
-                                        },
-                                      ),
-                                      color: Colors.white,
+                            }
+                          },
+                          onPanEnd: (details) {
+                            setState(() {
+                              points.add(null);
+                            });
+                          },
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20.0)),
+                            child: RepaintBoundary(
+                              key: canvasKey,
+                              child: Stack(
+                                children: [
+                                  /// divider listview
+                                  Container(
+                                    child: ListView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: int.parse(
+                                          '${(height * 0.90 / 50).ceil()}'),
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return const Divider(
+                                          color: Colors.black,
+                                          height: 50.0,
+                                          indent: 20.0,
+                                          endIndent: 20.0,
+                                        );
+                                      },
                                     ),
-                                    CustomPaint(
-                                      // key: canvasKey,
-                                      size: Size.infinite,
+                                    color: Colors.white,
+                                  ),
+                                  CustomPaint(
                                       painter:
-                                          OwnCustomPainter(pointsList: points),
-                                    ),
-                                  ],
-                                ),
+                                          OwnCustomPainter(pointsList: points)),
+                                ],
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
+                    // ),
                     const Flexible(flex: 1, child: SizedBox(height: 10.0)),
 
                     /// row of icons

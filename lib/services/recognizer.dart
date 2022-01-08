@@ -6,12 +6,6 @@ import 'package:paint_to_print/screens/canvas/canvas_view_screen.dart';
 import 'package:paint_to_print/utils/constants.dart';
 import 'package:tflite/tflite.dart';
 
-// final _canvasCullRect = Rect.fromPoints(
-//   Offset(0, 0),
-//   Offset(Constants.imageSize, Constants.imageSize),
-//   // Offset(1080, 4460),
-// );
-
 final _whitePaint = Paint()
   ..strokeCap = StrokeCap.round
   ..color = Colors.white
@@ -29,7 +23,7 @@ class Recognizer {
     Tflite.close();
 
     return Tflite.loadModel(
-      model: "assets/ml_models/hand_written_digit_model.tflite",
+      model: "assets/ml_models/mnist.tflite",
       labels: "assets/ml_models/mnist.txt",
     );
   }
@@ -77,16 +71,20 @@ class Recognizer {
 
   Picture pointsToPicture(BuildContext context, List<DrawingArea> points) {
     final recorder = PictureRecorder();
-    final canvas = Canvas(recorder);
-    // ..scale(
-    //     Constants.mnistImageSize / MediaQuery.of(context).size.width.toInt(),
-    // );
+    final canvas = Canvas(recorder)
+      ..scale(
+          Constants.mnistImageSize / Constants.blockSizeHorizontal * 0.90,
+          Constants.mnistImageSize /
+              (Constants.blockSizeVertical * 0.90 -
+                  kBottomNavigationBarHeight * 2));
     canvas.drawRect(
         Rect.fromLTWH(
           0,
           0,
-          MediaQuery.of(context).size.width.toDouble(),
-          MediaQuery.of(context).size.height.toDouble(),
+          // MediaQuery.of(context).size.width.toDouble(),
+          // MediaQuery.of(context).size.height.toDouble(),
+          Constants.blockSizeHorizontal * 0.90,
+          Constants.blockSizeVertical * 0.90 - kBottomNavigationBarHeight * 2,
         ),
         _bgPaint);
     for (int i = 0; i < points.length - 1; i++) {
