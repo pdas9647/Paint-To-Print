@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:paint_to_print/screens/about_us_screen.dart';
 import 'package:paint_to_print/screens/onboarding_screen.dart';
 
 class BackLayerMenu extends StatelessWidget {
@@ -145,20 +146,20 @@ class BackLayerMenu extends StatelessWidget {
                     },
                   ),
 
-                  /// about
+                  /// about us
                   backLayerCreateItem(
                     buildContext: context,
-                    itemName: 'About',
+                    itemName: 'About Us',
                     iconData: Icons.info_outline_rounded,
                     onTap: () {
-                      /// navigate to about screen
-                      // Navigator.push(
-                      //   context,
-                      //   PageTransition(
-                      //     child: OnBoardingScreen(),
-                      //     type: PageTransitionType.fade,
-                      //   ),
-                      // );
+                      /// navigate to about us screen
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          child: AboutUsScreen(),
+                          type: PageTransitionType.fade,
+                        ),
+                      );
                     },
                   ),
 

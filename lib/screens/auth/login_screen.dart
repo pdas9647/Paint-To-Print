@@ -87,8 +87,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
-      // backgroundColor: Theme.of(context).colorScheme.secondary,
       body: Stack(
         children: [
           CustomScrollView(

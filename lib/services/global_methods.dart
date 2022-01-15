@@ -15,6 +15,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdfWidget;
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GlobalMethods {
   static Future<void> customDialog(BuildContext context, String title,
@@ -560,5 +561,15 @@ class GlobalMethods {
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  static Future<void> launchURL({String url}) async {
+    if (!await launch(url))
+      SnackBar(
+        content: Text(
+          'Something went wrong',
+          style: GoogleFonts.arimo(fontWeight: FontWeight.w500),
+        ),
+      );
   }
 }
