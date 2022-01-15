@@ -16,19 +16,26 @@ class AboutUsSocialMediaIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: image != null
-          ? Image.asset(
-              image,
-              fit: BoxFit.cover,
-              height: 35.0,
-              width: 35.0,
-            )
-          : IconButton(
-              onPressed: () {},
-              icon: Icon(iconData, size: 40.0, color: color),
-            ),
+    return Card(
+      elevation: 10.0,
+      // color: Colors.pink,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(MediaQuery.of(context).size.width * 0.2))
+      ),
+      child: GestureDetector(
+        onTap: onTap,
+        child: image != null
+            ? Image.asset(
+                image,
+                fit: BoxFit.cover,
+                height: MediaQuery.of(context).size.width * 0.1,
+                width: MediaQuery.of(context).size.width * 0.1,
+              )
+            : IconButton(
+                onPressed: () {},
+                icon: Icon(iconData, size: 40.0, color: color),
+              ),
+      ),
     );
   }
 }

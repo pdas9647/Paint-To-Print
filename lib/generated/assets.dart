@@ -2,7 +2,21 @@
 class Assets {
   Assets._();
 
+  static const String assetsCsGateSyllabus2022 = 'assets/cs_gate_syllabus_2022.pdf';
   static const String imagesAppIcon = 'assets/images/app_icon.png';
+  static const String imagesAppIconWithoutBg = 'assets/images/app_icon_without_bg.png';
+  static const String imagesBackdropAppIcon = 'assets/images/backdrop_app_icon.png';
+  static const String imagesDoubleRingLoadingIo = 'assets/images/double_ring_loading_io.gif';
+  static const String imagesHandwritingToText = 'assets/images/handwriting_to_text.png';
+  static const String imagesImportFile = 'assets/images/import_file.png';
+  static const String imagesImportPicture = 'assets/images/import_picture.png';
+  static const String imagesMergePdf = 'assets/images/merge_pdf.png';
+  static const String imagesOcrOnboarding = 'assets/images/ocr_onboarding.png';
+  static const String imagesScan = 'assets/images/scan.png';
+  static const String imagesScanIdCard = 'assets/images/scan_id_card.png';
+  static const String imagesScanOnboarding = 'assets/images/scan_onboarding.png';
   static const String imagesWarning = 'assets/images/warning.png';
+  static const String mlModelsHandWrittenDigitModel = 'assets/ml_models/hand_written_digit_model.tflite';
+  static const String mlModelsMnist = 'assets/ml_models/mnist.txt';
 
 }

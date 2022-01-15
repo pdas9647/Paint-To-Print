@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:paint_to_print/services/global_methods.dart';
@@ -17,140 +18,121 @@ class _SwagatoProfileScreenState extends State<SwagatoProfileScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Colors.white,
       extendBody: true,
       body: Stack(
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SafeArea(
-                child: Flexible(
-                  // profile image
-                  child: GestureDetector(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              // backgroundColor: Colors.transparent,
-                              elevation: 8.0,
-                              content: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      constraints: BoxConstraints(
-                                        minHeight: 100.0,
-                                        maxHeight: size.height * 0.50,
-                                      ),
-                                      width: double.infinity,
-                                      child: Image.asset(
-                                        'assets/images/swagato.png',
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Swagato Bag',
-                                      style: GoogleFonts.arimo(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 30.0,
-                                      ),
-                                    ),
-                                  ],
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          // backgroundColor: Colors.transparent,
+                          elevation: 8.0,
+                          content: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Container(
+                                  constraints: BoxConstraints(
+                                    minHeight: 100.0,
+                                    maxHeight: size.height * 0.50,
+                                  ),
+                                  width: double.infinity,
+                                  child: Image.asset(
+                                    'assets/images/swagato.jpg',
+                                    fit: BoxFit.fill,
+                                  ),
                                 ),
-                              ),
-                            );
-                          });
-                    },
-                    child: Container(
-                      height: size.height * 0.35,
-                      child: WidgetCircularAnimator(
-                        outerColor: Theme.of(context).primaryColorDark,
-                        innerColor: Theme.of(context).primaryColorDark,
-                        innerAnimation: Curves.easeOutExpo,
-                        child: Container(
-                          width: size.width * 0.50,
-                          height: size.height * 0.20,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.redAccent,
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100.0),
-                            child: Image.asset(
-                              'assets/images/swagato.png',
-                              fit: BoxFit.fill,
-                              width: size.width * 0.45,
-                              height: size.height * 0.15,
+                                Text(
+                                  'Swagato Bag',
+                                  style: GoogleFonts.arimo(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 30.0,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                      ),
-                    ),
+                        );
+                      });
+                },
+                child: Container(
+                  height: size.width * 0.9,
+                  width: size.width,
+                  child: Image.asset(
+                    'assets/images/swagato.jpg',
+                    fit: BoxFit.fill,
+                    width: size.width * 0.45,
+                    height: size.height * 0.15,
                   ),
                 ),
               ),
+              Spacer(),
               Container(
-                height: size.height * 0.45,
+                // height: size.height * 0.2,
                 // decoration: BoxDecoration(
                 //   borderRadius:
                 //       BorderRadius.vertical(top: Radius.circular(30.0)),
                 //   color: Colors.teal.shade200,
                 // ),
               ),
-              Flexible(
-                child: Container(
-                  height: size.height * 0.30,
-                  width: size.width - size.width * 0.30,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      /// facebook
-                      AboutUsSocialMediaIcon(
-                        // iconData: MaterialCommunityIcons.facebook_box,
-                        // color: Color(0xFF1773EA),
-                        image: 'assets/images/facebook_icon.png',
-                        onTap: () async {
-                          await GlobalMethods.launchURL(
-                              url: 'https://www.facebook.com/swagato.bag.7');
-                        },
-                      ),
+              Container(
+                height: size.height * 0.15,
+                width: size.width * 0.7,
+                // color: Colors.pink,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    /// facebook
+                    AboutUsSocialMediaIcon(
+                      // iconData: MaterialCommunityIcons.facebook_box,
+                      // color: Color(0xFF1773EA),
+                      image: 'assets/images/facebook_icon.png',
+                      onTap: () async {
+                        await GlobalMethods.launchURL(
+                            url: 'https://www.facebook.com/swagato.bag.7');
+                      },
+                    ),
 
-                      /// instagram
-                      AboutUsSocialMediaIcon(
-                        // iconData: MaterialCommunityIcons.instagram,
-                        image: 'assets/images/instagram_icon.png',
-                        onTap: () async {
-                          await GlobalMethods.launchURL(
-                              url: 'https://www.instagram.com/swagato.bag/');
-                        },
-                      ),
+                    /// instagram
+                    AboutUsSocialMediaIcon(
+                      // iconData: MaterialCommunityIcons.instagram,
+                      image: 'assets/images/instagram_icon.png',
+                      onTap: () async {
+                        await GlobalMethods.launchURL(
+                            url: 'https://www.instagram.com/swagato.bag/');
+                      },
+                    ),
 
-                      /// linked in
-                      AboutUsSocialMediaIcon(
-                        // iconData: MaterialCommunityIcons.linkedin_box,
-                        // color: Color(0xFF0077B5),
-                        image: 'assets/images/linkedin_icon.png',
-                        onTap: () async {
-                          await GlobalMethods.launchURL(
-                              url: 'https://www.linkedin.com/in/swagatobag/');
-                        },
-                      ),
+                    /// linked in
+                    AboutUsSocialMediaIcon(
+                      // iconData: MaterialCommunityIcons.linkedin_box,
+                      // color: Color(0xFF0077B5),
+                      image: 'assets/images/linkedin_icon.png',
+                      onTap: () async {
+                        await GlobalMethods.launchURL(
+                            url: 'https://www.linkedin.com/in/swagatobag/');
+                      },
+                    ),
 
-                      /// github
-                      AboutUsSocialMediaIcon(
-                        // iconData: MaterialCommunityIcons.github_circle,
-                        image: 'assets/images/github_icon.png',
-                        onTap: () async {
-                          await GlobalMethods.launchURL(
-                              url: 'https://github.com/swagatobag2000');
-                        },
-                      ),
-                    ],
-                  ),
+                    /// github
+                    AboutUsSocialMediaIcon(
+                      // iconData: MaterialCommunityIcons.github_circle,
+                      image: 'assets/images/github_icon.png',
+                      onTap: () async {
+                        await GlobalMethods.launchURL(
+                            url: 'https://github.com/swagatobag2000');
+                      },
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -162,6 +144,7 @@ class _SwagatoProfileScreenState extends State<SwagatoProfileScreen> {
             bottom: size.height * 0.15,
             child: Container(
               width: size.width,
+              // height: size.height * 0.8,
               padding: EdgeInsets.only(bottom: 5.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
@@ -181,12 +164,12 @@ class _SwagatoProfileScreenState extends State<SwagatoProfileScreen> {
                   children: [
                     Align(
                       alignment: Alignment.topCenter,
-                      child: Text(
+                      child: AutoSizeText(
                         'GET IN TOUCH!',
                         style: GoogleFonts.arimo(
                           color: Theme.of(context).primaryColorDark,
                           fontWeight: FontWeight.w700,
-                          fontSize: 25.0,
+                          fontSize: MediaQuery.of(context).size.width * 0.06,
                         ),
                       ),
                     ),
@@ -204,9 +187,15 @@ class _SwagatoProfileScreenState extends State<SwagatoProfileScreen> {
                       initialValue: 'swagatobag23@gmail.com',
                     ),
 
+                    /// phone
+                    AboutUsTextFormField(
+                      labelText: 'Phone',
+                      initialValue: '8670513077',
+                    ),
+
                     /// message
                     AboutUsTextFormField(
-                      labelText: 'Message',
+                      labelText: 'Bio',
                       initialValue:
                           'Passionate to Get My Hands Dirty Over Whatever Technology Possible | Competitive Programmer | Tech Enthusiast | Passionate Singer | Acoustic Guitar Player |',
                     ),

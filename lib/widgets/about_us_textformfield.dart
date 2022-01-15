@@ -15,19 +15,23 @@ class AboutUsTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      initialValue: initialValue,
-      style: GoogleFonts.arimo(
-        color: Theme.of(context).colorScheme.primary,
-        fontWeight: FontWeight.w700,
+    return Padding(
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
+      child: TextFormField(
+        initialValue: initialValue,
+        style: GoogleFonts.arimo(
+          color: Theme.of(context).colorScheme.primary,
+          fontWeight: FontWeight.w700,
+          fontSize: MediaQuery.of(context).size.width * 0.035,
+        ),
+        enabled: false,
+        decoration: InputDecoration(
+          labelText: labelText,
+          labelStyle: GoogleFonts.arimo(letterSpacing: 0.5),
+        ),
+        maxLines: maxLines,
+        readOnly: true,
       ),
-      enabled: false,
-      decoration: InputDecoration(
-        labelText: labelText,
-        labelStyle: GoogleFonts.arimo(letterSpacing: 0.5),
-      ),
-      maxLines: maxLines,
-      readOnly: true,
     );
   }
 }

@@ -16,7 +16,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Color(0xFFF999B7),
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Container(
@@ -37,16 +37,16 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                 /// padmanabha
                 AboutUsCustomListTile(
                   navigateToScreen: SwagatoProfileScreen(),
-                  dp: 'assets/images/padmanabha.jpg',
+                  dp: 'assets/images/padmanabha.png',
                   name: 'Padmanabha Das',
-                  bio: 'Android, Flutter Developer, Quality Analyst',
+                  bio: 'Android & Flutter Developer, QA Analyst, Experienced in Web Development',
                   phoneNumber: '9647100133',
                 ),
 
                 /// swagato
                 AboutUsCustomListTile(
                   navigateToScreen: SwagatoProfileScreen(),
-                  dp: 'assets/images/swagato.png',
+                  dp: 'assets/images/swagato.jpg',
                   name: 'Swagato Bag',
                   bio:
                       'Competitive Programmer, Passionate Singer, Acoustic Guitar Player',

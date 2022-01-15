@@ -33,13 +33,17 @@ class AboutUsCustomListTile extends StatelessWidget {
         );
       },
       child: Container(
-        padding: EdgeInsets.only(left: 5.0, right: 5.0),
-        margin: EdgeInsets.only(left: 20.0),
+        height: MediaQuery.of(context).size.height * 0.17,
+        padding: EdgeInsets.only(
+            top:MediaQuery.of(context).size.height * 0.01,
+            left: MediaQuery.of(context).size.width * 0.01,
+            right: MediaQuery.of(context).size.width * 0.01),
+        margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.2),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(60.0),
-            bottomLeft: Radius.circular(60.0),
+            topLeft: Radius.circular(MediaQuery.of(context).size.height * 0.3),
+            bottomLeft: Radius.circular(MediaQuery.of(context).size.height * 0.3),
           ),
           boxShadow: [
             BoxShadow(
@@ -50,67 +54,85 @@ class AboutUsCustomListTile extends StatelessWidget {
           ],
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             // dp
-            ClipRRect(
-              borderRadius: BorderRadius.circular(50.0),
-              child: Image.asset(
-                dp,
-                fit: BoxFit.fill,
-                width: 100.0,
-                height: 100.0,
+            Align(
+              alignment: Alignment.centerLeft,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height * 0.3),
+                child: Image.asset(
+                  dp,
+                  fit: BoxFit.fill,
+                  width: MediaQuery.of(context).size.width * 0.23,
+                  height: MediaQuery.of(context).size.width * 0.23,
+                ),
               ),
             ),
             Flexible(
-              child: Container(
-                padding: EdgeInsets.only(left: 10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // name
-                    AutoSizeText(
-                      name,
-                      maxLines: 1,
-                      overflow: TextOverflow.fade,
-                      style: GoogleFonts.arimo(
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    // bio
-                    AutoSizeText(
-                      bio,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.arimo(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    // phoneNumber
-                    TextButton.icon(
-                      onPressed: () async {
-                        var url = 'tel:$phoneNumber';
-                        // if (await canLaunch(url)) {
-                        //   await launch(url);
-                        // } else {
-                        //   throw 'Could not launch $url';
-                        // }
-                        await FlutterPhoneDirectCaller.callNumber(phoneNumber);
-                      },
-                      icon: Icon(Icons.call),
-                      label: AutoSizeText(
-                        phoneNumber,
-                        style: GoogleFonts.arimo(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w400,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.015),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // name
+                      Flexible(
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.005),
+                          child: AutoSizeText(
+                            name,
+                            maxLines: 1,
+                            overflow: TextOverflow.fade,
+                            style: GoogleFonts.arimo(
+                              fontSize: MediaQuery.of(context).size.width * 0.07,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                      // bio
+                      Flexible(
+                        child: AutoSizeText(
+                          bio,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.arimo(
+                            fontSize: MediaQuery.of(context).size.width * 0.03,
+                            fontWeight: FontWeight.w400,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ),
+                      // phoneNumber
+                      Flexible(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.005),
+                          child: TextButton.icon(
+                            onPressed: () async {
+                              // var url = 'tel:$phoneNumber';
+                              // if (await canLaunch(url)) {
+                              //   await launch(url);
+                              // } else {
+                              //   throw 'Could not launch $url';
+                              // }
+                              await FlutterPhoneDirectCaller.callNumber(phoneNumber);
+                            },
+                            icon: Icon(Icons.call,size: MediaQuery.of(context).size.height * 0.03,),
+                            label: AutoSizeText(
+                              phoneNumber,
+                              style: GoogleFonts.arimo(
+                                fontSize: MediaQuery.of(context).size.width * 0.03,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
