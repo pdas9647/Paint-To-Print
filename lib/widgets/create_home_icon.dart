@@ -17,41 +17,42 @@ class CreateHomeIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      flex: 1,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Card(
-          elevation: 10.0,
-          shadowColor: shadowColor,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-          child: Container(
-            padding: EdgeInsets.all(10.0),
-            width: MediaQuery.of(context).size.width / 2,
-            height: MediaQuery.of(context).size.height / 4.2,
-            // color: Colors.indigo,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  flex: 5,
-                  child: Image.asset(image),
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        elevation: 10.0,
+        shadowColor: shadowColor,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        child: Container(
+          padding: EdgeInsets.all(10.0),
+          width: MediaQuery.of(context).size.width * 0.47,
+          height: MediaQuery.of(context).size.height * 0.25,
+          color: Colors.indigo,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                flex: 5,
+                child: Image.asset(
+                  image,
+                  // width: MediaQuery.of(context).size.width * 0.50,
+                  // height: MediaQuery.of(context).size.width * 0.50,
                 ),
-                SizedBox(height: 10.0),
-                Flexible(
-                  child: AutoSizeText(
-                    iconName,
-                    maxLines: 1,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.arimo(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+              ),
+              SizedBox(height: 10.0),
+              Flexible(
+                child: AutoSizeText(
+                  iconName,
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.arimo(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

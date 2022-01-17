@@ -135,6 +135,11 @@ class _HomeScreenState extends State<HomeScreen> {
         height: MediaQuery.of(context).size.height -
             kBottomNavigationBarHeight -
             kToolbarHeight,
+        color: Colors.redAccent,
+        padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * 0.001,
+          vertical: MediaQuery.of(context).size.height * 0.03,
+        ),
         child: ListView(
           // shrinkWrap: true,
           children: [

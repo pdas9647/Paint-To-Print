@@ -10,9 +10,11 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:paint_to_print/screens/all_docs_screen.dart';
 import 'package:paint_to_print/services/global_methods.dart';
 import 'package:paint_to_print/widgets/back_layer_menu.dart';
+import 'package:paint_to_print/widgets/backdrop_toggle_button.dart';
 
 import 'canvas/canvas_view_screen.dart';
 import 'home_screen.dart';
+import 'package:animated_icon_button/animated_icon_button.dart';
 
 class BottomBarScreen extends StatefulWidget {
   const BottomBarScreen({Key key}) : super(key: key);
@@ -21,16 +23,21 @@ class BottomBarScreen extends StatefulWidget {
   _BottomBarScreenState createState() => _BottomBarScreenState();
 }
 
-class _BottomBarScreenState extends State<BottomBarScreen> {
+class _BottomBarScreenState extends State<BottomBarScreen>
+    with TickerProviderStateMixin {
   PageController _pageController;
   int _currentIndex = 0;
   DateTime backButtonPressTime;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  AnimationController _animationController;
+  bool isHome = true;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 450));
   }
 
   @override
@@ -40,33 +47,51 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
   }
 
   List<Widget> _buildScreens = [
-    AllDocsScreen(),
     HomeScreen(),
     CanvasViewScreen(
       isNavigatedFromHomeScreen: false,
       isNavigatedFromPdfImagesScreen: false,
       pdfModel: null,
     ),
+    AllDocsScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
+
     return BackdropScaffold(
       resizeToAvoidBottomInset: false,
       extendBody: true,
-      headerHeight: MediaQuery.of(context).size.height * 0.30,
+      headerHeight: height * 0.30,
       appBar: BackdropAppBar(
-        title: Text('Paint to Print'),
-        leading: BackdropToggleButton(icon: AnimatedIcons.home_menu),
+        title: Text(
+          'Paint to Print',
+          style: GoogleFonts.satisfy(fontSize: width * 0.07),
+        ),
+        toolbarHeight: height * 0.10,
+        leadingWidth: width * 0.20,
+        leading: CustomBackdropToggleButton(icon: AnimatedIcons.home_menu),
         centerTitle: true,
+        elevation: 0.0,
         actions: [
-          IconButton(
-            onPressed: () async {
-              GlobalMethods.signOutDialog(
-                  context, 'Warning!', 'Do you want to logout?');
-            },
-            icon: Icon(Icons.logout_rounded),
+          Transform.scale(
+            scale: 1.5,
+            child: Container(
+              width: width * 0.20,
+              // color: Colors.redAccent,
+              child: IconButton(
+                // color: Colors.redAccent,
+                onPressed: () async {
+                  GlobalMethods.signOutDialog(
+                      context, 'Warning!', 'Do you want to logout?');
+                },
+                icon: Icon(Icons.logout_rounded, size: height * 0.03),
+              ),
+            ),
           ),
+          // SizedBox(width: width * 0.015),
         ],
       ),
       backLayer: BackLayerMenu(context: context),
