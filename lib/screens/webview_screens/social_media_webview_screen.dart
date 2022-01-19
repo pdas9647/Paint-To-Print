@@ -4,12 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class SocialMediaWebViewScreen extends StatefulWidget {
-  final String assetImage;
+  final IconData iconData;
   final String title;
   final String url;
+
   const SocialMediaWebViewScreen({
     Key key,
-    @required this.assetImage,
+    @required this.iconData,
     @required this.title,
     @required this.url,
   }) : super(key: key);
@@ -24,21 +25,23 @@ class _SocialMediaWebViewScreenState extends State<SocialMediaWebViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
+        // centerTitle: true,
         elevation: 0.0,
         toolbarHeight: MediaQuery.of(context).size.height * 0.10,
-        leadingWidth: MediaQuery.of(context).size.width * 0.20,
+        leadingWidth: MediaQuery.of(context).size.width * 0.10,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back_rounded),
+          iconSize: MediaQuery.of(context).size.width * 0.06,
+        ),
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
               padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
-              child: Image.asset(
-                widget.assetImage,
-                fit: BoxFit.cover,
-                height: MediaQuery.of(context).size.width * 0.1,
-                width: MediaQuery.of(context).size.width * 0.1,
-              ),
+              child: Icon(widget.iconData,size: MediaQuery.of(context).size.width * 0.08,),
             ),
             Padding(
               padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),

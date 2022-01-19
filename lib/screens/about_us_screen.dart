@@ -51,7 +51,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                 AboutUsCustomListTile(
                   navigateToScreen: IndividualProfileScreen(personMap: swagato),
                   dp: swagato['dp'],
-                  name: swagato['dp'],
+                  name: swagato['name'],
                   bio: swagato['bio'],
                   phoneNumber: swagato['phoneNumber'],
                 ),

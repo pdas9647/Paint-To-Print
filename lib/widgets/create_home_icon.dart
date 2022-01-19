@@ -7,6 +7,7 @@ class CreateHomeIcon extends StatelessWidget {
   final String image;
   final Color shadowColor;
   final Function() onTap;
+
   const CreateHomeIcon({
     Key key,
     this.iconName,
@@ -25,29 +26,29 @@ class CreateHomeIcon extends StatelessWidget {
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
         child: Container(
-          padding: EdgeInsets.all(10.0),
-          width: MediaQuery.of(context).size.width * 0.47,
+          // padding: EdgeInsets.symmetric(
+          //     horizontal: MediaQuery.of(context).size.width * 0.01,
+          //     vertical: MediaQuery.of(context).size.width * 0.01),
+          width: MediaQuery.of(context).size.width * 0.46,
           height: MediaQuery.of(context).size.height * 0.25,
           color: Colors.indigo,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Flexible(
-                flex: 5,
-                child: Image.asset(
-                  image,
-                  // width: MediaQuery.of(context).size.width * 0.50,
-                  // height: MediaQuery.of(context).size.width * 0.50,
-                ),
+              Image.asset(
+                image,
+                // color: Colors.lightGreenAccent,
+                width: MediaQuery.of(context).size.width * 0.30,
+                height: MediaQuery.of(context).size.width * 0.30,
               ),
-              SizedBox(height: 10.0),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               Flexible(
                 child: AutoSizeText(
                   iconName,
                   maxLines: 1,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.arimo(
-                    fontSize: 20.0,
+                    fontSize: MediaQuery.of(context).size.height * 0.02,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

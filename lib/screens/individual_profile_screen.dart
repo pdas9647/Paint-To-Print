@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/screens/webview_screens/social_media_webview_screen.dart';
@@ -60,13 +61,14 @@ class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
                                     fit: BoxFit.fill,
                                   ),
                                 ),
+                                SizedBox(height: size.height * 0.01),
                                 Text(
                                   personMap['name'],
                                   style: GoogleFonts.arimo(
                                     color:
                                         Theme.of(context).colorScheme.primary,
                                     fontWeight: FontWeight.w700,
-                                    fontSize: 30.0,
+                                    fontSize: size.height * 0.05,
                                   ),
                                 ),
                               ],
@@ -76,7 +78,7 @@ class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
                       });
                 },
                 child: Container(
-                  height: size.width * 0.9,
+                  height: size.width,
                   width: size.width,
                   child: Image.asset(
                     personMap['dp'],
@@ -117,7 +119,8 @@ class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
                           context,
                           PageTransition(
                             child: SocialMediaWebViewScreen(
-                              assetImage: 'assets/images/facebook_icon.png',
+
+                              iconData: Icons.facebook_rounded,
                               title: 'Facebook',
                               url: personMap['facebook'],
                             ),
@@ -139,7 +142,7 @@ class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
                           context,
                           PageTransition(
                             child: SocialMediaWebViewScreen(
-                              assetImage: 'assets/images/instagram_icon.png',
+                              iconData: FontAwesome.instagram,
                               title: 'Instagram',
                               url: personMap['instagram'],
                             ),
@@ -162,7 +165,7 @@ class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
                           context,
                           PageTransition(
                             child: SocialMediaWebViewScreen(
-                              assetImage: 'assets/images/linkedin_icon.png',
+                              iconData: FontAwesome.linkedin_square,
                               title: 'LinkedIn',
                               url: personMap['linkedIn'],
                             ),
@@ -183,7 +186,7 @@ class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
                           context,
                           PageTransition(
                             child: SocialMediaWebViewScreen(
-                              assetImage: 'assets/images/github_icon.png',
+                              iconData: FontAwesome.github,
                               title: 'GitHub',
                               url: personMap['github'],
                             ),

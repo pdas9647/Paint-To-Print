@@ -106,6 +106,7 @@ class _BottomBarScreenState extends State<BottomBarScreen>
         child: _buildScreens.elementAt(_currentIndex),
       ),
       bottomNavigationBar: Container(
+        height: height * 0.08,
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
@@ -121,8 +122,8 @@ class _BottomBarScreenState extends State<BottomBarScreen>
             child: GNav(
               rippleColor: Colors.grey[300],
               hoverColor: Colors.grey[100],
-              gap: 8.0,
-              iconSize: 24,
+              gap: width * 0.10,
+              // iconSize: 40,
               padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
               duration: Duration(milliseconds: 400),
               curve: Curves.easeInOutCubic,
@@ -131,9 +132,11 @@ class _BottomBarScreenState extends State<BottomBarScreen>
                 /// home
                 GButton(
                   icon: CupertinoIcons.home,
+                  iconSize: width * 0.40,
+                  gap: width * 0.10,
                   text: 'Home',
                   textStyle: GoogleFonts.arimo(
-                      fontSize: 17.0, fontWeight: FontWeight.w800),
+                      fontSize: width * 0.20, fontWeight: FontWeight.w800),
                   iconColor: Theme.of(context).colorScheme.secondary,
                   backgroundGradient: LinearGradient(
                     colors: [
@@ -148,9 +151,11 @@ class _BottomBarScreenState extends State<BottomBarScreen>
                 /// canvas
                 GButton(
                   icon: MaterialCommunityIcons.draw,
+                  iconSize: width * 0.40,
+                  gap: width * 0.10,
                   text: 'Canvas',
                   textStyle: GoogleFonts.arimo(
-                      fontSize: 17.0, fontWeight: FontWeight.w800),
+                      fontSize: width * 0.20, fontWeight: FontWeight.w800),
                   iconColor: Color(0xFFDB2B39),
                   backgroundGradient: LinearGradient(
                     colors: [
@@ -165,9 +170,11 @@ class _BottomBarScreenState extends State<BottomBarScreen>
                 /// all docs
                 GButton(
                   icon: MdiIcons.fileDocument,
+                  iconSize: width * 0.40,
+                  gap: width * 0.10,
                   text: 'All Docs',
                   textStyle: GoogleFonts.arimo(
-                      fontSize: 17.0, fontWeight: FontWeight.w800),
+                      fontSize: width * 0.20, fontWeight: FontWeight.w800),
                   iconColor: Color(0xFF344CB7),
                   backgroundGradient: LinearGradient(
                     colors: [
