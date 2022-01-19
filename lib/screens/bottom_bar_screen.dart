@@ -14,7 +14,6 @@ import 'package:paint_to_print/widgets/backdrop_toggle_button.dart';
 
 import 'canvas/canvas_view_screen.dart';
 import 'home_screen.dart';
-import 'package:animated_icon_button/animated_icon_button.dart';
 
 class BottomBarScreen extends StatefulWidget {
   const BottomBarScreen({Key key}) : super(key: key);
