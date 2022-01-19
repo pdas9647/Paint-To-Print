@@ -1,19 +1,32 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:paint_to_print/services/global_methods.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:paint_to_print/screens/webview_screens/social_media_webview_screen.dart';
 import 'package:paint_to_print/widgets/about_us_social_media_icon.dart';
 import 'package:paint_to_print/widgets/about_us_textformfield.dart';
-import 'package:widget_circular_animator/widget_circular_animator.dart';
 
-class SwagatoProfileScreen extends StatefulWidget {
-  const SwagatoProfileScreen({Key key}) : super(key: key);
+class IndividualProfileScreen extends StatefulWidget {
+  final Map<String, String> personMap;
+
+  const IndividualProfileScreen({Key key, @required this.personMap})
+      : super(key: key);
 
   @override
-  _SwagatoProfileScreenState createState() => _SwagatoProfileScreenState();
+  _IndividualProfileScreenState createState() =>
+      _IndividualProfileScreenState();
 }
 
-class _SwagatoProfileScreenState extends State<SwagatoProfileScreen> {
+class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
+  Map<String, String> personMap;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    personMap = widget.personMap;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -43,16 +56,15 @@ class _SwagatoProfileScreenState extends State<SwagatoProfileScreen> {
                                   ),
                                   width: double.infinity,
                                   child: Image.asset(
-                                    'assets/images/swagato.jpg',
+                                    personMap['dp'],
                                     fit: BoxFit.fill,
                                   ),
                                 ),
                                 Text(
-                                  'Swagato Bag',
+                                  personMap['name'],
                                   style: GoogleFonts.arimo(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                     fontWeight: FontWeight.w700,
                                     fontSize: 30.0,
                                   ),
@@ -67,7 +79,7 @@ class _SwagatoProfileScreenState extends State<SwagatoProfileScreen> {
                   height: size.width * 0.9,
                   width: size.width,
                   child: Image.asset(
-                    'assets/images/swagato.jpg',
+                    personMap['dp'],
                     fit: BoxFit.fill,
                     width: size.width * 0.45,
                     height: size.height * 0.15,
@@ -76,13 +88,13 @@ class _SwagatoProfileScreenState extends State<SwagatoProfileScreen> {
               ),
               Spacer(),
               Container(
-                // height: size.height * 0.2,
-                // decoration: BoxDecoration(
-                //   borderRadius:
-                //       BorderRadius.vertical(top: Radius.circular(30.0)),
-                //   color: Colors.teal.shade200,
-                // ),
-              ),
+                  // height: size.height * 0.2,
+                  // decoration: BoxDecoration(
+                  //   borderRadius:
+                  //       BorderRadius.vertical(top: Radius.circular(30.0)),
+                  //   color: Colors.teal.shade200,
+                  // ),
+                  ),
               Container(
                 height: size.height * 0.15,
                 width: size.width * 0.7,
@@ -97,8 +109,22 @@ class _SwagatoProfileScreenState extends State<SwagatoProfileScreen> {
                       // color: Color(0xFF1773EA),
                       image: 'assets/images/facebook_icon.png',
                       onTap: () async {
-                        await GlobalMethods.launchURL(
-                            url: 'https://www.facebook.com/swagato.bag.7');
+                        print(personMap['facebook']);
+                        // await GlobalMethods.launchURL(url: personMap['facebook']
+                        // 'https://www.facebook.com/swagato.bag.7'
+                        // );
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            child: SocialMediaWebViewScreen(
+                              assetImage: 'assets/images/facebook_icon.png',
+                              title: 'Facebook',
+                              url: personMap['facebook'],
+                            ),
+                            type: PageTransitionType.leftToRightWithFade,
+                            duration: Duration(milliseconds: 5),
+                          ),
+                        );
                       },
                     ),
 
@@ -107,19 +133,43 @@ class _SwagatoProfileScreenState extends State<SwagatoProfileScreen> {
                       // iconData: MaterialCommunityIcons.instagram,
                       image: 'assets/images/instagram_icon.png',
                       onTap: () async {
-                        await GlobalMethods.launchURL(
-                            url: 'https://www.instagram.com/swagato.bag/');
+                        // await GlobalMethods.launchURL(
+                        //     url: personMap['instagram']);
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            child: SocialMediaWebViewScreen(
+                              assetImage: 'assets/images/instagram_icon.png',
+                              title: 'Instagram',
+                              url: personMap['instagram'],
+                            ),
+                            type: PageTransitionType.rightToLeftWithFade,
+                            duration: Duration(milliseconds: 5),
+                          ),
+                        );
                       },
                     ),
 
-                    /// linked in
+                    /// linkedin
                     AboutUsSocialMediaIcon(
                       // iconData: MaterialCommunityIcons.linkedin_box,
                       // color: Color(0xFF0077B5),
                       image: 'assets/images/linkedin_icon.png',
                       onTap: () async {
-                        await GlobalMethods.launchURL(
-                            url: 'https://www.linkedin.com/in/swagatobag/');
+                        // await GlobalMethods.launchURL(
+                        //     url: personMap['linkedIn']);
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            child: SocialMediaWebViewScreen(
+                              assetImage: 'assets/images/linkedin_icon.png',
+                              title: 'LinkedIn',
+                              url: personMap['linkedIn'],
+                            ),
+                            type: PageTransitionType.leftToRightWithFade,
+                            duration: Duration(milliseconds: 5),
+                          ),
+                        );
                       },
                     ),
 
@@ -128,8 +178,19 @@ class _SwagatoProfileScreenState extends State<SwagatoProfileScreen> {
                       // iconData: MaterialCommunityIcons.github_circle,
                       image: 'assets/images/github_icon.png',
                       onTap: () async {
-                        await GlobalMethods.launchURL(
-                            url: 'https://github.com/swagatobag2000');
+                        // await GlobalMethods.launchURL(url: personMap['github']);
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            child: SocialMediaWebViewScreen(
+                              assetImage: 'assets/images/github_icon.png',
+                              title: 'GitHub',
+                              url: personMap['github'],
+                            ),
+                            type: PageTransitionType.rightToLeftWithFade,
+                            duration: Duration(milliseconds: 5),
+                          ),
+                        );
                       },
                     ),
                   ],
@@ -177,27 +238,26 @@ class _SwagatoProfileScreenState extends State<SwagatoProfileScreen> {
                     /// name
                     AboutUsTextFormField(
                       labelText: 'Name',
-                      initialValue: 'Swagato Bag',
+                      initialValue: personMap['name'],
                       maxLines: 1,
                     ),
 
                     /// email
                     AboutUsTextFormField(
                       labelText: 'Email',
-                      initialValue: 'swagatobag23@gmail.com',
+                      initialValue: personMap['email'],
                     ),
 
                     /// phone
                     AboutUsTextFormField(
                       labelText: 'Phone',
-                      initialValue: '8670513077',
+                      initialValue: personMap['phoneNumber'],
                     ),
 
                     /// message
                     AboutUsTextFormField(
                       labelText: 'Bio',
-                      initialValue:
-                          'Passionate to Get My Hands Dirty Over Whatever Technology Possible | Competitive Programmer | Tech Enthusiast | Passionate Singer | Acoustic Guitar Player |',
+                      initialValue: personMap['bio_long'],
                     ),
                   ],
                 ),

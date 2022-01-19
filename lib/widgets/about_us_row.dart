@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -68,9 +67,7 @@ class AboutUsCustomListTile extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.02,
-            ),
+            SizedBox(width: MediaQuery.of(context).size.width * 0.02),
             Flexible(
               child: Align(
                 alignment: Alignment.centerRight,

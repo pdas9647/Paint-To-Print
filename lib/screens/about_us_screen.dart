@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:paint_to_print/services/profile_details_map.dart';
 import 'package:paint_to_print/widgets/about_us_row.dart';
 
-import 'swagato_profile_screen.dart';
+import 'individual_profile_screen.dart';
 
 class AboutUsScreen extends StatefulWidget {
   const AboutUsScreen({Key key}) : super(key: key);
@@ -14,6 +15,8 @@ class AboutUsScreen extends StatefulWidget {
 class _AboutUsScreenState extends State<AboutUsScreen> {
   @override
   Widget build(BuildContext context) {
+    print(swagato);
+
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
@@ -36,21 +39,21 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
               children: [
                 /// padmanabha
                 AboutUsCustomListTile(
-                  navigateToScreen: SwagatoProfileScreen(),
-                  dp: 'assets/images/padmanabha.png',
-                  name: 'Padmanabha Das',
-                  bio: 'Android & Flutter Developer, QA Analyst, Experienced in Web Development',
-                  phoneNumber: '9647100133',
+                  navigateToScreen:
+                      IndividualProfileScreen(personMap: padmanabha),
+                  dp: padmanabha['dp'],
+                  name: padmanabha['name'],
+                  bio: padmanabha['bio'],
+                  phoneNumber: padmanabha['phoneNumber'],
                 ),
 
                 /// swagato
                 AboutUsCustomListTile(
-                  navigateToScreen: SwagatoProfileScreen(),
-                  dp: 'assets/images/swagato.jpg',
-                  name: 'Swagato Bag',
-                  bio:
-                      'Competitive Programmer, Passionate Singer, Acoustic Guitar Player',
-                  phoneNumber: '8670513077',
+                  navigateToScreen: IndividualProfileScreen(personMap: swagato),
+                  dp: swagato['dp'],
+                  name: swagato['dp'],
+                  bio: swagato['bio'],
+                  phoneNumber: swagato['phoneNumber'],
                 ),
               ],
             ),
