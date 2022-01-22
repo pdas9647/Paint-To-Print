@@ -155,18 +155,11 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                         print(selectedItem);
                         switch (selectedItem) {
                           case 'Docx':
-                            // await GlobalMethods.createAndSavePdfFile(
-                            //   context: context,
-                            //   images: canvasImages,
-                            //   convertedTexts: convertedTexts,
-                            //   pdfName: pdfModel.pdfName,
-                            // );
                             await GlobalMethods.createAndSaveTextFile(
                               context: context,
                               convertedTexts: convertedTexts,
-                              fileName: pdfModel.pdfName,
+                              txtFileName: pdfModel.pdfName,
                             );
-                          // await GlobalMethods.createFolderInAppDocDir(context: context,folderName: 'Paint to Print');
                             break;
                           default:
                             return;

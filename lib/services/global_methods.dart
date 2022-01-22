@@ -573,19 +573,7 @@ class GlobalMethods {
       );
   }
 
-  static Future<void> createAndSaveTextFile({BuildContext context, List<String> convertedTexts, String fileName,}) async {
-    // String path = await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS);
-    // String path = (await getExternalStorageDirectory()).path;
-    // File file = File("$path/$fileName.txt");
-    // await file.writeAsString(convertedTexts,flush: true);
-    // final Directory directory = await getDownloadsDirectory();
-    // File('${directory.path}/$fileName.txt').create(recursive: true).then((
-    //     value) => value.writeAsString(convertedTexts.join(' ')));
-    // await file.writeAsString(convertedTexts.join(" "));
-    final Directory directory = await getExternalStorageDirectory();
-    final File file = File('${directory.path}/$fileName.txt');
-    await file.writeAsString(convertedTexts.join(" "));
-
+  static Future<void> createAndSaveTextFile({BuildContext context, List<String> convertedTexts, String txtFileName,}) async {
     // progress dialog
     ProgressDialog progressDialog = ProgressDialog(
       context,
@@ -616,48 +604,106 @@ class GlobalMethods {
         ),
       ),
     );
-    print('571: ${directory.path}');
 
-    final Directory directory2 = await getExternalStorageDirectory();
-    final File file2 = File('${directory2.path}/$fileName.txt');
-    String text = await file2.readAsString();
-    print(text);
+    // final File file2 = File('${directory.path}/$txtFileName.txt');
+    // String text = await file2.readAsString();
+    // print(text);
+
+    String txtFileUrl = '';
+    try {
+      final Directory directory = await getExternalStorageDirectory();
+      final File file = File('${directory.path}/$txtFileName.docx');
+      await file.writeAsString(convertedTexts.join(" "));
+      // pdf saved snackbar
+      /*ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.greenAccent.shade100,
+          content: Container(
+            decoration:
+            BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
+            child: AutoSizeText(
+              'Pdf Saved at ${directory.path}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.arimo(
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+      );*/
+      print(txtFileName);
+      var dateParse = txtFileName.split('.pdf_')[1]; // 2022-01-03 10:59:37.426428
+      print(dateParse);
+      var pdfCreationYear = dateParse.substring(0, 4);
+      var pdfCreationMonth =
+      DateFormat('MMM').format(DateTime.parse(dateParse));
+      var pdfCreationDate = dateParse.substring(8, 10);
+      var pdfCreationTime = dateParse.substring(11, 16);
+      var pdfCreationDateTime =
+          '$pdfCreationDate $pdfCreationMonth, $pdfCreationYear $pdfCreationTime';
+      print('pdfCreationYear: $pdfCreationYear');
+      print('pdfCreationMonth: $pdfCreationMonth');
+      print('pdfCreationDate: $pdfCreationDate');
+      print('pdfCreationTime: $pdfCreationTime');
+      // firestore & firebase storage
+      Reference storageReference = FirebaseStorage.instance
+          .ref()
+          .child('createdpdfs')
+          .child('$txtFileName.docx');
+      print('Uploading in storage...!');
+      await progressDialog.show();
+      await storageReference.putFile(file).then((p0) async {
+        txtFileUrl = await storageReference.getDownloadURL();
+        print('Uploaded in storage...!');
+        print('Uploading in firestore...!');
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser.uid)
+            .collection('createdpdfs')
+            .doc(txtFileName)
+            .set({
+          'file_url': txtFileUrl,
+          'file_name': txtFileName,
+          'file_name_trimmed': txtFileName.substring(0, txtFileName.length - 27),
+          'file_creation_datetime': pdfCreationDateTime,
+          'timestamp': txtFileName.split('.pdf_')[1],
+          'file_location': 'local storage path',
+        }).then((value) async {
+          print('Uploaded in firestore...!');
+          await progressDialog.hide();
+          // uploaded in firestore
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.pinkAccent.shade100,
+              content: Container(
+                decoration:
+                BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
+                child: Text(
+                  'PDF uploaded successfully!',
+                  style: GoogleFonts.arimo(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+      });
+      // Navigator.of(context).canPop() ? Navigator.of(context).pop() : null;
+      Navigator.pushReplacement(
+        context,
+        PageTransition(type: PageTransitionType.fade, child: BottomBarScreen()),
+      );
+      print('saved in ${directory.path}/$txtFileName.docx');
+    } catch (e) {
+      print(e.toString());
+    }
     Navigator.pushReplacement(
       context,
       PageTransition(type: PageTransitionType.fade, child: BottomBarScreen()),
     );
-  }
-
-  static Future<String> createFolderInAppDocDir({BuildContext context, String folderName}) async {
-    //Get this App Document Directory
-
-    final Directory _appDocDir = await getApplicationDocumentsDirectory();
-    //App Document Directory + folder name
-    final Directory _appDocDirFolder = Directory('${_appDocDir.path}/$folderName/');
-
-    if (await _appDocDirFolder.exists()) {
-      //if folder already exists return path
-      print(_appDocDirFolder.path);
-      String fileName = 'abcd';
-      final File file = File('${_appDocDirFolder.path}/$fileName.txt');
-      await file.writeAsString('1 2 3 4');
-      final Directory directory2 = await getTemporaryDirectory();
-      final File file2 = File('${directory2.path}/$fileName.txt');
-      String text = await file2.readAsString();
-      print(text);
-      return _appDocDirFolder.path;
-    } else {
-      //if folder not exists create folder and then return its path
-      final Directory _appDocDirNewFolder = await _appDocDirFolder.create(recursive: true);
-      String fileName = 'abcd';
-      final File file = File('${_appDocDirFolder.path}/$fileName.txt');
-      await file.writeAsString('1 2 3 4');
-      final Directory directory2 = await getTemporaryDirectory();
-      final File file2 = File('${directory2.path}/$fileName.txt');
-      String text = await file2.readAsString();
-      print(text);
-      print(_appDocDirNewFolder.path);
-      return _appDocDirNewFolder.path;
-    }
   }
 }
