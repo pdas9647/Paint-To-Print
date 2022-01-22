@@ -572,4 +572,92 @@ class GlobalMethods {
         ),
       );
   }
+
+  static Future<void> createAndSaveTextFile({BuildContext context, List<String> convertedTexts, String fileName,}) async {
+    // String path = await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS);
+    // String path = (await getExternalStorageDirectory()).path;
+    // File file = File("$path/$fileName.txt");
+    // await file.writeAsString(convertedTexts,flush: true);
+    // final Directory directory = await getDownloadsDirectory();
+    // File('${directory.path}/$fileName.txt').create(recursive: true).then((
+    //     value) => value.writeAsString(convertedTexts.join(' ')));
+    // await file.writeAsString(convertedTexts.join(" "));
+    final Directory directory = await getExternalStorageDirectory();
+    final File file = File('${directory.path}/$fileName.txt');
+    await file.writeAsString(convertedTexts.join(" "));
+
+    // progress dialog
+    ProgressDialog progressDialog = ProgressDialog(
+      context,
+      type: ProgressDialogType.Normal,
+      isDismissible: false,
+      customBody: Padding(
+        padding: const EdgeInsets.all(14.0),
+        child: Row(
+          children: [
+            Image.asset(
+              'assets/images/double_ring_loading_io.gif',
+              height: 50.0,
+              width: 50.0,
+            ),
+            SizedBox(width: 10.0),
+            Flexible(
+              child: AutoSizeText(
+                'Uploading...',
+                maxLines: 1,
+                overflow: TextOverflow.fade,
+                style: GoogleFonts.arimo(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    print('571: ${directory.path}');
+
+    final Directory directory2 = await getExternalStorageDirectory();
+    final File file2 = File('${directory2.path}/$fileName.txt');
+    String text = await file2.readAsString();
+    print(text);
+    Navigator.pushReplacement(
+      context,
+      PageTransition(type: PageTransitionType.fade, child: BottomBarScreen()),
+    );
+  }
+
+  static Future<String> createFolderInAppDocDir({BuildContext context, String folderName}) async {
+    //Get this App Document Directory
+
+    final Directory _appDocDir = await getApplicationDocumentsDirectory();
+    //App Document Directory + folder name
+    final Directory _appDocDirFolder = Directory('${_appDocDir.path}/$folderName/');
+
+    if (await _appDocDirFolder.exists()) {
+      //if folder already exists return path
+      print(_appDocDirFolder.path);
+      String fileName = 'abcd';
+      final File file = File('${_appDocDirFolder.path}/$fileName.txt');
+      await file.writeAsString('1 2 3 4');
+      final Directory directory2 = await getTemporaryDirectory();
+      final File file2 = File('${directory2.path}/$fileName.txt');
+      String text = await file2.readAsString();
+      print(text);
+      return _appDocDirFolder.path;
+    } else {
+      //if folder not exists create folder and then return its path
+      final Directory _appDocDirNewFolder = await _appDocDirFolder.create(recursive: true);
+      String fileName = 'abcd';
+      final File file = File('${_appDocDirFolder.path}/$fileName.txt');
+      await file.writeAsString('1 2 3 4');
+      final Directory directory2 = await getTemporaryDirectory();
+      final File file2 = File('${directory2.path}/$fileName.txt');
+      String text = await file2.readAsString();
+      print(text);
+      print(_appDocDirNewFolder.path);
+      return _appDocDirNewFolder.path;
+    }
+  }
 }
