@@ -157,6 +157,7 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                           case 'Docx':
                             await GlobalMethods.createAndSaveTextFile(
                               context: context,
+                              images: canvasImages,
                               convertedTexts: convertedTexts,
                               txtFileName: pdfModel.pdfName,
                             );

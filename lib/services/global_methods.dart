@@ -573,7 +573,12 @@ class GlobalMethods {
       );
   }
 
-  static Future<void> createAndSaveTextFile({BuildContext context, List<String> convertedTexts, String txtFileName,}) async {
+  static Future<void> createAndSaveTextFile({
+    BuildContext context,
+    List<Uint8List> images,
+    List<String> convertedTexts,
+    String txtFileName,
+  }) async {
     // progress dialog
     ProgressDialog progressDialog = ProgressDialog(
       context,
@@ -605,15 +610,19 @@ class GlobalMethods {
       ),
     );
 
-    // final File file2 = File('${directory.path}/$txtFileName.txt');
-    // String text = await file2.readAsString();
-    // print(text);
-
     String txtFileUrl = '';
     try {
       final Directory directory = await getExternalStorageDirectory();
       final File file = File('${directory.path}/$txtFileName.docx');
-      await file.writeAsString(convertedTexts.join(" "));
+      var buffer;
+      for (int i = 0; i < images.length; i++) {
+        buffer = images[i].buffer;
+        file.writeAsBytes(
+            buffer.asUint8List(
+                images[i].offsetInBytes, images[i].lengthInBytes));
+        // await file.writeAsStringSync(convertedTexts[i]);
+      }
+      // await file.writeAsString(convertedTexts.join(" "));
       // pdf saved snackbar
       /*ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -634,11 +643,12 @@ class GlobalMethods {
         ),
       );*/
       print(txtFileName);
-      var dateParse = txtFileName.split('.pdf_')[1]; // 2022-01-03 10:59:37.426428
+      var dateParse =
+          txtFileName.split('.pdf_')[1]; // 2022-01-03 10:59:37.426428
       print(dateParse);
       var pdfCreationYear = dateParse.substring(0, 4);
       var pdfCreationMonth =
-      DateFormat('MMM').format(DateTime.parse(dateParse));
+          DateFormat('MMM').format(DateTime.parse(dateParse));
       var pdfCreationDate = dateParse.substring(8, 10);
       var pdfCreationTime = dateParse.substring(11, 16);
       var pdfCreationDateTime =
@@ -666,7 +676,8 @@ class GlobalMethods {
             .set({
           'file_url': txtFileUrl,
           'file_name': txtFileName,
-          'file_name_trimmed': txtFileName.substring(0, txtFileName.length - 27),
+          'file_name_trimmed':
+              txtFileName.substring(0, txtFileName.length - 27),
           'file_creation_datetime': pdfCreationDateTime,
           'timestamp': txtFileName.split('.pdf_')[1],
           'file_location': 'local storage path',
@@ -679,7 +690,7 @@ class GlobalMethods {
               backgroundColor: Colors.pinkAccent.shade100,
               content: Container(
                 decoration:
-                BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
+                    BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
                 child: Text(
                   'PDF uploaded successfully!',
                   style: GoogleFonts.arimo(
