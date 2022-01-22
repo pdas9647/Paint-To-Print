@@ -59,12 +59,13 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
         return AlertDialog(
           elevation: 8.0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
+            borderRadius: BorderRadius.circular(
+                MediaQuery.of(context).size.height * 0.02),
           ),
           title: Text(
             'Color Chooser',
             style: GoogleFonts.arimo(
-              fontSize: 17.0,
+              fontSize: MediaQuery.of(context).size.height * 0.05,
               color: selectedColor,
             ),
           ),
@@ -72,6 +73,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
             child: ColorPicker(
               pickerColor: selectedColor,
               onColorChanged: changeColor,
+              paletteType: PaletteType.hueWheel,
             ),
             // child: BlockPicker(
             //   pickerColor: selectedColor,
@@ -86,7 +88,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
               child: Text(
                 'Okay',
                 style: GoogleFonts.arimo(
-                  fontSize: 17.0,
+                  fontSize: MediaQuery.of(context).size.height * 0.03,
                   color: selectedColor,
                 ),
               ),
@@ -111,16 +113,19 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
             return AlertDialog(
               elevation: 8.0,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0)),
+                  borderRadius: BorderRadius.circular(
+                      MediaQuery.of(context).size.height * 0.02)),
               title: Text(
                 'Select stroke width',
-                style: GoogleFonts.arimo(fontSize: 17.0, color: selectedColor),
+                style: GoogleFonts.arimo(
+                    fontSize: MediaQuery.of(context).size.height * 0.05,
+                    color: selectedColor),
               ),
               content: SingleChildScrollView(
                 child: CupertinoSlider(
                   min: 1.0,
-                  max: 7.0,
-                  value: widget.strokeWidth,
+                  max: 10.0,
+                  value: widget.strokeWidth, thumbColor: selectedColor,
                   // label: 'Stroke width',
                   activeColor: selectedColor,
                   // inactiveColor: Colors.blueGrey.shade200,
@@ -140,7 +145,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                   child: Text(
                     'Okay',
                     style: GoogleFonts.arimo(
-                      fontSize: 17.0,
+                      fontSize: MediaQuery.of(context).size.height * 0.03,
                       color: selectedColor,
                     ),
                   ),
@@ -284,14 +289,22 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
           ? AppBar(
               title: Text(
                 'CANVAS',
-                style: GoogleFonts.arimo(fontSize: 17.0),
+                style: GoogleFonts.arimo(fontSize: width * 0.07),
               ),
               elevation: 0.0,
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: Icon(Icons.arrow_back_ios),
+              toolbarHeight: height * 0.10,
+              leadingWidth: width * 0.20,
+              leading: Transform.scale(
+                scale: 1.5,
+                child: Container(
+                  width: width * 0.20,
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    icon: Icon(Icons.arrow_back_ios, size: height * 0.03),
+                  ),
+                ),
               ),
             )
           : null,
@@ -327,7 +340,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                       ? MainAxisAlignment.center
                       : MainAxisAlignment.start,
                   children: [
-                    const Flexible(flex: 1, child: SizedBox(height: 10.0)),
+                    SizedBox(height: height * 0.02),
 
                     /// dividers & canvas
                     // Flexible(
@@ -336,8 +349,8 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                       width: width * 0.90,
                       height: !widget.isNavigatedFromHomeScreen &&
                               !widget.isNavigatedFromPdfImagesScreen
-                          ? height * 0.90
-                          : height * 0.90 - kBottomNavigationBarHeight * 2,
+                          ? height * 0.85 - kBottomNavigationBarHeight * 2
+                          : height * 0.76,
                       child: Card(
                         elevation: 10.0,
                         shadowColor: Colors.black,
@@ -430,64 +443,72 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                       ),
                     ),
                     // ),
-                    const Flexible(flex: 1, child: SizedBox(height: 10.0)),
+                    // const Flexible(flex: 1, child: SizedBox(height: 10.0)),
 
                     /// row of icons
                     Visibility(
                       visible: widget.isNavigatedFromHomeScreen ||
                           widget.isNavigatedFromPdfImagesScreen,
-                      child: Expanded(
-                        flex: 3,
-                        child: Column(
+                      child: Container(
+                        height: height * 0.07,
+                        // color: Colors.orange,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                /// clear all
-                                IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        points.clear();
-                                        predictions.clear();
-                                      });
-                                    },
-                                    icon: Icon(Icons.clear_all_rounded)),
-
-                                /// stroke width
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      selectStrokeWidth();
-                                    });
-                                  },
-                                  icon: Icon(Icons.brush_rounded,
-                                      color: selectedColor),
-                                ),
-
-                                /// choose color
-                                IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        selectColor();
-                                      });
-                                    },
-                                    icon: Icon(
-                                      Icons.color_lens_rounded,
-                                      color: selectedColor,
-                                    )),
-
-                                /// save
-                                IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        saveCanvas();
-                                      });
-                                    },
-                                    icon: Icon(Icons.save_rounded)),
-                              ],
+                            /// clear all
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  points.clear();
+                                  predictions.clear();
+                                });
+                              },
+                              icon: Icon(
+                                Icons.clear_all_rounded,
+                                size: height * 0.05,
+                              ),
                             ),
-                            const Flexible(
-                                flex: 1, child: SizedBox(height: 10.0)),
+
+                            /// stroke width
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectStrokeWidth();
+                                });
+                              },
+                              icon: Icon(
+                                Icons.brush_rounded,
+                                color: selectedColor,
+                                size: height * 0.05,
+                              ),
+                            ),
+
+                            /// choose color
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectColor();
+                                });
+                              },
+                              icon: Icon(
+                                Icons.color_lens_rounded,
+                                color: selectedColor,
+                                size: height * 0.05,
+                              ),
+                            ),
+
+                            /// save
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  saveCanvas();
+                                });
+                              },
+                              icon: Icon(
+                                Icons.save_rounded,
+                                size: height * 0.05,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -504,19 +525,29 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
       floatingActionButton: Visibility(
         visible: !widget.isNavigatedFromHomeScreen &&
             !widget.isNavigatedFromPdfImagesScreen,
-        child: Padding(
-          padding: EdgeInsets.only(bottom: 50.0),
+        child: Container(
+          // width: width * 0.10,
+          // height: height * 0.20,
+          padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight * 2),
           child: SpeedDial(
-            child: Icon(Icons.add, color: Colors.white),
+            child: Icon(
+              Icons.add,
+              color: Colors.white,
+              size: MediaQuery.of(context).size.height * 0.04,
+            ),
             closedForegroundColor: Colors.black,
             openForegroundColor: Colors.white,
-            labelsStyle: GoogleFonts.arimo(fontSize: 15.0),
+            labelsStyle: GoogleFonts.arimo(
+                fontSize: MediaQuery.of(context).size.height * 0.02),
             closedBackgroundColor: Theme.of(context).primaryColor,
             openBackgroundColor: Theme.of(context).colorScheme.error,
             speedDialChildren: <SpeedDialChild>[
               /// clear
               SpeedDialChild(
-                child: Icon(Icons.clear_all_rounded),
+                child: Icon(
+                  Icons.clear_all_rounded,
+                  size: MediaQuery.of(context).size.height * 0.02,
+                ),
                 foregroundColor: Colors.white,
                 backgroundColor: Colors.red,
                 label: 'Clear',
@@ -531,7 +562,10 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
 
               /// select stoke width
               SpeedDialChild(
-                child: Icon(Icons.brush_rounded),
+                child: Icon(
+                  Icons.brush_rounded,
+                  size: MediaQuery.of(context).size.height * 0.02,
+                ),
                 foregroundColor: selectedColor,
                 backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
                 label: 'Select stroke width',
@@ -545,7 +579,10 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
 
               /// choose color
               SpeedDialChild(
-                child: Icon(Icons.color_lens_rounded),
+                child: Icon(
+                  Icons.color_lens_rounded,
+                  size: MediaQuery.of(context).size.height * 0.02,
+                ),
                 foregroundColor: selectedColor,
                 backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
                 label: 'Choose color',
@@ -559,7 +596,10 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
 
               /// save
               SpeedDialChild(
-                child: Icon(Icons.save_rounded),
+                child: Icon(
+                  Icons.save_rounded,
+                  size: MediaQuery.of(context).size.height * 0.02,
+                ),
                 foregroundColor: Colors.black,
                 backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
                 label: 'Save',

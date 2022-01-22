@@ -101,6 +101,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height -
+        // - MediaQuery.of(context).size.height * 0.10
+        MediaQuery.of(context).size.height * 0.08;
+    double width = MediaQuery.of(context).size.width;
     progressDialog = ProgressDialog(
       context,
       type: ProgressDialogType.Normal,
@@ -132,125 +136,125 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     return Center(
       child: Container(
-        height: MediaQuery.of(context).size.height -
-            kBottomNavigationBarHeight -
-            kToolbarHeight,
-        color: Colors.redAccent,
+        height: height,
+        width: width,
+        // color: Colors.redAccent,
         padding: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.001,
-          vertical: MediaQuery.of(context).size.height * 0.03,
+          vertical: MediaQuery.of(context).size.height * 0.015,
         ),
         child: ListView(
-          // shrinkWrap: true,
+          shrinkWrap: true,
           children: [
-            /// row 1
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 4.0),
-              height: MediaQuery.of(context).size.height / 3.9,
-              width: MediaQuery.of(context).size.width,
+              height: height * 0.27,
+              width: width,
               child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // scan
-                  CreateHomeIcon(
-                    iconName: 'Scan',
-                    image: 'assets/images/scan.png',
-                    shadowColor: Colors.orangeAccent,
-                    onTap: () {
-                      print('Scan');
-                      Fluttertoast.showToast(msg: 'Scan');
-                    },
+                  Flexible(
+                    flex: 1,
+                    child: CreateHomeIcon(
+                      image: 'assets/images/scan.png',
+                      iconName: 'Scan',
+                      shadowColor: Colors.orangeAccent,
+                      onTap: () {
+                        print('Scan');
+                        Fluttertoast.showToast(msg: 'Scan');
+                      },
+                    ),
                   ),
-                  // import picture
-                  CreateHomeIcon(
-                    iconName: 'Import Picture',
-                    image: 'assets/images/import_picture.png',
-                    shadowColor: Colors.greenAccent,
-                    onTap: () {
-                      print('Import Picture');
-                      Fluttertoast.showToast(msg: 'Import Picture');
-                    },
+                  Flexible(
+                    flex: 1,
+                    child: CreateHomeIcon(
+                      image: 'assets/images/import_picture.png',
+                      iconName: 'Import Picture',
+                      shadowColor: Colors.greenAccent,
+                      onTap: () {
+                        print('Import Picture');
+                        Fluttertoast.showToast(msg: 'Import Picture');
+                      },
+                    ),
                   ),
                 ],
               ),
             ),
-            // SizedBox(height: 10.0),
-
-            /// row 2
+            SizedBox(height: height * 0.01),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 4.0),
-              height: MediaQuery.of(context).size.height / 3.9,
-              width: MediaQuery.of(context).size.width,
+              height: height * 0.27,
+              width: width,
               child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // import file
-                  CreateHomeIcon(
-                    iconName: 'Import File',
-                    image: 'assets/images/import_file.png',
-                    shadowColor: Colors.purpleAccent.shade200,
-                    onTap: () {
-                      print('Import File');
-                      Fluttertoast.showToast(msg: 'Import File');
-                      getPdfAndUpload(context: context);
-                    },
+                  Flexible(
+                    flex: 1,
+                    child: CreateHomeIcon(
+                      image: 'assets/images/import_file.png',
+                      iconName: 'Import File',
+                      shadowColor: Colors.purpleAccent.shade200,
+                      onTap: () {
+                        print('Import File');
+                        Fluttertoast.showToast(msg: 'Import File');
+                        getPdfAndUpload(context: context);
+                      },
+                    ),
                   ),
-                  // scan id card
-                  CreateHomeIcon(
-                    iconName: 'Scan ID Card',
-                    image: 'assets/images/scan_id_card.png',
-                    shadowColor: Colors.yellowAccent.shade100,
-                    onTap: () {
-                      print('Scan ID Card');
-                      Fluttertoast.showToast(msg: 'Scan ID Card');
-                    },
+                  Flexible(
+                    flex: 1,
+                    child: CreateHomeIcon(
+                      image: 'assets/images/scan_id_card.png',
+                      iconName: 'Scan ID Card',
+                      shadowColor: Colors.yellowAccent.shade100,
+                      onTap: () {
+                        print('Scan ID Card');
+                        Fluttertoast.showToast(msg: 'Scan ID Card');
+                      },
+                    ),
                   ),
                 ],
               ),
             ),
-            // SizedBox(height: 10.0),
-
-            /// row 3
+            SizedBox(height: height * 0.01),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 4.0),
-              height: MediaQuery.of(context).size.height / 3.9,
-              width: MediaQuery.of(context).size.width,
+              height: height * 0.27,
+              width: width,
               child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // handwriting to text
-                  CreateHomeIcon(
-                    iconName: 'Handwriting to Text',
-                    image: 'assets/images/handwriting_to_text.png',
-                    shadowColor: Colors.teal.shade600,
-                    onTap: () {
-                      print('Handwriting to Text');
-                      // persistentTabController =
-                      //     PersistentTabController(initialIndex: 1);
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          child: CanvasViewScreen(
-                            isNavigatedFromHomeScreen: true,
-                            isNavigatedFromPdfImagesScreen: false,
+                  Flexible(
+                    flex: 1,
+                    child: CreateHomeIcon(
+                      image: 'assets/images/handwriting_to_text.png',
+                      iconName: 'Handwriting to Text',
+                      shadowColor: Colors.teal.shade600,
+                      onTap: () {
+                        print('Handwriting to Text');
+                        // persistentTabController =
+                        //     PersistentTabController(initialIndex: 1);
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            child: CanvasViewScreen(
+                              isNavigatedFromHomeScreen: true,
+                              isNavigatedFromPdfImagesScreen: false,
+                            ),
+                            type: PageTransitionType.fade,
                           ),
-                          type: PageTransitionType.fade,
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                  // merge pdf
-                  CreateHomeIcon(
-                    iconName: 'Merge Pdf',
-                    image: 'assets/images/merge_pdf.png',
-                    shadowColor: Colors.lightBlueAccent,
-                    onTap: () {
-                      print('Merge Pdf');
-                      Fluttertoast.showToast(msg: 'Merge Pdf');
-                    },
+                  Flexible(
+                    flex: 1,
+                    child: CreateHomeIcon(
+                      image: 'assets/images/merge_pdf.png',
+                      iconName: 'Merge Pdf',
+                      shadowColor: Colors.lightBlueAccent,
+                      onTap: () {
+                        print('Merge Pdf');
+                        Fluttertoast.showToast(msg: 'Merge Pdf');
+                      },
+                    ),
                   ),
                 ],
               ),

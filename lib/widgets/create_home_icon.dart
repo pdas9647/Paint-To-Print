@@ -10,8 +10,8 @@ class CreateHomeIcon extends StatelessWidget {
 
   const CreateHomeIcon({
     Key key,
-    this.iconName,
-    this.image,
+    @required this.iconName,
+    @required this.image,
     this.shadowColor,
     this.onTap,
   }) : super(key: key);
@@ -21,36 +21,50 @@ class CreateHomeIcon extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        elevation: 10.0,
-        shadowColor: shadowColor,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        // elevation: 10.0,
+        // shadowColor: shadowColor,
+        // color: Colors.yellowAccent,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                MediaQuery.of(context).size.height * 0.03)),
         child: Container(
-          // padding: EdgeInsets.symmetric(
-          //     horizontal: MediaQuery.of(context).size.width * 0.01,
-          //     vertical: MediaQuery.of(context).size.width * 0.01),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(
+                MediaQuery.of(context).size.height * 0.03),
+            boxShadow: [
+              BoxShadow(
+                offset: Offset(0, 5),
+                color: shadowColor,
+                blurRadius: 50.0,
+                spreadRadius: 0.5,
+              ),
+            ],
+          ),
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.03,
+              vertical: MediaQuery.of(context).size.height * 0.01),
           width: MediaQuery.of(context).size.width * 0.46,
-          height: MediaQuery.of(context).size.height * 0.25,
-          color: Colors.indigo,
+          // height: MediaQuery.of(context).size.height * 0.25,
+          // color: Colors.indigo,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
                 image,
+                fit: BoxFit.cover,
                 // color: Colors.lightGreenAccent,
-                width: MediaQuery.of(context).size.width * 0.30,
-                height: MediaQuery.of(context).size.width * 0.30,
+                width: MediaQuery.of(context).size.width * 0.25,
+                height: MediaQuery.of(context).size.width * 0.25,
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-              Flexible(
-                child: AutoSizeText(
-                  iconName,
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.arimo(
-                    fontSize: MediaQuery.of(context).size.height * 0.02,
-                    fontWeight: FontWeight.bold,
-                  ),
+              // SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              AutoSizeText(
+                iconName,
+                maxLines: 1,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.arimo(
+                  fontWeight: FontWeight.bold,
+                  fontSize: MediaQuery.of(context).size.height * 0.035,
                 ),
               ),
             ],
