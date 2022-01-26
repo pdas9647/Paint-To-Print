@@ -79,6 +79,7 @@ dependencies:
   url_launcher: ^6.0.18
   flutter_phone_direct_caller: ^2.1.0
   webview_flutter: ^3.0.0
+  ext_storage: ^1.0.3
 
 dev_dependencies:
   flutter_test:

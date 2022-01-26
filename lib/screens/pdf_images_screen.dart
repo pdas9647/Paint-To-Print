@@ -90,7 +90,7 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
     if (widget.pdfModel == null) {
       pdfModel = PdfModel(
         // pdfName: pdfCreationDate,
-        pdfName: pdfCreationDate + '.pdf_' + pdfCreationDate,
+        pdfName: 'PaintToPrint ${pdfCreationDate.substring(0,19)}',
         canvasImages: canvasImages,
         pdfCreationDate: pdfCreationDate,
         timestamp: timestamp,
@@ -154,12 +154,20 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                       onSelected: (selectedItem) async {
                         print(selectedItem);
                         switch (selectedItem) {
-                          case 'Docx':
+                          case 'txt':
                             await GlobalMethods.createAndSaveTextFile(
                               context: context,
                               images: canvasImages,
                               convertedTexts: convertedTexts,
                               txtFileName: pdfModel.pdfName,
+                            );
+                            break;
+                          case 'pdf':
+                            await GlobalMethods.createAndSavePdfFile(
+                              context: context,
+                              images: canvasImages,
+                              convertedTexts: convertedTexts,
+                              pdfName: pdfModel.pdfName,
                             );
                             break;
                           default:
@@ -168,6 +176,49 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                       },
                       itemBuilder: (context) {
                         return [
+                          /// txt
+                          PopupMenuItem(
+                            value: 'txt',
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Text',
+                                  style: GoogleFonts.arimo(
+                                    fontSize: 14.0,
+                                    color: Colors.grey.shade700,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Icon(
+                                  MaterialCommunityIcons.format_text,
+                                  color: Colors.grey.shade700,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          /// pdf
+                          PopupMenuItem(
+                            value: 'pdf',
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'PDF',
+                                  style: GoogleFonts.arimo(
+                                    fontSize: 14.0,
+                                    color: Colors.redAccent,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Icon(
+                                  MdiIcons.filePdfBox,
+                                  color: Colors.redAccent,
+                                ),
+                              ],
+                            ),
+                          ),
                           /// share
                           PopupMenuItem(
                             value: 'Share',
@@ -178,35 +229,13 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                                   'Share',
                                   style: GoogleFonts.arimo(
                                     fontSize: 14.0,
-                                    color: Colors.orange,
+                                    color: Colors.amber,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 Icon(
                                   MaterialCommunityIcons.share,
-                                  color: Colors.orange,
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          /// docx
-                          PopupMenuItem(
-                            value: 'Docx',
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Docx',
-                                  style: GoogleFonts.arimo(
-                                    fontSize: 14.0,
-                                    color: Colors.indigoAccent,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Icon(
-                                  MdiIcons.fileWord,
-                                  color: Colors.indigoAccent,
+                                  color: Colors.amber,
                                 ),
                               ],
                             ),
@@ -233,7 +262,8 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                           ),
                         ),
                       ),
-                      direction: DismissDirection.endToStart, // right to left
+                      direction: DismissDirection.endToStart,
+                      // right to left
                       onDismissed: (direction) {
                         print(direction);
                         Uint8List deletedImage;

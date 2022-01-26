@@ -58,6 +58,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
             print('Error');
           }
           return ListView.builder(
+            // padding: EdgeInsets.only(top: 5.0),
             shrinkWrap: true,
             itemCount: snapshot.data.docs.length,
             itemBuilder: (BuildContext context, int index) {
@@ -77,10 +78,10 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                   :*/
                   // files list
                   Container(
-                padding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
                 // margin: EdgeInsets.all(10.0),
                 color: Colors.greenAccent,
-                height: 130.0,
+                height: MediaQuery.of(context).size.height * 0.23,
                 child: GestureDetector(
                   onTap: () {
                     print('index: ${index} tapped');
@@ -95,15 +96,16 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                   },
                   onLongPress: () {},
                   child: Card(
+                    // margin: EdgeInsets.all(0),
                     color: Colors.indigo.shade200,
                     elevation: 10.0,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0)),
                     child: Row(
                       children: [
-                        Icon(Icons.picture_as_pdf_rounded, size: 100.0),
+                        Icon(Icons.picture_as_pdf_rounded, size: MediaQuery.of(context).size.width * 0.3),
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             // file name
@@ -113,17 +115,16 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                 height: 50.0,
                                 color: Colors.redAccent.shade100,
                                 width:
-                                    MediaQuery.of(context).size.width - 160.0,
+                                    MediaQuery.of(context).size.width * 0.60,
                                 child: Row(
                                   children: [
                                     /// file name
                                     Flexible(
                                       flex: 5,
                                       child: AutoSizeText(
-                                        snapshot.data.docs[index]
-                                            ['file_name_trimmed'],
+                                        snapshot.data.docs[index]['file_name'],
                                         maxLines: 2,
-                                        overflow: TextOverflow.visible,
+                                        overflow: TextOverflow.ellipsis,
                                         style: GoogleFonts.arimo(
                                           fontSize: 20.0,
                                           fontWeight: FontWeight.w700,
@@ -147,7 +148,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                               child: Container(
                                 color: Colors.lightBlue.shade100,
                                 width:
-                                    MediaQuery.of(context).size.width - 160.0,
+                                    MediaQuery.of(context).size.width * 0.60,
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -182,7 +183,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                       flex: 1,
                                       child: Container(
                                         height: 30.0,
-                                        color: Colors.limeAccent,
+                                        color: Colors.lightBlueAccent,
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceAround,
@@ -256,7 +257,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -338,6 +339,39 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                   }
                   return Tab(text: 'Created Pdfs ($noOfCreatedPdfs)');
                 }),
+            StreamBuilder(
+                stream: _firebaseFirestore
+                    .collection('users')
+                    .doc(_firebaseAuth.currentUser.uid)
+                    .collection('createdtxts')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data.docs.isNotEmpty) {
+                      noOfCreatedPdfs = snapshot.data.docs.length;
+                      return Tab(text: 'Created Texts ($noOfCreatedPdfs)');
+                    } else if (snapshot.data.docs.isEmpty) {
+                      return Text('No Texts yet');
+                    }
+                  } else if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return Stack(
+                      children: [
+                        Container(),
+                        Positioned(
+                          top: 0.0,
+                          left: 0.0,
+                          bottom: 0.0,
+                          right: 0.0,
+                          child: LoadingCubeGrid(),
+                        ),
+                      ],
+                    );
+                  } else {
+                    noOfCreatedPdfs = 0;
+                  }
+                  return Tab(text: 'Created Pdfs ($noOfCreatedPdfs)');
+                }),
           ],
           indicatorColor: Theme.of(context).colorScheme.primary,
           indicatorSize: TabBarIndicatorSize.tab,
@@ -348,6 +382,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
             children: [
               docsList(collectionName: 'importedfiles'),
               docsList(collectionName: 'createdpdfs'),
+              docsList(collectionName: 'createdtxts'),
             ],
           ),
         ),

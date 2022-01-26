@@ -11,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/screens/canvas/canvas_view_screen.dart';
+import 'package:paint_to_print/services/global_methods.dart';
 import 'package:paint_to_print/widgets/create_home_icon.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
@@ -169,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: CreateHomeIcon(
                       image: 'assets/images/import_picture.png',
                       iconName: 'Import Picture',
-                      shadowColor: Colors.greenAccent,
+                      shadowColor: Colors.orangeAccent,
                       onTap: () {
                         print('Import Picture');
                         Fluttertoast.showToast(msg: 'Import Picture');

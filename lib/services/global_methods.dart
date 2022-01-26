@@ -475,7 +475,7 @@ class GlobalMethods {
       final pdfFile = File('${dir.path}/$pdfName.pdf');
       await pdfFile.writeAsBytes(await pdf.save());
       // pdf saved snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
+      /*ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.greenAccent.shade100,
           content: Container(
@@ -492,9 +492,10 @@ class GlobalMethods {
             ),
           ),
         ),
-      );
+      );*/
       print(pdfName);
-      var dateParse = pdfName.split('.pdf_')[1]; // 2022-01-03 10:59:37.426428
+      var dateParse = pdfName.substring(13,32);
+          // .split('.pdf_')[1]; // 2022-01-03 10:59:37.426428
       print(dateParse);
       var pdfCreationYear = dateParse.substring(0, 4);
       var pdfCreationMonth =
@@ -522,13 +523,14 @@ class GlobalMethods {
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser.uid)
             .collection('createdpdfs')
-            .doc(pdfName)
+            .doc(pdfName+'.pdf')
             .set({
           'file_url': pdfUrl,
-          'file_name': pdfName,
-          'file_name_trimmed': pdfName.substring(0, pdfName.length - 27),
+          'file_name': pdfName+'.pdf',
+          // 'file_name_trimmed': pdfName.substring(0, pdfName.length - 27),
           'file_creation_datetime': pdfCreationDateTime,
-          'timestamp': pdfName.split('.pdf_')[1],
+          'timestamp': pdfName,
+              // .split('.pdf_')[1],
           'file_location': 'local storage path',
         }).then((value) async {
           print('Uploaded in firestore...!');
@@ -613,17 +615,9 @@ class GlobalMethods {
     String txtFileUrl = '';
     try {
       final Directory directory = await getExternalStorageDirectory();
-      final File file = File('${directory.path}/$txtFileName.docx');
-      var buffer;
-      for (int i = 0; i < images.length; i++) {
-        buffer = images[i].buffer;
-        file.writeAsBytes(
-            buffer.asUint8List(
-                images[i].offsetInBytes, images[i].lengthInBytes));
-        // await file.writeAsStringSync(convertedTexts[i]);
-      }
-      // await file.writeAsString(convertedTexts.join(" "));
-      // pdf saved snackbar
+      final File file = File('${directory.path}/$txtFileName.txt');
+      await file.writeAsString(convertedTexts.join(" "));
+      // Text saved snackbar
       /*ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.greenAccent.shade100,
@@ -631,7 +625,7 @@ class GlobalMethods {
             decoration:
             BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
             child: AutoSizeText(
-              'Pdf Saved at ${directory.path}',
+              'Text Saved at ${directory.path}',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.arimo(
@@ -644,24 +638,25 @@ class GlobalMethods {
       );*/
       print(txtFileName);
       var dateParse =
-          txtFileName.split('.pdf_')[1]; // 2022-01-03 10:59:37.426428
+          txtFileName.substring(13,32);
+              // .split('.txt_')[1]; // 2022-01-03 10:59:37.426428
       print(dateParse);
-      var pdfCreationYear = dateParse.substring(0, 4);
-      var pdfCreationMonth =
+      var txtCreationYear = dateParse.substring(0, 4);
+      var txtCreationMonth =
           DateFormat('MMM').format(DateTime.parse(dateParse));
-      var pdfCreationDate = dateParse.substring(8, 10);
-      var pdfCreationTime = dateParse.substring(11, 16);
-      var pdfCreationDateTime =
-          '$pdfCreationDate $pdfCreationMonth, $pdfCreationYear $pdfCreationTime';
-      print('pdfCreationYear: $pdfCreationYear');
-      print('pdfCreationMonth: $pdfCreationMonth');
-      print('pdfCreationDate: $pdfCreationDate');
-      print('pdfCreationTime: $pdfCreationTime');
+      var txtCreationDate = dateParse.substring(8, 10);
+      var txtCreationTime = dateParse.substring(11, 16);
+      var txtCreationDateTime =
+          '$txtCreationDate $txtCreationMonth, $txtCreationYear $txtCreationTime';
+      print('pdfCreationYear: $txtCreationYear');
+      print('pdfCreationMonth: $txtCreationMonth');
+      print('pdfCreationDate: $txtCreationDate');
+      print('pdfCreationTime: $txtCreationTime');
       // firestore & firebase storage
       Reference storageReference = FirebaseStorage.instance
           .ref()
-          .child('createdpdfs')
-          .child('$txtFileName.docx');
+          .child('createdtxts')
+          .child('$txtFileName.txt');
       print('Uploading in storage...!');
       await progressDialog.show();
       await storageReference.putFile(file).then((p0) async {
@@ -671,15 +666,15 @@ class GlobalMethods {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser.uid)
-            .collection('createdpdfs')
-            .doc(txtFileName)
+            .collection('createdtxts')
+            .doc(txtFileName+'.txt')
             .set({
           'file_url': txtFileUrl,
-          'file_name': txtFileName,
-          'file_name_trimmed':
-              txtFileName.substring(0, txtFileName.length - 27),
-          'file_creation_datetime': pdfCreationDateTime,
-          'timestamp': txtFileName.split('.pdf_')[1],
+          'file_name': txtFileName+'.txt',
+          // 'file_name_trimmed':txtFileName+'.txt', //.substring(0, txtFileName.length - 27),
+          'file_creation_datetime': txtCreationDateTime,
+          'timestamp': txtFileName,
+              // .split('.txt_')[1],
           'file_location': 'local storage path',
         }).then((value) async {
           print('Uploaded in firestore...!');
@@ -692,7 +687,7 @@ class GlobalMethods {
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
                 child: Text(
-                  'PDF uploaded successfully!',
+                  'Text uploaded successfully!',
                   style: GoogleFonts.arimo(
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
@@ -708,7 +703,7 @@ class GlobalMethods {
         context,
         PageTransition(type: PageTransitionType.fade, child: BottomBarScreen()),
       );
-      print('saved in ${directory.path}/$txtFileName.docx');
+      print('saved in ${directory.path}/$txtFileName.txt');
     } catch (e) {
       print(e.toString());
     }

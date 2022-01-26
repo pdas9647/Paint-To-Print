@@ -12,7 +12,7 @@ class CreateHomeIcon extends StatelessWidget {
     Key key,
     @required this.iconName,
     @required this.image,
-    this.shadowColor,
+    this.shadowColor = Colors.transparent,
     this.onTap,
   }) : super(key: key);
 
@@ -21,7 +21,7 @@ class CreateHomeIcon extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        // elevation: 10.0,
+        // elevation: 15.0,
         // shadowColor: shadowColor,
         // color: Colors.yellowAccent,
         shape: RoundedRectangleBorder(
@@ -34,10 +34,11 @@ class CreateHomeIcon extends StatelessWidget {
                 MediaQuery.of(context).size.height * 0.03),
             boxShadow: [
               BoxShadow(
-                offset: Offset(0, 5),
+                offset: Offset(5, 25),
                 color: shadowColor,
-                blurRadius: 50.0,
-                spreadRadius: 0.5,
+                blurRadius: 40.0,
+                spreadRadius: 0.05,
+                blurStyle: BlurStyle.normal,
               ),
             ],
           ),
