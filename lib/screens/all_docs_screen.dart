@@ -3,7 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/screens/rendered_images_screen.dart';
 import 'package:paint_to_print/services/global_methods.dart';
@@ -23,6 +25,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   int noOfImportedFiles = 0;
   int noOfCreatedPdfs = 0;
+  int noOfCreatedTexts = 0;
 
   Widget docsList({String collectionName}) {
     return StreamBuilder(
@@ -78,7 +81,8 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                   :*/
                   // files list
                   Container(
-                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                padding:
+                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
                 // margin: EdgeInsets.all(10.0),
                 color: Colors.greenAccent,
                 height: MediaQuery.of(context).size.height * 0.23,
@@ -103,7 +107,8 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                         borderRadius: BorderRadius.circular(15.0)),
                     child: Row(
                       children: [
-                        Icon(Icons.picture_as_pdf_rounded, size: MediaQuery.of(context).size.width * 0.3),
+                        Icon(Icons.picture_as_pdf_rounded,
+                            size: MediaQuery.of(context).size.width * 0.3),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -112,11 +117,14 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                             Flexible(
                               flex: 3,
                               child: Container(
-                                height: 50.0,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.10,
                                 color: Colors.redAccent.shade100,
-                                width:
-                                    MediaQuery.of(context).size.width * 0.60,
+                                width: MediaQuery.of(context).size.width * 0.63,
                                 child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     /// file name
                                     Flexible(
@@ -126,7 +134,10 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: GoogleFonts.arimo(
-                                          fontSize: 20.0,
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.05,
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),
@@ -135,7 +146,8 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                     /// more_vert icon
                                     Flexible(
                                       child:
-                                          GlobalMethods.morePdfItemsPopupMenu(),
+                                          GlobalMethods.morePdfItemsPopupMenu(
+                                              context: context),
                                     ),
                                   ],
                                 ),
@@ -147,8 +159,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                               flex: 1,
                               child: Container(
                                 color: Colors.lightBlue.shade100,
-                                width:
-                                    MediaQuery.of(context).size.width * 0.60,
+                                width: MediaQuery.of(context).size.width * 0.63,
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -158,7 +169,9 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                     Expanded(
                                       flex: 3,
                                       child: Container(
-                                        height: 30.0,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.10,
                                         color: Colors.limeAccent,
                                         child: Row(
                                           children: [
@@ -169,7 +182,11 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                                 maxLines: 1,
                                                 overflow: TextOverflow.visible,
                                                 style: GoogleFonts.arimo(
-                                                  fontSize: 14.0,
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .height *
+                                                          0.05,
                                                   fontWeight: FontWeight.w700,
                                                 ),
                                               ),
@@ -182,7 +199,9 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                     Flexible(
                                       flex: 1,
                                       child: Container(
-                                        height: 30.0,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.10,
                                         color: Colors.lightBlueAccent,
                                         child: Row(
                                           mainAxisAlignment:
@@ -199,7 +218,11 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                                 maxLines: 1,
                                                 overflow: TextOverflow.visible,
                                                 style: GoogleFonts.arimo(
-                                                  fontSize: 14.0,
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .height *
+                                                          0.05,
                                                   fontWeight: FontWeight.w700,
                                                 ),
                                               ),
@@ -211,29 +234,72 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                     // pdf no of pages
                                     Flexible(
                                       flex: 1,
+                                      // child: Container(
+                                      //   height: MediaQuery.of(context).size.height * 0.10,
+                                      //   color: Colors.orange,
+                                      //   child: Row(
+                                      //     mainAxisAlignment:
+                                      //         MainAxisAlignment.spaceAround,
+                                      //     children: [
+                                      //       Flexible(
+                                      //         child: Icon(Icons.pages_rounded,
+                                      //             size: MediaQuery.of(context).size.height * 0.04),
+                                      //       ),
+                                      //       Flexible(
+                                      //         child: AutoSizeText(
+                                      //           '6',
+                                      //           maxLines: 1,
+                                      //           overflow: TextOverflow.visible,
+                                      //           style: GoogleFonts.arimo(
+                                      //             fontSize: MediaQuery.of(context).size.height * 0.05,
+                                      //             fontWeight: FontWeight.w700,
+                                      //           ),
+                                      //         ),
+                                      //       ),
+                                      //     ],
+                                      //   ),
+                                      // ),
                                       child: Container(
-                                        height: 30.0,
-                                        color: Colors.orange,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Flexible(
-                                              child: Icon(Icons.pages_rounded,
-                                                  size: 16.0),
-                                            ),
-                                            Flexible(
-                                              child: AutoSizeText(
-                                                '6',
-                                                maxLines: 1,
-                                                overflow: TextOverflow.visible,
-                                                style: GoogleFonts.arimo(
-                                                  fontSize: 14.0,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
+                                        // margin: EdgeInsets.all(10.0),
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.08,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.10,
+                                        // color: Colors.orange,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.rectangle,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                            border: Border.all(
+                                              color: Colors.black,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.004,
+                                            )),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.0001),
+                                          child: Center(
+                                            child: AutoSizeText(
+                                              '6',
+                                              maxLines: 1,
+                                              overflow: TextOverflow.visible,
+                                              style: GoogleFonts.arimo(
+                                                color: Colors.black,
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.06,
+                                                fontWeight: FontWeight.w700,
                                               ),
                                             ),
-                                          ],
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -265,116 +331,247 @@ class _AllDocsScreenState extends State<AllDocsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        TabBar(
-          controller: tabController,
-          labelColor: Colors.redAccent,
-          labelStyle: GoogleFonts.arimo(
-            fontSize: 18.0,
-            fontWeight: FontWeight.w700,
+        Container(
+          height: MediaQuery.of(context).size.height * 0.065,
+          child: TabBar(
+            indicatorWeight: MediaQuery.of(context).size.height * 0.005,
+            controller: tabController,
+            labelColor: Colors.redAccent,
+            labelStyle: GoogleFonts.arimo(
+              fontSize: MediaQuery.of(context).size.height * 0.025,
+              fontWeight: FontWeight.w700,
+            ),
+            tabs: [
+              StreamBuilder(
+                  stream: _firebaseFirestore
+                      .collection('users')
+                      .doc(_firebaseAuth.currentUser.uid)
+                      .collection('importedfiles')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data.docs.isNotEmpty) {
+                        noOfImportedFiles = snapshot.data.docs.length;
+                        return Tab(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                        MediaQuery.of(context).size.width *
+                                            0.01),
+                                child: Icon(MdiIcons.fileImport,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.07),
+                              ),
+                              Text(
+                                '($noOfImportedFiles)',
+                                style: GoogleFonts.arimo(
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.05),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else if (snapshot.data.docs.isEmpty) {
+                        return Tab(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.01),
+                            child: Icon(MdiIcons.fileImport,
+                                size: MediaQuery.of(context).size.width * 0.07),
+                          ),
+                        );
+                      }
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return Text(
+                        '',
+                        style: GoogleFonts.arimo(
+                            fontSize: MediaQuery.of(context).size.width * 0.05),
+                      );
+                    } else {
+                      noOfImportedFiles = 0;
+                    }
+                    return Tab(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.01),
+                            child: Icon(MdiIcons.fileImport,
+                                size: MediaQuery.of(context).size.width * 0.07),
+                          ),
+                          Text(
+                            '($noOfImportedFiles)',
+                            style: GoogleFonts.arimo(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.05),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+              StreamBuilder(
+                  stream: _firebaseFirestore
+                      .collection('users')
+                      .doc(_firebaseAuth.currentUser.uid)
+                      .collection('createdpdfs')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data.docs.isNotEmpty) {
+                        noOfCreatedPdfs = snapshot.data.docs.length;
+                        return Tab(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                        MediaQuery.of(context).size.width *
+                                            0.01),
+                                child: Icon(MdiIcons.filePdfBox,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.07),
+                              ),
+                              Text(
+                                '($noOfCreatedPdfs)',
+                                style: GoogleFonts.arimo(
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.05),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else if (snapshot.data.docs.isEmpty) {
+                        return Tab(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.01),
+                            child: Icon(MdiIcons.filePdfBox,
+                                size: MediaQuery.of(context).size.width * 0.07),
+                          ),
+                        );
+                      }
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return Text(
+                        '',
+                        style: GoogleFonts.arimo(
+                            fontSize: MediaQuery.of(context).size.width * 0.05),
+                      );
+                    } else {
+                      noOfCreatedPdfs = 0;
+                    }
+                    return Tab(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.01),
+                            child: Icon(MdiIcons.filePdfBox,
+                                size: MediaQuery.of(context).size.width * 0.07),
+                          ),
+                          Text(
+                            '($noOfCreatedPdfs)',
+                            style: GoogleFonts.arimo(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.05),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+              StreamBuilder(
+                  stream: _firebaseFirestore
+                      .collection('users')
+                      .doc(_firebaseAuth.currentUser.uid)
+                      .collection('createdtxts')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data.docs.isNotEmpty) {
+                        noOfCreatedTexts = snapshot.data.docs.length;
+                        return Tab(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                        MediaQuery.of(context).size.width *
+                                            0.01),
+                                child: Icon(MaterialCommunityIcons.format_text,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.07),
+                              ),
+                              Text(
+                                '($noOfCreatedTexts)',
+                                style: GoogleFonts.arimo(
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.05),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else if (snapshot.data.docs.isEmpty) {
+                        return Tab(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.01),
+                            child: Icon(MaterialCommunityIcons.format_text,
+                                size: MediaQuery.of(context).size.width * 0.07),
+                          ),
+                        );
+                      }
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return Text(
+                        '',
+                        style: GoogleFonts.arimo(
+                            fontSize: MediaQuery.of(context).size.width * 0.05),
+                      );
+                    } else {
+                      noOfCreatedTexts = 0;
+                    }
+                    return Tab(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    MediaQuery.of(context).size.width * 0.01),
+                            child: Icon(MaterialCommunityIcons.format_text,
+                                size: MediaQuery.of(context).size.width * 0.07),
+                          ),
+                          Text(
+                            '($noOfCreatedTexts)',
+                            style: GoogleFonts.arimo(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.05),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+            ],
+            indicatorColor: Theme.of(context).colorScheme.primary,
+            indicatorSize: TabBarIndicatorSize.tab,
           ),
-          tabs: [
-            StreamBuilder(
-                stream: _firebaseFirestore
-                    .collection('users')
-                    .doc(_firebaseAuth.currentUser.uid)
-                    .collection('importedfiles')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    if (snapshot.data.docs.isNotEmpty) {
-                      noOfImportedFiles = snapshot.data.docs.length;
-                      return Tab(text: 'Imported Files ($noOfImportedFiles)');
-                    } else if (snapshot.data.docs.isEmpty) {
-                      return Text('No docs yet');
-                    }
-                  } else if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return Stack(
-                      children: [
-                        Container(),
-                        Positioned(
-                          top: 0.0,
-                          left: 0.0,
-                          bottom: 0.0,
-                          right: 0.0,
-                          child: LoadingCubeGrid(),
-                        ),
-                      ],
-                    );
-                  } else {
-                    noOfImportedFiles = 0;
-                  }
-                  return Tab(text: 'Imported Files ($noOfImportedFiles)');
-                }),
-            StreamBuilder(
-                stream: _firebaseFirestore
-                    .collection('users')
-                    .doc(_firebaseAuth.currentUser.uid)
-                    .collection('createdpdfs')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    if (snapshot.data.docs.isNotEmpty) {
-                      noOfCreatedPdfs = snapshot.data.docs.length;
-                      return Tab(text: 'Created Pdfs ($noOfCreatedPdfs)');
-                    } else if (snapshot.data.docs.isEmpty) {
-                      return Text('No docs yet');
-                    }
-                  } else if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return Stack(
-                      children: [
-                        Container(),
-                        Positioned(
-                          top: 0.0,
-                          left: 0.0,
-                          bottom: 0.0,
-                          right: 0.0,
-                          child: LoadingCubeGrid(),
-                        ),
-                      ],
-                    );
-                  } else {
-                    noOfCreatedPdfs = 0;
-                  }
-                  return Tab(text: 'Created Pdfs ($noOfCreatedPdfs)');
-                }),
-            StreamBuilder(
-                stream: _firebaseFirestore
-                    .collection('users')
-                    .doc(_firebaseAuth.currentUser.uid)
-                    .collection('createdtxts')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    if (snapshot.data.docs.isNotEmpty) {
-                      noOfCreatedPdfs = snapshot.data.docs.length;
-                      return Tab(text: 'Created Texts ($noOfCreatedPdfs)');
-                    } else if (snapshot.data.docs.isEmpty) {
-                      return Text('No Texts yet');
-                    }
-                  } else if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return Stack(
-                      children: [
-                        Container(),
-                        Positioned(
-                          top: 0.0,
-                          left: 0.0,
-                          bottom: 0.0,
-                          right: 0.0,
-                          child: LoadingCubeGrid(),
-                        ),
-                      ],
-                    );
-                  } else {
-                    noOfCreatedPdfs = 0;
-                  }
-                  return Tab(text: 'Created Pdfs ($noOfCreatedPdfs)');
-                }),
-          ],
-          indicatorColor: Theme.of(context).colorScheme.primary,
-          indicatorSize: TabBarIndicatorSize.tab,
         ),
         Expanded(
           child: TabBarView(

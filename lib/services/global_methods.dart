@@ -271,9 +271,10 @@ class GlobalMethods {
         });
   }
 
-  static PopupMenuButton<String> morePdfItemsPopupMenu() {
+  static PopupMenuButton<String> morePdfItemsPopupMenu({BuildContext context}) {
     return PopupMenuButton(
       elevation: 8.0,
+      iconSize: MediaQuery.of(context).size.width * 0.05,
       onSelected: (value) {
         print(value);
       },
