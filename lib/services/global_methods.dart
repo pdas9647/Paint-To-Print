@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -277,10 +278,21 @@ class GlobalMethods {
       iconSize: MediaQuery.of(context).size.width * 0.05,
       onSelected: (value) {
         print(value);
+        switch(value) {
+          case 'Share':
+            break;
+          case 'Share':
+            break;
+          case 'Download':
+            break;
+          case 'Rename':
+            break;
+          default: break;
+        }
       },
       itemBuilder: (BuildContext context) {
         return [
-          /// view
+          /*/// view
           PopupMenuItem(
             value: 'View',
             child: Row(
@@ -300,7 +312,7 @@ class GlobalMethods {
                 ),
               ],
             ),
-          ),
+          ),*/
 
           /// share
           PopupMenuItem(

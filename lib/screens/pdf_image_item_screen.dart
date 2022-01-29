@@ -286,11 +286,12 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
                               ),
                               type: PageTransitionType.fade,
                             ),
-                          ).then((value) {
-                            setState(() {
-                              convertedTexts;
-                            });
-                          });
+                          );
+                            //   .then((value) {
+                            // setState(() {
+                            //   convertedTexts;
+                            // });
+                          // });
                         },
                         icon: Icon(
                           MaterialCommunityIcons.check,

@@ -11,7 +11,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/screens/canvas/canvas_view_screen.dart';
-import 'package:paint_to_print/services/global_methods.dart';
 import 'package:paint_to_print/widgets/create_home_icon.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
@@ -148,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
           shrinkWrap: true,
           children: [
             Container(
-              height: height * 0.27,
+              height: height * 0.39,
               width: width,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -182,12 +181,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             SizedBox(height: height * 0.01),
             Container(
-              height: height * 0.27,
+              height: height * 0.39,
               width: width,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Flexible(
+                  /*Flexible(
                     flex: 1,
                     child: CreateHomeIcon(
                       image: 'assets/images/import_file.png',
@@ -197,6 +196,29 @@ class _HomeScreenState extends State<HomeScreen> {
                         print('Import File');
                         Fluttertoast.showToast(msg: 'Import File');
                         getPdfAndUpload(context: context);
+                      },
+                    ),
+                  ),*/
+                  Flexible(
+                    flex: 1,
+                    child: CreateHomeIcon(
+                      image: 'assets/images/handwriting_to_text.png',
+                      iconName: 'Handwriting to Text',
+                      shadowColor: Colors.teal.shade600,
+                      onTap: () {
+                        print('Handwriting to Text');
+                        // persistentTabController =
+                        //     PersistentTabController(initialIndex: 1);
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            child: CanvasViewScreen(
+                              isNavigatedFromHomeScreen: true,
+                              isNavigatedFromPdfImagesScreen: false,
+                            ),
+                            type: PageTransitionType.fade,
+                          ),
+                        );
                       },
                     ),
                   ),
@@ -215,9 +237,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            SizedBox(height: height * 0.01),
+            /*SizedBox(height: height * 0.01),
             Container(
-              height: height * 0.27,
+              height: height * 0.26,
               width: width,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -259,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-            ),
+            ),*/
           ],
         ),
       ),

@@ -33,7 +33,7 @@ class CanvasViewScreen extends StatefulWidget {
     @required this.isNavigatedFromPdfImagesScreen,
     this.canvasImages,
     this.convertedTexts,
-    @required this.pdfModel,
+    this.pdfModel,
     this.strokeWidth = 2.0,
   }) : super(key: key);
 
@@ -528,7 +528,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
         child: Container(
           // width: width * 0.10,
           // height: height * 0.20,
-          padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight * 2),
+          padding: EdgeInsets.only(bottom: height * 0.09),
           child: SpeedDial(
             child: Icon(
               Icons.add,
@@ -546,7 +546,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
               SpeedDialChild(
                 child: Icon(
                   Icons.clear_all_rounded,
-                  size: MediaQuery.of(context).size.height * 0.02,
+                  size: MediaQuery.of(context).size.height * 0.035,
                 ),
                 foregroundColor: Colors.white,
                 backgroundColor: Colors.red,
@@ -564,7 +564,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
               SpeedDialChild(
                 child: Icon(
                   Icons.brush_rounded,
-                  size: MediaQuery.of(context).size.height * 0.02,
+                  size: MediaQuery.of(context).size.height * 0.035,
                 ),
                 foregroundColor: selectedColor,
                 backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
@@ -581,7 +581,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
               SpeedDialChild(
                 child: Icon(
                   Icons.color_lens_rounded,
-                  size: MediaQuery.of(context).size.height * 0.02,
+                  size: MediaQuery.of(context).size.height * 0.035,
                 ),
                 foregroundColor: selectedColor,
                 backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
@@ -598,7 +598,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
               SpeedDialChild(
                 child: Icon(
                   Icons.save_rounded,
-                  size: MediaQuery.of(context).size.height * 0.02,
+                  size: MediaQuery.of(context).size.height * 0.035,
                 ),
                 foregroundColor: Colors.black,
                 backgroundColor: Theme.of(context).colorScheme.secondaryVariant,

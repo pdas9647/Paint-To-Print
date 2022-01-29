@@ -3,13 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:paint_to_print/screens/rendered_images_screen.dart';
 import 'package:paint_to_print/services/global_methods.dart';
 import 'package:paint_to_print/widgets/loading_cube_grid.dart';
+
+import 'text_file_viewer_screen.dart';
 
 class AllDocsScreen extends StatefulWidget {
   const AllDocsScreen({Key key}) : super(key: key);
@@ -65,20 +67,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
             shrinkWrap: true,
             itemCount: snapshot.data.docs.length,
             itemBuilder: (BuildContext context, int index) {
-              return /*index == 0
-                  ?
-                  // All Docs (no of files)
-                  Container(
-                      padding: EdgeInsets.all(20.0),
-                      child: Text(
-                        'All Docs ($noOfImportedFiles)',
-                        style: GoogleFonts.arimo(
-                          fontSize: 25.0,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    )
-                  :*/
+              return
                   // files list
                   Container(
                 padding:
@@ -87,16 +76,31 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                 color: Colors.greenAccent,
                 height: MediaQuery.of(context).size.height * 0.23,
                 child: GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     print('index: ${index} tapped');
-                    Navigator.push(
-                      context,
-                      PageTransition(
-                        child: RenderedImagesScreen(
-                            pdfSnapshot: snapshot.data.docs[index]),
-                        type: PageTransitionType.fade,
-                      ),
-                    );
+                    // print('${snapshot.data.docs[index]['file_url']}');
+                    // print(await http.read(Uri.parse(snapshot.data.docs[index]['file_url'])));
+                    switch (collectionName) {
+                      case 'createdpdfs':
+                        break;
+                      case 'createdtxts':
+                        String url = snapshot.data.docs[index]['file_url'];
+                        final file =
+                            await DefaultCacheManager().getSingleFile(url);
+                        var fileContent = await file.readAsString();
+                        print(fileContent.characters);
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            child:
+                                TextFileViewerScreen(fileContent: fileContent),
+                            type: PageTransitionType.fade,
+                          ),
+                        );
+                        break;
+                      default:
+                        break;
+                    }
                   },
                   onLongPress: () {},
                   child: Card(
@@ -113,7 +117,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            // file name
+                            // single file row
                             Flexible(
                               flex: 3,
                               child: Container(

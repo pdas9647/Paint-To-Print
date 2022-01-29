@@ -46,8 +46,6 @@ class CreateHomeIcon extends StatelessWidget {
               horizontal: MediaQuery.of(context).size.width * 0.03,
               vertical: MediaQuery.of(context).size.height * 0.01),
           width: MediaQuery.of(context).size.width * 0.46,
-          // height: MediaQuery.of(context).size.height * 0.25,
-          // color: Colors.indigo,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -55,8 +53,8 @@ class CreateHomeIcon extends StatelessWidget {
                 image,
                 fit: BoxFit.cover,
                 // color: Colors.lightGreenAccent,
-                width: MediaQuery.of(context).size.width * 0.25,
-                height: MediaQuery.of(context).size.width * 0.25,
+                width: MediaQuery.of(context).size.width * 0.40,
+                height: MediaQuery.of(context).size.width * 0.40,
               ),
               // SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               AutoSizeText(
@@ -65,7 +63,7 @@ class CreateHomeIcon extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: GoogleFonts.arimo(
                   fontWeight: FontWeight.bold,
-                  fontSize: MediaQuery.of(context).size.height * 0.035,
+                  fontSize: MediaQuery.of(context).size.height * 0.04,
                 ),
               ),
             ],

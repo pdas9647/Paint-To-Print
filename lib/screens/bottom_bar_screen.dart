@@ -106,7 +106,7 @@ class _BottomBarScreenState extends State<BottomBarScreen>
         child: _buildScreens.elementAt(_currentIndex),
       ),
       bottomNavigationBar: Container(
-        height: height * 0.08,
+        height: height * 0.09,
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
@@ -118,13 +118,15 @@ class _BottomBarScreenState extends State<BottomBarScreen>
         ),
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: width * 0.05, vertical: height * 0.015),
+            padding: EdgeInsets.symmetric(
+                horizontal: width * 0.05, vertical: height * 0.015),
             child: GNav(
               rippleColor: Colors.grey[300],
               hoverColor: Colors.grey[100],
               gap: width * 0.10,
               // iconSize: 40,
-              padding: EdgeInsets.symmetric(horizontal: width * 0.05, vertical: height * 0.01),
+              padding: EdgeInsets.symmetric(
+                  horizontal: width * 0.05, vertical: height * 0.01),
               duration: Duration(milliseconds: 400),
               curve: Curves.easeInOutCubic,
               tabBorderRadius: 20.0,

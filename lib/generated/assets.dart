@@ -22,6 +22,7 @@ class Assets {
   static const String imagesScan = 'assets/images/scan.png';
   static const String imagesScanIdCard = 'assets/images/scan_id_card.png';
   static const String imagesScanOnboarding = 'assets/images/scan_onboarding.png';
+  static const String imagesSplashScreenBg = 'assets/images/splash_screen_bg.png';
   static const String imagesSwagato = 'assets/images/swagato.jpg';
   static const String imagesWarning = 'assets/images/warning.png';
   static const String mlModelsHandWrittenDigitModel = 'assets/ml_models/hand_written_digit_model.tflite';

@@ -196,23 +196,6 @@ class BackLayerMenu extends StatelessWidget {
                       // );
                     },
                   ),
-
-                  /// contact us
-                  backLayerCreateItem(
-                    buildContext: context,
-                    itemName: 'Contact Us',
-                    iconData: Icons.email_rounded,
-                    onTap: () {
-                      /// mail to us
-                      // Navigator.push(
-                      //   context,
-                      //   PageTransition(
-                      //     child: OnBoardingScreen(),
-                      //     type: PageTransitionType.fade,
-                      //   ),
-                      // );
-                    },
-                  ),
                   // SizedBox(height: MediaQuery.of(context).size.height * 0.30),
                 ],
               ),
