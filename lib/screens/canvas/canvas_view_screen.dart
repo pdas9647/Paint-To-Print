@@ -46,6 +46,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
       GlobalKey();
   final GlobalKey canvasKey = GlobalKey();
   List<DrawingArea> points = [];
+  List<int> pointLengths = [];
   List<Uint8List> canvasImages = [];
   List<String> convertedTexts = [];
   List<PredictionModel> predictions = [];
@@ -269,6 +270,33 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
     await Recognizer().loadModel();
   }
 
+  void performUndo() {
+    Paint()..blendMode = BlendMode.clear;
+    setState(() {
+      if (pointLengths.length > 2) {
+        for (int i = 0; i < pointLengths.length; i++) {
+          print(pointLengths[pointLengths.length - i - 1] -
+              pointLengths[pointLengths.length - i - 2]);
+          points.removeRange(
+            pointLengths[pointLengths.length - i - 2],
+            pointLengths[pointLengths.length - i - 1],
+          );
+          break;
+        }
+      } else if (pointLengths.length == 2) {
+        points.removeRange(
+          pointLengths[pointLengths.length - 2],
+          pointLengths[pointLengths.length - 1],
+        );
+      } else if (pointLengths.length == 1) {
+        points.clear();
+      }
+      pointLengths.removeLast();
+    });
+    print('279: points.length: ${points.length}');
+    print('280: pointLengths.length: ${pointLengths.length}');
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -306,6 +334,32 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                   ),
                 ),
               ),
+              actions: [
+                /// undo
+                Visibility(
+                  visible: points.length >= 2,
+                  child: IconButton(
+                      onPressed: performUndo, icon: Icon(Icons.undo_rounded)),
+                ),
+
+                /// clear all
+                Visibility(
+                  visible: pointLengths.length >= 1,
+                  child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        points.clear();
+                        pointLengths.clear();
+                        predictions.clear();
+                      });
+                    },
+                    icon: Icon(
+                      Icons.clear_all_rounded,
+                      size: height * 0.05,
+                    ),
+                  ),
+                ),
+              ],
             )
           : null,
       body: Container(
@@ -405,6 +459,8 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                             setState(() {
                               points.add(null);
                             });
+                            pointLengths.add(points.length);
+                            print('pointLengths: $pointLengths');
                           },
                           child: ClipRRect(
                             borderRadius:
@@ -453,22 +509,8 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                         height: height * 0.07,
                         // color: Colors.orange,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            /// clear all
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  points.clear();
-                                  predictions.clear();
-                                });
-                              },
-                              icon: Icon(
-                                Icons.clear_all_rounded,
-                                size: height * 0.05,
-                              ),
-                            ),
-
                             /// stroke width
                             IconButton(
                               onPressed: () {
@@ -555,6 +597,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                   setState(() {
                     points.clear();
                     predictions.clear();
+                    pointLengths.clear();
                   });
                 },
                 closeSpeedDialOnPressed: true,
