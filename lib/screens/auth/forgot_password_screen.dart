@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/screens/auth/login_screen.dart';
 import 'package:paint_to_print/services/global_methods.dart';
 
@@ -49,7 +49,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           context,
           PageTransition(
             child: LoginScreen(),
-            type: PageTransitionType.fade,
+            type: PageTransitionType.rippleRightUp,
           ),
         );
         // Navigator.canPop(context) ? Navigator.pop(context) : null;

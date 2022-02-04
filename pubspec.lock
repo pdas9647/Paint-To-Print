@@ -321,6 +321,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.7"
+  flutter_page_transition:
+    dependency: "direct main"
+    description:
+      name: flutter_page_transition
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.6"
   flutter_phone_direct_caller:
     dependency: "direct main"
     description:
@@ -520,13 +527,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  page_transition:
-    dependency: "direct main"
-    description:
-      name: page_transition
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.5"
   path:
     dependency: transitive
     description:

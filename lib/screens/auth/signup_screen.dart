@@ -4,8 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:paint_to_print/models/user_model.dart';
 import 'package:paint_to_print/services/global_methods.dart';
 import 'package:paint_to_print/widgets/loading_fading_circle.dart';
 
@@ -55,14 +56,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
         var createdDate = user.metadata.creationTime.toString();
         user.updateDisplayName(_name);
         user.reload();
-        await FirebaseFirestore.instance.collection('users').doc(_uid).set({
-          'id': _uid,
+        await FirebaseFirestore.instance.collection('users').doc(_uid).set(
+                /*{'id': _uid,
           'name': _name,
           'email': _emailAddress,
           'joinedAt': formattedDate,
           'createdAt': createdDate,
-          'authenticatedBy': 'email',
-        });
+          'authenticatedBy': 'email',}*/
+                UserModel(
+              authenticatedBy: 'email',
+              createdAt: createdDate,
+              email: _emailAddress,
+              joinedAt: formattedDate,
+              id: _uid,
+              name: _name,
+              documentsCount: 0,
+            ).toMap());
         Navigator.canPop(context) ? Navigator.pop(context) : null;
         // Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
       } catch (error) {
@@ -426,7 +435,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 Navigator.pushReplacement(
                                   context,
                                   PageTransition(
-                                    type: PageTransitionType.fade,
+                                    type: PageTransitionType.rippleRightUp,
                                     child: LoginScreen(),
                                   ),
                                 );

@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
 
 class AboutUsCustomListTile extends StatelessWidget {
   final Widget navigateToScreen;
@@ -26,7 +26,7 @@ class AboutUsCustomListTile extends StatelessWidget {
         Navigator.push(
           context,
           PageTransition(
-            type: PageTransitionType.fade,
+            type: PageTransitionType.rippleRightUp,
             child: navigateToScreen,
           ),
         );

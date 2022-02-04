@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -8,9 +7,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_page_transition/flutter_page_transition.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:paint_to_print/models/pdf_model.dart';
+import 'package:paint_to_print/models/text_model.dart';
 import 'package:paint_to_print/screens/bottom_bar_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -241,7 +243,7 @@ class GlobalMethods {
                     context,
                     PageTransition(
                       child: BottomBarScreen(),
-                      type: PageTransitionType.fade,
+                      type: PageTransitionType.rippleLeftDown,
                     ),
                   );
                 },
@@ -275,10 +277,11 @@ class GlobalMethods {
   static PopupMenuButton<String> morePdfItemsPopupMenu({BuildContext context}) {
     return PopupMenuButton(
       elevation: 8.0,
+      padding: EdgeInsets.all(0.0),
       iconSize: MediaQuery.of(context).size.width * 0.05,
       onSelected: (value) {
         print(value);
-        switch(value) {
+        switch (value) {
           case 'Share':
             break;
           case 'Share':
@@ -287,7 +290,8 @@ class GlobalMethods {
             break;
           case 'Rename':
             break;
-          default: break;
+          default:
+            break;
         }
       },
       itemBuilder: (BuildContext context) {
@@ -411,6 +415,8 @@ class GlobalMethods {
     List<Uint8List> images,
     List<String> convertedTexts,
     String pdfName,
+    String fileCreationDate,
+    // String timestamp,
   }) async {
     /// creating pdf
     var pdf = pdfWidget.Document();
@@ -483,32 +489,21 @@ class GlobalMethods {
     /// save pdf in local storage and firebase...
     // local storage
     String pdfUrl = '';
+    String pdfSize = '0B';
     try {
       final dir = await getExternalStorageDirectory();
       final pdfFile = File('${dir.path}/$pdfName.pdf');
       await pdfFile.writeAsBytes(await pdf.save());
-      // pdf saved snackbar
-      /*ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.greenAccent.shade100,
-          content: Container(
-            decoration:
-                BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
-            child: AutoSizeText(
-              'Pdf Saved at ${dir.path}',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.arimo(
-                color: Colors.black,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ),
-      );*/
+      final bytes = pdfFile.readAsBytesSync().lengthInBytes;
+      if (bytes <= 1024) {
+        pdfSize = '$bytes B';
+      } else if (bytes / (1024 * 1024) >= 1) {
+        pdfSize = '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
+      } else {
+        pdfSize = '${(bytes / 1024).toStringAsFixed(2)} KB';
+      }
       print(pdfName);
-      var dateParse = pdfName.substring(13,32);
-          // .split('.pdf_')[1]; // 2022-01-03 10:59:37.426428
+      var dateParse = fileCreationDate.substring(0, 19);
       print(dateParse);
       var pdfCreationYear = dateParse.substring(0, 4);
       var pdfCreationMonth =
@@ -536,42 +531,61 @@ class GlobalMethods {
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser.uid)
             .collection('createdpdfs')
-            .doc(pdfName+'.pdf')
-            .set({
-          'file_url': pdfUrl,
-          'file_name': pdfName+'.pdf',
-          // 'file_name_trimmed': pdfName.substring(0, pdfName.length - 27),
-          'file_creation_datetime': pdfCreationDateTime,
-          'timestamp': pdfName,
-              // .split('.pdf_')[1],
-          'file_location': 'local storage path',
-        }).then((value) async {
+            .doc(pdfName + '.pdf')
+            .set(PDFModel(
+              pdfName: pdfName + '.pdf',
+              // canvasImages: ,
+              fileCreationDate: pdfCreationDateTime,
+              pdfSize: pdfSize,
+              pdfUrl: pdfUrl,
+              pdfPageCount: images.length,
+              // timestamp: timestamp,
+              pdfLocation: pdfFile.path,
+            ).toMap())
+            .then((value) async {
           print('Uploaded in firestore...!');
           await progressDialog.hide();
           // uploaded in firestore
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.pinkAccent.shade100,
-              content: Container(
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
-                child: Text(
-                  'PDF uploaded successfully!',
-                  style: GoogleFonts.arimo(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-          );
+          int documentsCount = 0;
+          FirebaseFirestore.instance.collection('users')
+              .doc(FirebaseAuth.instance.currentUser.uid)
+              .get()
+              .then((documentSnapshot) {
+            documentsCount = documentSnapshot.get('documentsCount');
+          }).then((value) {
+            FirebaseFirestore.instance.collection('users')
+                .doc(FirebaseAuth.instance.currentUser.uid).update({
+              'documentsCount': documentsCount + 1,
+            });
+          });
+          Fluttertoast.showToast(msg: 'PDF uploaded successfully!');
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   SnackBar(
+          //     backgroundColor: Colors.pinkAccent.shade100,
+          //     content: Container(
+          //       decoration:
+          //           BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
+          //       child: Text(
+          //         'PDF uploaded successfully!',
+          //         style: GoogleFonts.arimo(
+          //           color: Colors.black,
+          //           fontWeight: FontWeight.w500,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // );
         });
       });
       // Navigator.of(context).canPop() ? Navigator.of(context).pop() : null;
       Navigator.pushReplacement(
         context,
-        PageTransition(type: PageTransitionType.fade, child: BottomBarScreen()),
+        PageTransition(
+          type: PageTransitionType.rippleRightUp,
+          child: BottomBarScreen(),
+        ),
       );
+      BottomBarScreen.currentIndex = 2;
       print('saved in ${dir.path}/$pdfName.pdf');
     } catch (e) {
       print(e.toString());
@@ -593,6 +607,7 @@ class GlobalMethods {
     List<Uint8List> images,
     List<String> convertedTexts,
     String txtFileName,
+    String fileCreationDate,
   }) async {
     // progress dialog
     ProgressDialog progressDialog = ProgressDialog(
@@ -626,33 +641,22 @@ class GlobalMethods {
     );
 
     String txtFileUrl = '';
+    String txtSize = '0B';
     try {
       final Directory directory = await getExternalStorageDirectory();
-      final File file = File('${directory.path}/$txtFileName.txt');
-      await file.writeAsString(convertedTexts.join(" "));
-      // Text saved snackbar
-      /*ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.greenAccent.shade100,
-          content: Container(
-            decoration:
-            BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
-            child: AutoSizeText(
-              'Text Saved at ${directory.path}',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.arimo(
-                color: Colors.black,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ),
-      );*/
+      final File txtFile = File('${directory.path}/$txtFileName.txt');
+      await txtFile.writeAsString(convertedTexts.join(" "));
+      final bytes = txtFile.readAsBytesSync().lengthInBytes;
+      print('bytes: $bytes');
+      if (bytes <= 1024) {
+        txtSize = '$bytes B';
+      } else if (bytes / (1024 * 1024) >= 1) {
+        txtSize = '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
+      } else {
+        txtSize = '${(bytes / 1024).toStringAsFixed(2)} KB';
+      }
       print(txtFileName);
-      var dateParse =
-          txtFileName.substring(13,32);
-              // .split('.txt_')[1]; // 2022-01-03 10:59:37.426428
+      var dateParse = fileCreationDate.substring(0, 19);
       print(dateParse);
       var txtCreationYear = dateParse.substring(0, 4);
       var txtCreationMonth =
@@ -661,10 +665,10 @@ class GlobalMethods {
       var txtCreationTime = dateParse.substring(11, 16);
       var txtCreationDateTime =
           '$txtCreationDate $txtCreationMonth, $txtCreationYear $txtCreationTime';
-      print('pdfCreationYear: $txtCreationYear');
-      print('pdfCreationMonth: $txtCreationMonth');
-      print('pdfCreationDate: $txtCreationDate');
-      print('pdfCreationTime: $txtCreationTime');
+      print('txtCreationYear: $txtCreationYear');
+      print('txtCreationMonth: $txtCreationMonth');
+      print('txtCreationDate: $txtCreationDate');
+      print('txtCreationTime: $txtCreationTime');
       // firestore & firebase storage
       Reference storageReference = FirebaseStorage.instance
           .ref()
@@ -672,7 +676,7 @@ class GlobalMethods {
           .child('$txtFileName.txt');
       print('Uploading in storage...!');
       await progressDialog.show();
-      await storageReference.putFile(file).then((p0) async {
+      await storageReference.putFile(txtFile).then((p0) async {
         txtFileUrl = await storageReference.getDownloadURL();
         print('Uploaded in storage...!');
         print('Uploading in firestore...!');
@@ -680,49 +684,71 @@ class GlobalMethods {
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser.uid)
             .collection('createdtxts')
-            .doc(txtFileName+'.txt')
-            .set({
-          'file_url': txtFileUrl,
-          'file_name': txtFileName+'.txt',
-          // 'file_name_trimmed':txtFileName+'.txt', //.substring(0, txtFileName.length - 27),
-          'file_creation_datetime': txtCreationDateTime,
-          'timestamp': txtFileName,
-              // .split('.txt_')[1],
-          'file_location': 'local storage path',
-        }).then((value) async {
+            .doc(txtFileName + '.txt')
+            .set(TextModel(
+              textName: txtFileName + '.txt',
+              // canvasImages: ,
+              fileCreationDate: txtCreationDateTime,
+              textSize: txtSize,
+              textUrl: txtFileUrl,
+              // timestamp: timestamp,
+              txtLocation: txtFile.path,
+            ).toMap())
+            .then((value) async {
           print('Uploaded in firestore...!');
           await progressDialog.hide();
           // uploaded in firestore
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.pinkAccent.shade100,
-              content: Container(
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
-                child: Text(
-                  'Text uploaded successfully!',
-                  style: GoogleFonts.arimo(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-          );
+          int documentsCount = 0;
+          FirebaseFirestore.instance.collection('users')
+              .doc(FirebaseAuth.instance.currentUser.uid)
+              .get()
+              .then((documentSnapshot) {
+            documentsCount = documentSnapshot.get('documentsCount');
+          }).then((value) {
+            FirebaseFirestore.instance.collection('users')
+                .doc(FirebaseAuth.instance.currentUser.uid).update({
+              'documentsCount': documentsCount + 1,
+            });
+          });
+          Fluttertoast.showToast(msg: 'Text uploaded successfully!');
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   SnackBar(
+          //     backgroundColor: Colors.pinkAccent.shade100,
+          //     content: Container(
+          //       decoration:
+          //           BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
+          //       child: Text(
+          //         'Text uploaded successfully!',
+          //         style: GoogleFonts.arimo(
+          //           color: Colors.black,
+          //           fontWeight: FontWeight.w500,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // );
         });
       });
+
       // Navigator.of(context).canPop() ? Navigator.of(context).pop() : null;
       Navigator.pushReplacement(
         context,
-        PageTransition(type: PageTransitionType.fade, child: BottomBarScreen()),
+        PageTransition(
+          type: PageTransitionType.rippleRightUp,
+          child: BottomBarScreen(),
+        ),
       );
+      BottomBarScreen.currentIndex = 2;
       print('saved in ${directory.path}/$txtFileName.txt');
     } catch (e) {
       print(e.toString());
     }
-    Navigator.pushReplacement(
-      context,
-      PageTransition(type: PageTransitionType.fade, child: BottomBarScreen()),
-    );
+    // Navigator.pushReplacement(
+    //   context,
+    //   PageTransition(
+    //     type: PageTransitionType.rippleRightUp,
+    //     child: BottomBarScreen(),
+    //   ),
+    // );
   }
 }

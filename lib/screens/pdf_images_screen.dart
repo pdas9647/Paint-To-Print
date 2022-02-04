@@ -5,41 +5,46 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_page_transition/flutter_page_transition.dart';
+import 'package:flutter_page_transition/page_transition_type.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/models/pdf_model.dart';
+import 'package:paint_to_print/models/text_model.dart';
 import 'package:paint_to_print/screens/canvas/canvas_view_screen.dart';
 import 'package:paint_to_print/screens/pdf_image_item_screen.dart';
 import 'package:paint_to_print/services/global_methods.dart';
 
 import 'bottom_bar_screen.dart';
 
-class PdfImagesScreen extends StatefulWidget {
+class PDFImagesScreen extends StatefulWidget {
   final bool isNavigatedFromHomeScreen;
   final List<Uint8List> canvasImages;
   final List<String> convertedTexts;
-  final PdfModel pdfModel;
+  final PDFModel pdfModel;
+  final TextModel textModel;
 
-  const PdfImagesScreen({
+  const PDFImagesScreen({
     Key key,
     @required this.isNavigatedFromHomeScreen,
     @required this.canvasImages,
-    this.convertedTexts,
-    this.pdfModel,
+    @required this.convertedTexts,
+    @required this.pdfModel,
+    @required this.textModel,
   }) : super(key: key);
 
   @override
-  _PdfImagesScreenState createState() => _PdfImagesScreenState();
+  _PDFImagesScreenState createState() => _PDFImagesScreenState();
 }
 
-class _PdfImagesScreenState extends State<PdfImagesScreen> {
+class _PDFImagesScreenState extends State<PDFImagesScreen> {
   List<Uint8List> canvasImages = [];
   List<String> convertedTexts = [];
-  String pdfCreationDate;
-  Timestamp timestamp;
-  PdfModel pdfModel;
+  String fileCreationDate;
+  // Timestamp timestamp;
+  PDFModel pdfModel;
+  TextModel textModel;
   bool back = false;
 
   Future<void> showRenameDialog({BuildContext context, String name}) async {
@@ -82,27 +87,36 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
     super.initState();
     canvasImages = widget.canvasImages;
     if (widget.isNavigatedFromHomeScreen) {
-      pdfCreationDate = DateTime.now().toString();
-      timestamp = Timestamp.now();
+      fileCreationDate = DateTime.now().toString();
+      // timestamp = Timestamp.now();
     }
 
-    /// for the first time... canvasImages[0]
-    if (widget.pdfModel == null) {
-      pdfModel = PdfModel(
-        // pdfName: pdfCreationDate,
-        pdfName: 'PaintToPrint ${pdfCreationDate.substring(0,19)}',
+    /// for the first time... canvasImages[0] --> initialize pdfmodel & initialize textmodel
+    if (widget.pdfModel == null && widget.textModel == null) {
+      pdfModel = PDFModel(
+        pdfName: 'PaintToPrint ${fileCreationDate.substring(0, 19)}',
         canvasImages: canvasImages,
-        pdfCreationDate: pdfCreationDate,
-        timestamp: timestamp,
+        fileCreationDate: fileCreationDate,
+        pdfSize: '0B',
+        // timestamp: timestamp.toString(),
+      );
+      textModel = TextModel(
+        textName: 'PaintToPrint ${fileCreationDate.substring(0, 19)}',
+        fileCreationDate: fileCreationDate,
+        textSize: '0B',
+        // timestamp: timestamp.toString(),
       );
     }
 
     /// for next times... canvasImages[>0]
     else {
       pdfModel = widget.pdfModel;
+      textModel = widget.textModel;
+      fileCreationDate = pdfModel.fileCreationDate;
     }
+
     if (widget.convertedTexts == null) {
-      convertedTexts = ['Padmanabha Das', 'Swagato Bag', '2', '3'];
+      convertedTexts = [];
     } else {
       convertedTexts = widget.convertedTexts;
     }
@@ -129,11 +143,6 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                     );
                   },
                   child: AutoSizeText(
-                    // pdfModel.pdfName == null
-                    //     ? pdfModel.pdfCreationDate +
-                    //         '.pdf_' +
-                    //         pdfCreationDate // navigating from canvas screen first time, for canvasImages[0]
-                    //     :
                     pdfModel.pdfName,
                     overflow: TextOverflow.fade,
                     maxFontSize: 17.0,
@@ -160,6 +169,7 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                               images: canvasImages,
                               convertedTexts: convertedTexts,
                               txtFileName: pdfModel.pdfName,
+                              fileCreationDate: fileCreationDate,
                             );
                             break;
                           case 'pdf':
@@ -168,6 +178,8 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                               images: canvasImages,
                               convertedTexts: convertedTexts,
                               pdfName: pdfModel.pdfName,
+                              fileCreationDate: fileCreationDate,
+                              // timestamp: timestamp.toString(),
                             );
                             break;
                           default:
@@ -219,6 +231,7 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                               ],
                             ),
                           ),
+
                           /// share
                           PopupMenuItem(
                             value: 'Share',
@@ -285,8 +298,7 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                                 setState(
                                   () {
                                     canvasImages.insert(index, deletedImage);
-                                    convertedTexts.insert(
-                                        index, deletedConvertedText);
+                                    convertedTexts.insert(index, deletedConvertedText);
                                   },
                                 );
                               },
@@ -309,18 +321,20 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                                   const EdgeInsets.symmetric(vertical: 10.0),
                               child: GestureDetector(
                                 onTap: () {
+                                  print('pdfModel: $pdfModel');
+                                  print('textModel: $textModel');
                                   Navigator.push(
                                     context,
                                     PageTransition(
                                       child: PdfImageItemScreen(
                                         pdfModel: pdfModel,
+                                        textModel: textModel,
                                         canvasImages: canvasImages,
                                         convertedTexts: convertedTexts,
-                                        // canvasImage: canvasImages[index],
                                         convertedText: convertedTexts[index],
                                         index: index,
                                       ),
-                                      type: PageTransitionType.fade,
+                                      type: PageTransitionType.slideInUp,
                                     ),
                                   );
                                 },
@@ -414,7 +428,8 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  print(convertedTexts);
+                  print(pdfModel);
+                  print(textModel);
                   Navigator.push(
                     context,
                     PageTransition(
@@ -424,8 +439,9 @@ class _PdfImagesScreenState extends State<PdfImagesScreen> {
                         canvasImages: canvasImages,
                         convertedTexts: convertedTexts,
                         pdfModel: pdfModel,
+                        textModel: textModel,
                       ),
-                      type: PageTransitionType.fade,
+                      type: PageTransitionType.rippleRightUp,
                     ),
                   );
                 },

@@ -3,15 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CreateHomeIcon extends StatelessWidget {
+  final double width;
+  final double height;
   final String iconName;
   final String image;
+  final double imageSize;
   final Color shadowColor;
   final Function() onTap;
 
   const CreateHomeIcon({
     Key key,
+    @required this.width,
+    @required this.height,
     @required this.iconName,
     @required this.image,
+    @required this.imageSize,
     this.shadowColor = Colors.transparent,
     this.onTap,
   }) : super(key: key);
@@ -21,15 +27,14 @@ class CreateHomeIcon extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        // elevation: 15.0,
-        // shadowColor: shadowColor,
-        // color: Colors.yellowAccent,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
                 MediaQuery.of(context).size.height * 0.03)),
         child: Container(
+          width: width,
+          height: height,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Colors.lightBlue.shade50,
             borderRadius: BorderRadius.circular(
                 MediaQuery.of(context).size.height * 0.03),
             boxShadow: [
@@ -43,18 +48,17 @@ class CreateHomeIcon extends StatelessWidget {
             ],
           ),
           padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.03,
-              vertical: MediaQuery.of(context).size.height * 0.01),
-          width: MediaQuery.of(context).size.width * 0.46,
+            horizontal: MediaQuery.of(context).size.width * 0.03,
+            vertical: MediaQuery.of(context).size.height * 0.01,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
                 image,
                 fit: BoxFit.cover,
-                // color: Colors.lightGreenAccent,
-                width: MediaQuery.of(context).size.width * 0.40,
-                height: MediaQuery.of(context).size.width * 0.40,
+                width: imageSize,
+                height: imageSize,
               ),
               // SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               AutoSizeText(

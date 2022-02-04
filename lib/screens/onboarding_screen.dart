@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
+import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/screens/user_state.dart';
 
 class OnBoardingScreen extends StatelessWidget {
@@ -15,7 +15,10 @@ class OnBoardingScreen extends StatelessWidget {
       onFinish: () {
         Navigator.pushReplacement(
           context,
-          PageTransition(type: PageTransitionType.fade, child: UserState()),
+          PageTransition(
+            type: PageTransitionType.rippleRightUp,
+            child: UserState(),
+          ),
         );
       },
       // finishButtonColor: Theme.of(context).primaryColor,

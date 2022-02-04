@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/screens/onboarding_screen.dart';
 import 'package:paint_to_print/services/first_time_open.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
       context,
       PageTransition(
         child: OnBoardingScreen(),
-        type: PageTransitionType.fade,
+        type: PageTransitionType.rippleRightUp,
       ),
     );
   }
@@ -71,7 +72,8 @@ class _SplashScreenState extends State<SplashScreen> {
             width: width,
             height: height,
             child: Image.asset(
-              'assets/images/splash_screen_bg.png',
+              // 'assets/images/splash_screen_bg.png',
+              'assets/images/swift_scanner.png',
               fit: BoxFit.cover,
             ),
           ),

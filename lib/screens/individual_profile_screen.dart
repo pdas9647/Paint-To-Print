@@ -1,8 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/screens/webview_screens/social_media_webview_screen.dart';
 import 'package:paint_to_print/widgets/about_us_social_media_icon.dart';
 import 'package:paint_to_print/widgets/about_us_textformfield.dart';
@@ -119,12 +119,11 @@ class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
                           context,
                           PageTransition(
                             child: SocialMediaWebViewScreen(
-
                               iconData: Icons.facebook_rounded,
                               title: 'Facebook',
                               url: personMap['facebook'],
                             ),
-                            type: PageTransitionType.leftToRightWithFade,
+                            type: PageTransitionType.slideInLeft,
                             duration: Duration(milliseconds: 5),
                           ),
                         );
@@ -146,7 +145,7 @@ class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
                               title: 'Instagram',
                               url: personMap['instagram'],
                             ),
-                            type: PageTransitionType.rightToLeftWithFade,
+                            type: PageTransitionType.slideInRight,
                             duration: Duration(milliseconds: 5),
                           ),
                         );
@@ -169,7 +168,7 @@ class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
                               title: 'LinkedIn',
                               url: personMap['linkedIn'],
                             ),
-                            type: PageTransitionType.leftToRightWithFade,
+                            type: PageTransitionType.slideInLeft,
                             duration: Duration(milliseconds: 5),
                           ),
                         );
@@ -190,7 +189,7 @@ class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
                               title: 'GitHub',
                               url: personMap['github'],
                             ),
-                            type: PageTransitionType.rightToLeftWithFade,
+                            type: PageTransitionType.slideInRight,
                             duration: Duration(milliseconds: 5),
                           ),
                         );

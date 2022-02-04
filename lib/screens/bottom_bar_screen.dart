@@ -16,6 +16,8 @@ import 'canvas/canvas_view_screen.dart';
 import 'home_screen.dart';
 
 class BottomBarScreen extends StatefulWidget {
+  static int currentIndex = 0;
+
   const BottomBarScreen({Key key}) : super(key: key);
 
   @override
@@ -25,7 +27,6 @@ class BottomBarScreen extends StatefulWidget {
 class _BottomBarScreenState extends State<BottomBarScreen>
     with TickerProviderStateMixin {
   PageController _pageController;
-  int _currentIndex = 0;
   DateTime backButtonPressTime;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   AnimationController _animationController;
@@ -103,7 +104,7 @@ class _BottomBarScreenState extends State<BottomBarScreen>
             style: GoogleFonts.arimo(fontSize: 17.0),
           ),
         ),
-        child: _buildScreens.elementAt(_currentIndex),
+        child: _buildScreens.elementAt(BottomBarScreen.currentIndex),
       ),
       bottomNavigationBar: Container(
         height: height * 0.09,
@@ -188,8 +189,9 @@ class _BottomBarScreenState extends State<BottomBarScreen>
                   ),
                 ),
               ],
-              selectedIndex: _currentIndex,
-              onTabChange: (index) => setState(() => _currentIndex = index),
+              selectedIndex: BottomBarScreen.currentIndex,
+              onTabChange: (index) =>
+                  setState(() => BottomBarScreen.currentIndex = index),
             ),
           ),
         ),

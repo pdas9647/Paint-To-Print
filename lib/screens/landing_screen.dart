@@ -4,9 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/screens/auth/login_screen.dart';
 import 'package:paint_to_print/screens/auth/signup_screen.dart';
 import 'package:paint_to_print/services/global_methods.dart';
@@ -207,7 +207,7 @@ class _LandingScreenState extends State<LandingScreen>
                               context,
                               PageTransition(
                                 child: LoginScreen(),
-                                type: PageTransitionType.fade,
+                                type: PageTransitionType.rippleRightUp,
                               ),
                             );
                           },
@@ -249,7 +249,7 @@ class _LandingScreenState extends State<LandingScreen>
                               context,
                               PageTransition(
                                 child: SignUpScreen(),
-                                type: PageTransitionType.fade,
+                                type: PageTransitionType.rippleRightUp,
                               ),
                             );
                           },

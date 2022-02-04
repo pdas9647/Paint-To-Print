@@ -1,12 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/screens/about_us_screen.dart';
 import 'package:paint_to_print/screens/onboarding_screen.dart';
 
 class BackLayerMenu extends StatelessWidget {
   final BuildContext context;
+
   const BackLayerMenu({Key key, this.context}) : super(key: key);
 
   @override
@@ -123,7 +124,7 @@ class BackLayerMenu extends StatelessWidget {
                         context,
                         PageTransition(
                           child: OnBoardingScreen(),
-                          type: PageTransitionType.fade,
+                          type: PageTransitionType.rippleRightUp,
                         ),
                       );
                     },
@@ -157,7 +158,7 @@ class BackLayerMenu extends StatelessWidget {
                         context,
                         PageTransition(
                           child: AboutUsScreen(),
-                          type: PageTransitionType.fade,
+                          type: PageTransitionType.rippleRightUp,
                         ),
                       );
                     },

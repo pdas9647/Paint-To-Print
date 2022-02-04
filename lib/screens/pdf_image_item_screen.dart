@@ -3,11 +3,12 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/models/pdf_model.dart';
+import 'package:paint_to_print/models/text_model.dart';
 import 'package:paint_to_print/screens/pdf_images_screen.dart';
 
 enum MODE {
@@ -16,9 +17,11 @@ enum MODE {
 }
 
 class PdfImageItemScreen extends StatefulWidget {
-  final PdfModel pdfModel;
+  final PDFModel pdfModel;
+  final TextModel textModel;
   final List<Uint8List> canvasImages;
   final List<String> convertedTexts;
+
   // final Uint8List canvasImage;
   final String convertedText;
   final int index;
@@ -26,6 +29,7 @@ class PdfImageItemScreen extends StatefulWidget {
   const PdfImageItemScreen({
     Key key,
     @required this.pdfModel,
+    @required this.textModel,
     @required this.canvasImages,
     @required this.convertedTexts,
     // @required this.canvasImage,
@@ -38,7 +42,8 @@ class PdfImageItemScreen extends StatefulWidget {
 }
 
 class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
-  PdfModel pdfModel;
+  PDFModel pdfModel;
+  TextModel textModel;
   MODE editViewMode;
   int index;
   List<Uint8List> canvasImages = [];
@@ -210,6 +215,7 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
     // TODO: implement initState
     super.initState();
     pdfModel = widget.pdfModel;
+    textModel = widget.textModel;
     editViewMode = MODE.VIEW_MODE;
     index = widget.index;
     canvasImages = widget.canvasImages;
@@ -220,7 +226,6 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(editViewMode);
     return WillPopScope(
       onWillPop: () {
         if (widget.convertedText != convertedText) _showPopAlertDialog();
@@ -278,19 +283,20 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
                           Navigator.pushReplacement(
                             context,
                             PageTransition(
-                              child: PdfImagesScreen(
+                              child: PDFImagesScreen(
                                 isNavigatedFromHomeScreen: false,
                                 canvasImages: canvasImages,
                                 pdfModel: pdfModel,
+                                textModel: textModel,
                                 convertedTexts: convertedTexts,
                               ),
-                              type: PageTransitionType.fade,
+                              type: PageTransitionType.slideInDown,
                             ),
                           );
-                            //   .then((value) {
-                            // setState(() {
-                            //   convertedTexts;
-                            // });
+                          //   .then((value) {
+                          // setState(() {
+                          //   convertedTexts;
+                          // });
                           // });
                         },
                         icon: Icon(

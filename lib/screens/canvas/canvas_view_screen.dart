@@ -5,11 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:paint_to_print/models/pdf_model.dart';
 import 'package:paint_to_print/models/prediction_model.dart';
+import 'package:paint_to_print/models/text_model.dart';
 import 'package:paint_to_print/services/recognizer.dart';
 import 'package:paint_to_print/utils/constants.dart';
 import 'package:paint_to_print/widgets/floating_action_button_text.dart';
@@ -24,7 +25,8 @@ class CanvasViewScreen extends StatefulWidget {
   final bool isNavigatedFromPdfImagesScreen;
   final List<Uint8List> canvasImages;
   final List<String> convertedTexts;
-  final PdfModel pdfModel;
+  final PDFModel pdfModel;
+  final TextModel textModel;
   double strokeWidth;
 
   CanvasViewScreen({
@@ -34,6 +36,7 @@ class CanvasViewScreen extends StatefulWidget {
     this.canvasImages,
     this.convertedTexts,
     this.pdfModel,
+    this.textModel,
     this.strokeWidth = 2.0,
   }) : super(key: key);
 
@@ -169,27 +172,6 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
   }
 
   Future<void> saveCanvas() async {
-    // RenderRepaintBoundary boundary =
-    //     canvasKey.currentContext.findRenderObject();
-    // ui.Image image = await boundary.toImage();
-    // ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    // Uint8List pngBytes = byteData.buffer.asUint8List();
-
-    // final picture = Recognizer().pointsToPicture(points);
-    // Uint8List pngBytes = await Recognizer()
-    //     .imageToByteListUint8(picture, Constants.mnistImageSize);
-    // print(pngBytes);
-
-    // ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
-    // ui.Picture picture = pictureRecorder.endRecording();
-    // ui.Image image = await picture.toImage(MediaQuery.of(context).size.width.toInt(),
-    //     MediaQuery.of(context).size.height.toInt());
-    // ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    // Uint8List pngBytes = byteData.buffer.asUint8List();
-    // Uint8List pngBytes = await Recognizer().imageToByteListUint8(
-    //   Recognizer().pointsToPicture(points),
-    //   Constants.mnistImageSize,
-    // );
     ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     Canvas canvas = new Canvas(pictureRecorder);
     OwnCustomPainter(pointsList: points)..paint(canvas, Size.infinite);
@@ -213,12 +195,14 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
       Navigator.pushReplacement(
         context,
         PageTransition(
-          child: PdfImagesScreen(
+          child: PDFImagesScreen(
+            pdfModel: widget.pdfModel,
+            textModel: widget.textModel,
             isNavigatedFromHomeScreen: true,
             canvasImages: canvasImages,
             convertedTexts: convertedTexts,
           ),
-          type: PageTransitionType.fade,
+          type: PageTransitionType.rippleRightUp,
         ),
       );
     }
@@ -235,13 +219,13 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
       Navigator.pushReplacement(
         context,
         PageTransition(
-          child: PdfImagesScreen(
+          child: PDFImagesScreen(
             isNavigatedFromHomeScreen: false,
             canvasImages: canvasImages,
             pdfModel: widget.pdfModel,
             convertedTexts: convertedTexts,
           ),
-          type: PageTransitionType.fade,
+          type: PageTransitionType.rippleRightUp,
         ),
       );
     }
@@ -344,7 +328,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
 
                 /// clear all
                 Visibility(
-                  visible: pointLengths.length >= 1,
+                  visible: points.length >= 2,
                   child: IconButton(
                     onPressed: () {
                       setState(() {
@@ -584,7 +568,20 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
             closedBackgroundColor: Theme.of(context).primaryColor,
             openBackgroundColor: Theme.of(context).colorScheme.error,
             speedDialChildren: <SpeedDialChild>[
-              /// clear
+              /// undo
+              SpeedDialChild(
+                child: Icon(
+                  Icons.undo_rounded,
+                  size: MediaQuery.of(context).size.height * 0.035,
+                ),
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.orange,
+                label: 'Undo',
+                onPressed: performUndo,
+                closeSpeedDialOnPressed: true,
+              ),
+
+              /// clear all
               SpeedDialChild(
                 child: Icon(
                   Icons.clear_all_rounded,
