@@ -20,6 +20,7 @@ import 'package:paint_to_print/widgets/create_home_icon.dart';
 import 'package:paint_to_print/widgets/loading_cube_grid.dart';
 import 'package:paint_to_print/widgets/user_details.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'pdf_images_screen.dart';
 
@@ -52,6 +53,23 @@ class _HomeScreenState extends State<HomeScreen> {
     predictions =
         _predictions.map((json) => PredictionModel.fromJson(json)).toList();
     print(_predictions.first);
+  }
+
+  Widget Shimmers({double height, double width}) {
+    return Container(
+      height: height * 0.38 - width * 0.05,
+      width: width * 0.94,
+      child: Shimmer.fromColors(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(height * 0.05),
+          ),
+        ),
+        baseColor: Colors.white38,
+        highlightColor: Colors.grey,
+      ),
+    );
   }
 
   /*Future<void> _pickImageCamera() async {
@@ -140,7 +158,19 @@ class _HomeScreenState extends State<HomeScreen> {
             stream: _firebaseFirestore.collection('users').snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const LoadingCubeGrid();
+                return Stack(
+                  children: [
+                    Container(),
+
+                    /// shimmers
+                    Positioned(
+                      top: height * 0.02,
+                      left: width * 0.03,
+                      right: width * 0.03,
+                      child: Shimmers(width: width, height: height),
+                    ),
+                  ],
+                );
               }
               final userStream = snapshot.data.docs.map((user) {
                 return UserModel.fromDocument(user);

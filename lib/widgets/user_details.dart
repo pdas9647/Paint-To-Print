@@ -20,6 +20,14 @@ class UserDetails extends StatefulWidget {
 }
 
 class _UserDetailsState extends State<UserDetails> {
+  String getInitialLetter() {
+    String initialLetter = '';
+    if (widget.userModel.name.isNotEmpty) {
+      initialLetter = widget.userModel.name.substring(0, 1);
+    }
+    return initialLetter;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,8 +38,8 @@ class _UserDetailsState extends State<UserDetails> {
         elevation: 8.0,
         color: Colors.green.shade50,
         margin: EdgeInsets.symmetric(vertical: widget.height * 0.02),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(widget.height * 0.05)),
         shadowColor: Colors.black,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -41,6 +49,15 @@ class _UserDetailsState extends State<UserDetails> {
               width: widget.width * 0.35,
               child: CircleAvatar(
                 radius: widget.height * 0.10,
+                backgroundColor: Theme.of(context).primaryColor,
+                child: Text(
+                  getInitialLetter(),
+                  style: GoogleFonts.arimo(
+                    fontSize: MediaQuery.of(context).size.height * 0.1,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
             SizedBox(width: widget.width * 0.005),
