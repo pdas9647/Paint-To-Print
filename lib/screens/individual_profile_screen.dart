@@ -2,7 +2,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_page_transition/flutter_page_transition.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:open_mail_app/open_mail_app.dart';
 import 'package:paint_to_print/screens/webview_screens/social_media_webview_screen.dart';
 import 'package:paint_to_print/widgets/about_us_social_media_icon.dart';
 import 'package:paint_to_print/widgets/about_us_textformfield.dart';
@@ -20,6 +22,26 @@ class IndividualProfileScreen extends StatefulWidget {
 
 class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
   Map<String, String> personMap;
+
+  Future<void> showNoMailAppsDialog(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Open Mail App'),
+          content: Text('No mail apps installed'),
+          actions: [
+            TextButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -248,12 +270,42 @@ class _IndividualProfileScreenState extends State<IndividualProfileScreen> {
                     AboutUsTextFormField(
                       labelText: 'Email',
                       initialValue: personMap['email'],
+                      onTap: () async {
+                        print('Email');
+                        EmailContent emailContent = EmailContent(
+                          to: [personMap['email']],
+                          subject: 'Hello!',
+                          body: 'How are you doing?',
+                          // cc: ['user2@domain.com', 'user3@domain.com'],
+                          // bcc: ['boss@domain.com'],
+                        );
+                        var apps = await OpenMailApp.getMailApps();
+                        // If no mail apps found, show error
+                        if (apps.isEmpty) {
+                          showNoMailAppsDialog(context);
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (_) {
+                              return MailAppPickerDialog(
+                                mailApps: apps,
+                                emailContent: emailContent,
+                              );
+                            },
+                          );
+                        }
+                      },
                     ),
 
                     /// phone
                     AboutUsTextFormField(
                       labelText: 'Phone',
                       initialValue: personMap['phoneNumber'],
+                      onTap: () async {
+                        print('Phone');
+                        await FlutterPhoneDirectCaller.callNumber(
+                            personMap['phoneNumber']);
+                      },
                     ),
 
                     /// message

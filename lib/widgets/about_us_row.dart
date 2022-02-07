@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_page_transition/flutter_page_transition.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AboutUsCustomListTile extends StatelessWidget {
@@ -116,26 +117,33 @@ class AboutUsCustomListTile extends StatelessWidget {
                           width: MediaQuery.of(context).size.width * 0.35,
                           padding: EdgeInsets.only(
                               top: MediaQuery.of(context).size.height * 0.02),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.call_outlined,
-                                color: Theme.of(context).primaryColor,
-                                size:
-                                    MediaQuery.of(context).size.height * 0.025,
-                              ),
-                              AutoSizeText(
-                                phoneNumber,
-                                style: GoogleFonts.arimo(
-                                  fontWeight: FontWeight.w500,
+                          child: GestureDetector(
+                            onTap: () async {
+                              await FlutterPhoneDirectCaller.callNumber(
+                                  phoneNumber);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.call_outlined,
                                   color: Theme.of(context).primaryColor,
-                                  fontSize: MediaQuery.of(context).size.height *
+                                  size: MediaQuery.of(context).size.height *
                                       0.025,
                                 ),
-                              ),
-                            ],
+                                AutoSizeText(
+                                  phoneNumber,
+                                  style: GoogleFonts.arimo(
+                                    fontWeight: FontWeight.w500,
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize:
+                                        MediaQuery.of(context).size.height *
+                                            0.025,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

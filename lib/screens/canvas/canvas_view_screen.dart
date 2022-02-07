@@ -165,7 +165,7 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
   Future<void> _recognize() async {
     print('_recognize called');
     print('points: ${points.first.point}');
-    List<dynamic> _predictions = await Recognizer().recognize(context, points);
+    List<dynamic> _predictions = await Recognizer().recognizeCanvasDrawing(context, points);
     predictions =
         _predictions.map((json) => PredictionModel.fromJson(json)).toList();
     print(_predictions.first);

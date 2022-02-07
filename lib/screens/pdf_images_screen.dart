@@ -30,8 +30,8 @@ class PDFImagesScreen extends StatefulWidget {
     @required this.isNavigatedFromHomeScreen,
     @required this.canvasImages,
     @required this.convertedTexts,
-    @required this.pdfModel,
-    @required this.textModel,
+     this.pdfModel,
+    this.textModel,
   }) : super(key: key);
 
   @override

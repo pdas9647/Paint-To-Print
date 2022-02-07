@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,17 +10,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:paint_to_print/models/prediction_model.dart';
 import 'package:paint_to_print/models/user_model.dart';
 import 'package:paint_to_print/screens/canvas/canvas_view_screen.dart';
+import 'package:paint_to_print/services/recognizer.dart';
 import 'package:paint_to_print/widgets/create_home_icon.dart';
 import 'package:paint_to_print/widgets/loading_cube_grid.dart';
 import 'package:paint_to_print/widgets/user_details.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
+import 'pdf_images_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   static int noOfCreatedPdfs = 0;
   static int noOfCreatedTexts = 0;
+
   const HomeScreen({Key key}) : super(key: key);
 
   @override
@@ -31,6 +38,80 @@ class _HomeScreenState extends State<HomeScreen> {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   ProgressDialog progressDialog;
   UserModel userModel;
+  String _pickedImage = '';
+  List<Uint8List> points = [];
+  List<Uint8List> _images = [];
+  List<PredictionModel> predictions = [];
+  bool isLoading = false;
+
+  Future<void> _recognize() async {
+    print('_recognize called');
+    // print('points: ${points.first.point}');
+    List<dynamic> _predictions =
+        await Recognizer().recognizeImage(context, points);
+    predictions =
+        _predictions.map((json) => PredictionModel.fromJson(json)).toList();
+    print(_predictions.first);
+  }
+
+  /*Future<void> _pickImageCamera() async {
+    String imagePath;
+    print('_pickImageCamera');
+    try {
+      imagePath = (await EdgeDetection.detectEdge);
+      imagePath == null ? null : File(imagePath);
+      _images.add(File(imagePath));
+      print(imagePath);
+      setState(() {
+        _pickedImage = imagePath;
+      });
+    } on PlatformException {
+      imagePath = 'Failed to get cropped image path.';
+    }
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _pickedImage = imagePath;
+    });
+  }*/
+
+  Future<void> _pickImageGallery() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 99,
+    );
+    final pickedImageFile = pickedImage == null ? null : File(pickedImage.path);
+    Uint8List imageUint8List = await pickedImageFile.readAsBytes();
+    points.add(imageUint8List);
+    print(imageUint8List);
+    _images.add(imageUint8List);
+    if (_images.isNotEmpty) {
+      setState(() {
+        isLoading = true;
+      });
+      /*await _recognize().then((value) {
+        setState(() {
+          isLoading = false;
+        });
+        Navigator.push(
+          context,
+          PageTransition(
+            child: PDFImagesScreen(
+              canvasImages: _images,
+              convertedTexts: ['1'],
+              isNavigatedFromHomeScreen: true,
+            ),
+            type: PageTransitionType.rippleRightUp,
+          ),
+        );
+      });*/
+    }
+    setState(() {
+      // _pickedImage = pickedImageFile;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,10 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       image: 'assets/images/import_picture.png',
                       imageSize: MediaQuery.of(context).size.width * 0.14,
                       shadowColor: Colors.orange.shade100,
-                      onTap: () {
-                        print('Import Picture');
-                        Fluttertoast.showToast(msg: 'Import Picture');
-                      },
+                      onTap: _pickImageGallery,
                     ),
                   ],
                 ),

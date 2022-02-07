@@ -82,6 +82,9 @@ dependencies:
   webview_flutter: ^3.0.0
   share:
   flutter_cache_manager: ^3.3.0
+  image_picker: ^0.8.4+6
+  shimmer: ^2.0.0
+  open_mail_app: ^0.4.3
 
 dev_dependencies:
   flutter_test:

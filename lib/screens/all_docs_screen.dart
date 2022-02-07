@@ -9,6 +9,7 @@ import 'package:paint_to_print/models/pdf_model.dart';
 import 'package:paint_to_print/models/text_model.dart';
 import 'package:paint_to_print/services/global_methods.dart';
 import 'package:paint_to_print/widgets/loading_cube_grid.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'home_screen.dart';
 
@@ -45,25 +46,23 @@ class _AllDocsScreenState extends State<AllDocsScreen>
             return Stack(
               children: [
                 Container(),
+                /// shimmers
                 Positioned(
-                  top: 0.0,
-                  left: 0.0,
-                  bottom: 0.0,
-                  right: 0.0,
-                  child: LoadingCubeGrid(),
+                  top: MediaQuery.of(context).size.height * 0.065 +
+                      MediaQuery.of(context).size.width * 0.02,
+                  left: MediaQuery.of(context).size.width * 0.02,
+                  right: MediaQuery.of(context).size.width * 0.01,
+                  child: Shimmers(),
                 ),
               ],
             );
           } else {
             print('Error');
           }
-          print('67: ${snapshot.data.docs}');
           var fileList = snapshot.data.docs.map((file) {
             return PDFModel.fromDocument(file);
           }).toList();
-          print('75: $fileList');
           return ListView.builder(
-            // padding: EdgeInsets.only(top: 5.0),
             shrinkWrap: true,
             itemCount: fileList.length,
             itemBuilder: (BuildContext context, int index) {
@@ -71,8 +70,11 @@ class _AllDocsScreenState extends State<AllDocsScreen>
               return Container(
                 padding:
                     EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                        MediaQuery.of(context).size.width * 0.02)),
                 // margin: EdgeInsets.all(10.0),
-                color: Colors.greenAccent,
+                // color: Colors.greenAccent,
                 height: MediaQuery.of(context).size.height * 0.23,
                 child: GestureDetector(
                   onTap: () async {
@@ -90,16 +92,24 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                       ),
                     );*/
                   },
-                  child: Card(
-                    // margin: EdgeInsets.all(0),
-                    color: Colors.indigo.shade200,
-                    elevation: 10.0,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0)),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height * 0.02),
                     child: Row(
                       children: [
-                        Icon(Icons.picture_as_pdf_rounded,
-                            size: MediaQuery.of(context).size.width * 0.3),
+                        /// pdf preview
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.3,
+                          width: MediaQuery.of(context).size.width * 0.3,
+                          decoration: BoxDecoration(
+                            // color: Colors.greenAccent,
+                            borderRadius: BorderRadius.circular(
+                                MediaQuery.of(context).size.width * 0.02),
+                            image: DecorationImage(
+                              image: AssetImage('assets/images/pdf_icon.png'),
+                            ),
+                          ),
+                        ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -108,7 +118,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                 height:
                                     MediaQuery.of(context).size.height * 0.02),
 
-                            /// single file row
+                            /// file name & more icon
                             Flexible(
                               flex: 3,
                               child: Container(
@@ -281,13 +291,22 @@ class _AllDocsScreenState extends State<AllDocsScreen>
             return Stack(
               children: [
                 Container(),
+                /// shimmers
                 Positioned(
-                  top: 0.0,
-                  left: 0.0,
-                  bottom: 0.0,
-                  right: 0.0,
-                  child: LoadingCubeGrid(),
+                  top: MediaQuery.of(context).size.height * 0.065 +
+                      MediaQuery.of(context).size.width * 0.02,
+                  left: MediaQuery.of(context).size.width * 0.02,
+                  right: MediaQuery.of(context).size.width * 0.01,
+                  child: Shimmers(),
                 ),
+                // Positioned(
+                //   top: 0.0,
+                //   left: 0.0,
+                //   bottom: 0.0,
+                //   right: 0.0,
+                //   // child: LoadingCubeGrid(),
+                //   child: Shimmers(),
+                // ),
               ],
             );
           } else {
@@ -308,7 +327,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                 padding:
                     EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
                 // margin: EdgeInsets.all(10.0),
-                color: Colors.greenAccent,
+                // color: Colors.greenAccent,
                 height: MediaQuery.of(context).size.height * 0.23,
                 child: GestureDetector(
                   onTap: () async {
@@ -463,10 +482,79 @@ class _AllDocsScreenState extends State<AllDocsScreen>
         });
   }
 
+  Widget Shimmers() {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: 3,
+      itemBuilder: (context, index) {
+        return Container(
+          // height: MediaQuery.of(context).size.height * 0.23 -
+          //     MediaQuery.of(context).size.width * 0.02,
+          // width: MediaQuery.of(context).size.width,
+          // padding: EdgeInsets.only(
+          //   top: MediaQuery.of(context).size.height * 0.005,
+          //   left: MediaQuery.of(context).size.height * 0.02,
+          //   right: MediaQuery.of(context).size.height * 0.02,
+          //   bottom: MediaQuery.of(context).size.height * 0.02,
+          // ),
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+          height: MediaQuery.of(context).size.height * 0.23,
+          child: Container(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height * 0.02),
+            child: Row(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  child: Shimmer.fromColors(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    baseColor: Colors.white38,
+                    highlightColor: Colors.grey,
+                  ),
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                Column(
+                  children: [
+                    // SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                    Flexible(
+                      child: Container(
+                        // height: MediaQuery.of(context).size.height * 0.18,
+                        width: MediaQuery.of(context).size.width * 0.665,
+                        // padding: EdgeInsets.symmetric(
+                        //     vertical: MediaQuery.of(context).size.width * 0.02),
+                        child: Shimmer.fromColors(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          baseColor: Colors.white38,
+                          highlightColor: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    // getShimmer();
     tabController = TabController(length: 2, vsync: this);
   }
 
@@ -495,7 +583,8 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.docs.isNotEmpty) {
-                        HomeScreen.noOfCreatedPdfs = snapshot.data.docs.length;
+                        HomeScreen.noOfCreatedPdfs =
+                            snapshot.data.docs.length;
                         return Tab(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -506,8 +595,9 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                         MediaQuery.of(context).size.width *
                                             0.01),
                                 child: Icon(MdiIcons.filePdfBox,
-                                    size: MediaQuery.of(context).size.width *
-                                        0.07),
+                                    size:
+                                        MediaQuery.of(context).size.width *
+                                            0.07),
                               ),
                               Text(
                                 '(${HomeScreen.noOfCreatedPdfs})',
@@ -524,9 +614,11 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal:
-                                    MediaQuery.of(context).size.width * 0.01),
+                                    MediaQuery.of(context).size.width *
+                                        0.01),
                             child: Icon(MdiIcons.filePdfBox,
-                                size: MediaQuery.of(context).size.width * 0.07),
+                                size: MediaQuery.of(context).size.width *
+                                    0.07),
                           ),
                         );
                       }
@@ -535,7 +627,8 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                       return Text(
                         '',
                         style: GoogleFonts.arimo(
-                            fontSize: MediaQuery.of(context).size.width * 0.05),
+                            fontSize:
+                                MediaQuery.of(context).size.width * 0.05),
                       );
                     } else {
                       HomeScreen.noOfCreatedPdfs = 0;
@@ -547,15 +640,18 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                           Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal:
-                                    MediaQuery.of(context).size.width * 0.01),
+                                    MediaQuery.of(context).size.width *
+                                        0.01),
                             child: Icon(MdiIcons.filePdfBox,
-                                size: MediaQuery.of(context).size.width * 0.07),
+                                size: MediaQuery.of(context).size.width *
+                                    0.07),
                           ),
                           Text(
                             '(${HomeScreen.noOfCreatedPdfs})',
                             style: GoogleFonts.arimo(
                                 fontSize:
-                                    MediaQuery.of(context).size.width * 0.05),
+                                    MediaQuery.of(context).size.width *
+                                        0.05),
                           ),
                         ],
                       ),
@@ -570,7 +666,8 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.docs.isNotEmpty) {
-                        HomeScreen.noOfCreatedTexts = snapshot.data.docs.length;
+                        HomeScreen.noOfCreatedTexts =
+                            snapshot.data.docs.length;
                         return Tab(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -581,9 +678,11 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                     horizontal:
                                         MediaQuery.of(context).size.width *
                                             0.01),
-                                child: Icon(MaterialCommunityIcons.format_text,
-                                    size: MediaQuery.of(context).size.width *
-                                        0.07),
+                                child: Icon(
+                                    MaterialCommunityIcons.format_text,
+                                    size:
+                                        MediaQuery.of(context).size.width *
+                                            0.07),
                               ),
                               Text(
                                 '(${HomeScreen.noOfCreatedTexts})',
@@ -600,9 +699,11 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal:
-                                    MediaQuery.of(context).size.width * 0.01),
+                                    MediaQuery.of(context).size.width *
+                                        0.01),
                             child: Icon(MaterialCommunityIcons.format_text,
-                                size: MediaQuery.of(context).size.width * 0.07),
+                                size: MediaQuery.of(context).size.width *
+                                    0.07),
                           ),
                         );
                       }
@@ -611,7 +712,8 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                       return Text(
                         '',
                         style: GoogleFonts.arimo(
-                            fontSize: MediaQuery.of(context).size.width * 0.05),
+                            fontSize:
+                                MediaQuery.of(context).size.width * 0.05),
                       );
                     } else {
                       HomeScreen.noOfCreatedTexts = 0;
@@ -623,15 +725,18 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                           Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal:
-                                    MediaQuery.of(context).size.width * 0.01),
+                                    MediaQuery.of(context).size.width *
+                                        0.01),
                             child: Icon(MaterialCommunityIcons.format_text,
-                                size: MediaQuery.of(context).size.width * 0.07),
+                                size: MediaQuery.of(context).size.width *
+                                    0.07),
                           ),
                           Text(
                             '(${HomeScreen.noOfCreatedTexts})',
                             style: GoogleFonts.arimo(
                                 fontSize:
-                                    MediaQuery.of(context).size.width * 0.05),
+                                    MediaQuery.of(context).size.width *
+                                        0.05),
                           ),
                         ],
                       ),
