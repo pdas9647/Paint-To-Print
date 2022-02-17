@@ -2,9 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:paint_to_print/models/user_model.dart';
 import 'package:paint_to_print/screens/user_state.dart';
-import 'package:paint_to_print/widgets/user_details.dart';
 
 import 'screens/splash_screen.dart';
 

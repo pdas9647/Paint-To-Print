@@ -85,6 +85,8 @@ dependencies:
   image_picker: ^0.8.4+6
   shimmer: ^2.0.0
   open_mail_app: ^0.4.3
+  downloads_path_provider_28: ^0.1.2
+  dio: ^4.0.4
 
 dev_dependencies:
   flutter_test:

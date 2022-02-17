@@ -46,6 +46,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
             return Stack(
               children: [
                 Container(),
+
                 /// shimmers
                 Positioned(
                   top: MediaQuery.of(context).size.height * 0.065 +
@@ -95,6 +96,18 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                   child: Container(
                     padding: EdgeInsets.symmetric(
                         vertical: MediaQuery.of(context).size.height * 0.02),
+                    decoration: BoxDecoration(
+                      color: Colors.white60,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black,
+                          // color: Colors.grey,
+                          offset: Offset(2, 10),
+                          blurRadius: 20.0,
+                          // spreadRadius: 2.0,
+                        ),
+                      ],
+                    ),
                     child: Row(
                       children: [
                         /// pdf preview
@@ -124,7 +137,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                               child: Container(
                                 height:
                                     MediaQuery.of(context).size.height * 0.08,
-                                color: Colors.redAccent.shade100,
+                                // color: Colors.redAccent.shade100,
                                 width: MediaQuery.of(context).size.width * 0.63,
                                 child: Row(
                                   mainAxisAlignment:
@@ -152,7 +165,13 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                     Flexible(
                                       child:
                                           GlobalMethods.morePdfItemsPopupMenu(
-                                              context: context),
+                                        context: context,
+                                        pdfModel: pdfModel,
+                                        collectionName: 'createdpdfs',
+                                        index: index,
+                                            fileList: fileList,
+                                              snapshot: snapshot,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -179,7 +198,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                             Flexible(
                               flex: 1,
                               child: Container(
-                                color: Colors.lightBlue.shade100,
+                                // color: Colors.lightBlue.shade100,
                                 width: MediaQuery.of(context).size.width * 0.63,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -190,7 +209,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                       height:
                                           MediaQuery.of(context).size.height *
                                               0.10,
-                                      color: Colors.lightBlueAccent,
+                                      // color: Colors.lightBlueAccent,
                                       child: Row(
                                         children: [
                                           Text(
@@ -291,6 +310,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
             return Stack(
               children: [
                 Container(),
+
                 /// shimmers
                 Positioned(
                   top: MediaQuery.of(context).size.height * 0.065 +
@@ -583,8 +603,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.docs.isNotEmpty) {
-                        HomeScreen.noOfCreatedPdfs =
-                            snapshot.data.docs.length;
+                        HomeScreen.noOfCreatedPdfs = snapshot.data.docs.length;
                         return Tab(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -595,9 +614,8 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                         MediaQuery.of(context).size.width *
                                             0.01),
                                 child: Icon(MdiIcons.filePdfBox,
-                                    size:
-                                        MediaQuery.of(context).size.width *
-                                            0.07),
+                                    size: MediaQuery.of(context).size.width *
+                                        0.07),
                               ),
                               Text(
                                 '(${HomeScreen.noOfCreatedPdfs})',
@@ -614,11 +632,9 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal:
-                                    MediaQuery.of(context).size.width *
-                                        0.01),
+                                    MediaQuery.of(context).size.width * 0.01),
                             child: Icon(MdiIcons.filePdfBox,
-                                size: MediaQuery.of(context).size.width *
-                                    0.07),
+                                size: MediaQuery.of(context).size.width * 0.07),
                           ),
                         );
                       }
@@ -627,8 +643,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                       return Text(
                         '',
                         style: GoogleFonts.arimo(
-                            fontSize:
-                                MediaQuery.of(context).size.width * 0.05),
+                            fontSize: MediaQuery.of(context).size.width * 0.05),
                       );
                     } else {
                       HomeScreen.noOfCreatedPdfs = 0;
@@ -640,18 +655,15 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                           Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal:
-                                    MediaQuery.of(context).size.width *
-                                        0.01),
+                                    MediaQuery.of(context).size.width * 0.01),
                             child: Icon(MdiIcons.filePdfBox,
-                                size: MediaQuery.of(context).size.width *
-                                    0.07),
+                                size: MediaQuery.of(context).size.width * 0.07),
                           ),
                           Text(
                             '(${HomeScreen.noOfCreatedPdfs})',
                             style: GoogleFonts.arimo(
                                 fontSize:
-                                    MediaQuery.of(context).size.width *
-                                        0.05),
+                                    MediaQuery.of(context).size.width * 0.05),
                           ),
                         ],
                       ),
@@ -666,8 +678,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.docs.isNotEmpty) {
-                        HomeScreen.noOfCreatedTexts =
-                            snapshot.data.docs.length;
+                        HomeScreen.noOfCreatedTexts = snapshot.data.docs.length;
                         return Tab(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -678,11 +689,9 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                     horizontal:
                                         MediaQuery.of(context).size.width *
                                             0.01),
-                                child: Icon(
-                                    MaterialCommunityIcons.format_text,
-                                    size:
-                                        MediaQuery.of(context).size.width *
-                                            0.07),
+                                child: Icon(MaterialCommunityIcons.format_text,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.07),
                               ),
                               Text(
                                 '(${HomeScreen.noOfCreatedTexts})',
@@ -699,11 +708,9 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal:
-                                    MediaQuery.of(context).size.width *
-                                        0.01),
+                                    MediaQuery.of(context).size.width * 0.01),
                             child: Icon(MaterialCommunityIcons.format_text,
-                                size: MediaQuery.of(context).size.width *
-                                    0.07),
+                                size: MediaQuery.of(context).size.width * 0.07),
                           ),
                         );
                       }
@@ -712,8 +719,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                       return Text(
                         '',
                         style: GoogleFonts.arimo(
-                            fontSize:
-                                MediaQuery.of(context).size.width * 0.05),
+                            fontSize: MediaQuery.of(context).size.width * 0.05),
                       );
                     } else {
                       HomeScreen.noOfCreatedTexts = 0;
@@ -725,18 +731,15 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                           Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal:
-                                    MediaQuery.of(context).size.width *
-                                        0.01),
+                                    MediaQuery.of(context).size.width * 0.01),
                             child: Icon(MaterialCommunityIcons.format_text,
-                                size: MediaQuery.of(context).size.width *
-                                    0.07),
+                                size: MediaQuery.of(context).size.width * 0.07),
                           ),
                           Text(
                             '(${HomeScreen.noOfCreatedTexts})',
                             style: GoogleFonts.arimo(
                                 fontSize:
-                                    MediaQuery.of(context).size.width *
-                                        0.05),
+                                    MediaQuery.of(context).size.width * 0.05),
                           ),
                         ],
                       ),

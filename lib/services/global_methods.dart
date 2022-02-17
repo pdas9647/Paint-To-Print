@@ -3,8 +3,11 @@ import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
+import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_page_transition/flutter_page_transition.dart';
@@ -17,7 +20,9 @@ import 'package:paint_to_print/screens/bottom_bar_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdfWidget;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GlobalMethods {
@@ -274,21 +279,170 @@ class GlobalMethods {
         });
   }
 
-  static PopupMenuButton<String> morePdfItemsPopupMenu({BuildContext context}) {
+  static PopupMenuButton<String> morePdfItemsPopupMenu(
+      {BuildContext context,
+      PDFModel pdfModel,
+      TextModel textModel,
+      String collectionName,
+      int index,
+      fileList,
+      AsyncSnapshot snapshot}) {
     return PopupMenuButton(
       elevation: 8.0,
       padding: EdgeInsets.all(0.0),
       iconSize: MediaQuery.of(context).size.width * 0.05,
-      onSelected: (value) {
+      onSelected: (value) async {
         print(value);
+        final firebaseFirestore = FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser.uid)
+            .collection(collectionName);
+        print(index);
         switch (value) {
           case 'Share':
+            String saveFileName = pdfModel.pdfName;
+            final directory = await getExternalStorageDirectory();
+            String savePath = directory.path + '/$saveFileName';
+            final pdfFile = File('${directory.path}/${saveFileName}');
+            print(pdfFile.path);
+            if (pdfFile.existsSync() == true) {
+              print('pdf exists');
+              Share.shareFiles([savePath], text: '${saveFileName}');
+            } else {
+              print('pdf doesn\'t exist');
+              downloadPdf(
+                      context: context, pdfModel: pdfModel, savePath: savePath)
+                  .then((value) {
+                Share.shareFiles([savePath], text: '${saveFileName}');
+              });
+            }
             break;
-          case 'Share':
+
+          case 'Delete':
+
+            /// alert dialog
+            customDialog(context, 'Warning!', 'Do you want to delete?', () {
+              print('snapshot.data.docs[index]: ${snapshot.data.docs[index]}');
+
+              /// delete file from firebase storage
+              FirebaseStorage.instance.refFromURL(pdfModel.pdfUrl).delete();
+              print('Deleted from storage');
+
+              /// delete entry from firebasefirestore
+              firebaseFirestore
+                  .where('fileCreationDate',
+                      isEqualTo: pdfModel.fileCreationDate)
+                  .get()
+                  .then((value) {
+                value.docs.forEach((element) {
+                  firebaseFirestore.doc(element.id).delete().then((value) {
+                    print('Deleted from firestore');
+                    Navigator.of(context).pop();
+                    int documentsCount = 0;
+                    FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(FirebaseAuth.instance.currentUser.uid)
+                        .get()
+                        .then((documentSnapshot) {
+                      documentsCount = documentSnapshot.get('documentsCount');
+                    }).then((value) {
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser.uid)
+                          .update({
+                        'documentsCount': documentsCount - 1,
+                      });
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(18.0))),
+                        content: Text(
+                          'Deleted Successfully',
+                          style: GoogleFonts.arimo(fontSize: 17.0),
+                        ),
+                      ),
+                    );
+                  });
+                });
+              });
+            });
             break;
+
           case 'Download':
+            Map<Permission, PermissionStatus> statuses = await [
+              Permission.storage,
+            ].request();
+            if (statuses[Permission.storage].isGranted) {
+              Directory downloadDirectory =
+                  await DownloadsPathProvider.downloadsDirectory;
+              if (downloadDirectory != null) {
+                String savePath =
+                    downloadDirectory.path + '/${pdfModel.pdfName}';
+                downloadPdf(
+                        context: context,
+                        pdfModel: pdfModel,
+                        savePath: savePath)
+                    .then((value) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(18.0))),
+                      content: Text(
+                        'Downloaded Successfully',
+                        style: GoogleFonts.arimo(fontSize: 17.0),
+                      ),
+                    ),
+                  );
+                });
+              }
+            }
             break;
+
           case 'Rename':
+            TextEditingController _nameController =
+                TextEditingController(text: pdfModel.pdfName);
+            showDialog(
+                context: context,
+                builder: (BuildContext ctx) {
+                  return AlertDialog(
+                    content: TextFormField(
+                      controller: _nameController,
+                      style: GoogleFonts.arimo(fontWeight: FontWeight.w400),
+                      // decoration: InputDecoration(
+                      // labelStyle: GoogleFonts.arimo(fontWeight: FontWeight.w600),
+                      // hintStyle: GoogleFonts.arimo(fontWeight: FontWeight.w600),
+                      // ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          if (!_nameController.text.contains('.pdf')) {
+                            _nameController.text += '.pdf';
+                          }
+                          firebaseFirestore
+                              .where('fileCreationDate',
+                                  isEqualTo: pdfModel.fileCreationDate)
+                              .get()
+                              .then((value) {
+                            value.docs.forEach((element) {
+                              firebaseFirestore
+                                  .doc(element.id)
+                                  .update({'pdfName': _nameController.text});
+                            });
+                          });
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'Save',
+                          style: GoogleFonts.arimo(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  );
+                });
             break;
           default:
             break;
@@ -296,28 +450,6 @@ class GlobalMethods {
       },
       itemBuilder: (BuildContext context) {
         return [
-          /*/// view
-          PopupMenuItem(
-            value: 'View',
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'View',
-                  style: GoogleFonts.arimo(
-                    fontSize: 14.0,
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Icon(
-                  MaterialCommunityIcons.eye_circle,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ],
-            ),
-          ),*/
-
           /// share
           PopupMenuItem(
             value: 'Share',
@@ -408,6 +540,74 @@ class GlobalMethods {
         ];
       },
     );
+  }
+
+  static Future<void> downloadPdf(
+      {BuildContext context, PDFModel pdfModel, String savePath}) async {
+    String saveFileName = pdfModel.pdfName;
+    // String savePath = downloadDirectory.path + '/$saveFileName';
+    print(savePath);
+    try {
+      /*ProgressDialog progressDialog = ProgressDialog(context);*/
+      await Dio().download(pdfModel.pdfUrl, savePath,
+          onReceiveProgress: (received, total) {
+        if (total != -1) {
+          print((received / total * 100).toStringAsFixed(0) + '%');
+          /*// progress dialog
+                      progressDialog = ProgressDialog(
+                        context,
+                        type: ProgressDialogType.Download,
+                        isDismissible: true,
+                        customBody: Padding(
+                          padding: const EdgeInsets.all(14.0),
+                          child: StatefulBuilder(
+                            builder: (BuildContext context, setState) {
+                              print((received / total * 100).toStringAsFixed(0) + '%');
+                              return SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/double_ring_loading_io.gif',
+                                          height: 50.0,
+                                          width: 50.0,
+                                        ),
+                                        SizedBox(width: 10.0),
+                                        Flexible(
+                                          child: AutoSizeText(
+                                            'Downloading...',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.fade,
+                                            style: GoogleFonts.arimo(
+                                              fontSize: 20.0,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Text(
+                                          '${(received / total * 100).toStringAsFixed(0) + '%'}'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                      progressDialog.show();*/
+        }
+      });
+      /*progressDialog.hide();*/
+      print('$saveFileName is saved to ${savePath}');
+    } on DioError catch (e) {
+      // progressDialog.hide();
+      print('Error in download: ${e.message}');
+    }
   }
 
   static Future<void> createAndSavePdfFile({
@@ -509,7 +709,7 @@ class GlobalMethods {
       var pdfCreationMonth =
           DateFormat('MMM').format(DateTime.parse(dateParse));
       var pdfCreationDate = dateParse.substring(8, 10);
-      var pdfCreationTime = dateParse.substring(11, 16);
+      var pdfCreationTime = dateParse.substring(11, 19);
       var pdfCreationDateTime =
           '$pdfCreationDate $pdfCreationMonth, $pdfCreationYear $pdfCreationTime';
       print('pdfCreationYear: $pdfCreationYear');
@@ -520,7 +720,7 @@ class GlobalMethods {
       Reference storageReference = FirebaseStorage.instance
           .ref()
           .child('createdpdfs')
-          .child('$pdfName.pdf');
+          .child('$pdfName.pdf $pdfCreationDateTime');
       print('Uploading in storage...!');
       await progressDialog.show();
       await storageReference.putFile(pdfFile).then((p0) async {
@@ -531,7 +731,7 @@ class GlobalMethods {
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser.uid)
             .collection('createdpdfs')
-            .doc(pdfName + '.pdf')
+            .doc('$pdfName.pdf $pdfCreationDateTime')
             .set(PDFModel(
               pdfName: pdfName + '.pdf',
               // canvasImages: ,
@@ -547,14 +747,17 @@ class GlobalMethods {
           await progressDialog.hide();
           // uploaded in firestore
           int documentsCount = 0;
-          FirebaseFirestore.instance.collection('users')
+          FirebaseFirestore.instance
+              .collection('users')
               .doc(FirebaseAuth.instance.currentUser.uid)
               .get()
               .then((documentSnapshot) {
             documentsCount = documentSnapshot.get('documentsCount');
           }).then((value) {
-            FirebaseFirestore.instance.collection('users')
-                .doc(FirebaseAuth.instance.currentUser.uid).update({
+            FirebaseFirestore.instance
+                .collection('users')
+                .doc(FirebaseAuth.instance.currentUser.uid)
+                .update({
               'documentsCount': documentsCount + 1,
             });
           });
@@ -595,9 +798,12 @@ class GlobalMethods {
   static Future<void> launchURL({String url}) async {
     if (!await launch(url))
       SnackBar(
+        backgroundColor: Colors.red.shade200,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(18.0))),
         content: Text(
           'Something went wrong',
-          style: GoogleFonts.arimo(fontWeight: FontWeight.w500),
+          style: GoogleFonts.arimo(fontSize: 17.0, color: Colors.black),
         ),
       );
   }
@@ -662,7 +868,7 @@ class GlobalMethods {
       var txtCreationMonth =
           DateFormat('MMM').format(DateTime.parse(dateParse));
       var txtCreationDate = dateParse.substring(8, 10);
-      var txtCreationTime = dateParse.substring(11, 16);
+      var txtCreationTime = dateParse.substring(11, 19);
       var txtCreationDateTime =
           '$txtCreationDate $txtCreationMonth, $txtCreationYear $txtCreationTime';
       print('txtCreationYear: $txtCreationYear');
@@ -673,7 +879,7 @@ class GlobalMethods {
       Reference storageReference = FirebaseStorage.instance
           .ref()
           .child('createdtxts')
-          .child('$txtFileName.txt');
+          .child('$txtFileName.txt $txtCreationDateTime');
       print('Uploading in storage...!');
       await progressDialog.show();
       await storageReference.putFile(txtFile).then((p0) async {
@@ -684,7 +890,7 @@ class GlobalMethods {
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser.uid)
             .collection('createdtxts')
-            .doc(txtFileName + '.txt')
+            .doc('$txtFileName.txt $txtCreationDateTime')
             .set(TextModel(
               textName: txtFileName + '.txt',
               // canvasImages: ,
@@ -699,14 +905,17 @@ class GlobalMethods {
           await progressDialog.hide();
           // uploaded in firestore
           int documentsCount = 0;
-          FirebaseFirestore.instance.collection('users')
+          FirebaseFirestore.instance
+              .collection('users')
               .doc(FirebaseAuth.instance.currentUser.uid)
               .get()
               .then((documentSnapshot) {
             documentsCount = documentSnapshot.get('documentsCount');
           }).then((value) {
-            FirebaseFirestore.instance.collection('users')
-                .doc(FirebaseAuth.instance.currentUser.uid).update({
+            FirebaseFirestore.instance
+                .collection('users')
+                .doc(FirebaseAuth.instance.currentUser.uid)
+                .update({
               'documentsCount': documentsCount + 1,
             });
           });

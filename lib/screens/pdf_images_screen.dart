@@ -289,8 +289,10 @@ class _PDFImagesScreenState extends State<PDFImagesScreen> {
                         /// undo action
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(top: Radius.circular(18.0))),
                             content:
-                                Text('Deleted', style: GoogleFonts.arimo()),
+                                Text('Deleted', style: GoogleFonts.arimo(fontSize: 17.0)),
                             duration: Duration(seconds: 3),
                             action: SnackBarAction(
                               label: 'Undo',
