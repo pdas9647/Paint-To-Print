@@ -290,7 +290,7 @@ class GlobalMethods {
     return PopupMenuButton(
       elevation: 8.0,
       padding: EdgeInsets.all(0.0),
-      iconSize: MediaQuery.of(context).size.width * 0.05,
+      iconSize: MediaQuery.of(context).size.width * 0.07,
       onSelected: (value) async {
         print(value);
         final firebaseFirestore = FirebaseFirestore.instance

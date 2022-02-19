@@ -93,194 +93,196 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                       ),
                     );*/
                   },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                        vertical: MediaQuery.of(context).size.height * 0.02),
-                    decoration: BoxDecoration(
-                      color: Colors.white60,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black,
-                          // color: Colors.grey,
-                          offset: Offset(2, 10),
-                          blurRadius: 20.0,
-                          // spreadRadius: 2.0,
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        /// pdf preview
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.3,
-                          width: MediaQuery.of(context).size.width * 0.3,
-                          decoration: BoxDecoration(
-                            // color: Colors.greenAccent,
-                            borderRadius: BorderRadius.circular(
-                                MediaQuery.of(context).size.width * 0.02),
-                            image: DecorationImage(
-                              image: AssetImage('assets/images/pdf_icon.png'),
+                  child: Card(
+                    color: Colors.indigo.shade200,
+                    elevation: 10.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0)),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: MediaQuery.of(context).size.height * 0.02),
+                      child: Row(
+                        children: [
+                          /// pdf preview
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            width: MediaQuery.of(context).size.width * 0.3,
+                            decoration: BoxDecoration(
+                              // color: Colors.greenAccent,
+                              borderRadius: BorderRadius.circular(
+                                  MediaQuery.of(context).size.width * 0.02),
+                              image: DecorationImage(
+                                image: AssetImage('assets/images/pdf_icon.png'),
+                              ),
                             ),
                           ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.02),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.02),
 
-                            /// file name & more icon
-                            Flexible(
-                              flex: 3,
-                              child: Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.08,
-                                // color: Colors.redAccent.shade100,
-                                width: MediaQuery.of(context).size.width * 0.63,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    /// file name
-                                    Flexible(
-                                      flex: 5,
-                                      child: Text(
-                                        pdfModel.pdfName,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.arimo(
-                                          fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.028,
-                                          fontWeight: FontWeight.w700,
+                              /// file name & more icon
+                              Flexible(
+                                flex: 3,
+                                child: Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.08,
+                                  // color: Colors.redAccent.shade100,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.63,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      /// file name
+                                      Flexible(
+                                        flex: 5,
+                                        child: Text(
+                                          pdfModel.pdfName,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: GoogleFonts.arimo(
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.028,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
                                       ),
-                                    ),
 
-                                    /// more_vert icon
-                                    Flexible(
-                                      child:
-                                          GlobalMethods.morePdfItemsPopupMenu(
-                                        context: context,
-                                        pdfModel: pdfModel,
-                                        collectionName: 'createdpdfs',
-                                        index: index,
-                                            fileList: fileList,
-                                              snapshot: snapshot,
+                                      /// more_vert icon
+                                      Flexible(
+                                        child:
+                                            GlobalMethods.morePdfItemsPopupMenu(
+                                          context: context,
+                                          pdfModel: pdfModel,
+                                          collectionName: 'createdpdfs',
+                                          index: index,
+                                          fileList: fileList,
+                                          snapshot: snapshot,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            // SizedBox(height: 10.0),
+                              // SizedBox(height: 10.0),
 
-                            /// file creation date
-                            Flexible(
-                              flex: 1,
-                              child: Text(
-                                pdfModel.fileCreationDate,
-                                maxLines: 1,
-                                overflow: TextOverflow.visible,
-                                style: GoogleFonts.arimo(
-                                  fontSize: MediaQuery.of(context).size.height *
-                                      0.025,
-                                  fontWeight: FontWeight.w700,
+                              /// file creation date
+                              Flexible(
+                                flex: 1,
+                                child: Text(
+                                  pdfModel.fileCreationDate,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.visible,
+                                  style: GoogleFonts.arimo(
+                                    fontSize:
+                                        MediaQuery.of(context).size.height *
+                                            0.025,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
                               ),
-                            ),
 
-                            /// pdf size & pdf no of pages
-                            Flexible(
-                              flex: 1,
-                              child: Container(
-                                // color: Colors.lightBlue.shade100,
-                                width: MediaQuery.of(context).size.width * 0.63,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  // mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    /// pdf size
-                                    Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.10,
-                                      // color: Colors.lightBlueAccent,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            pdfModel.pdfSize,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.clip,
-                                            style: GoogleFonts.arimo(
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.025,
-                                              fontWeight: FontWeight.w700,
+                              /// pdf size & pdf no of pages
+                              Flexible(
+                                flex: 1,
+                                child: Container(
+                                  // color: Colors.lightBlue.shade100,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.63,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    // mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      /// pdf size
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.15,
+                                        // color: Colors.lightBlueAccent,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              pdfModel.pdfSize,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.clip,
+                                              style: GoogleFonts.arimo(
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.025,
+                                                fontWeight: FontWeight.w700,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.05),
-
-                                    /// pdf no of pages
-                                    Container(
-                                      // margin: EdgeInsets.all(10.0),
-                                      width: MediaQuery.of(context).size.width *
-                                          0.06,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.10,
-                                      // color: Colors.orange,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0)),
-                                        border: Border.all(
-                                          color: Colors.black,
+                                      SizedBox(
                                           width: MediaQuery.of(context)
                                                   .size
-                                                  .height *
-                                              0.004,
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsets.all(
+                                                  .width *
+                                              0.05),
+
+                                      /// pdf no of pages
+                                      Container(
+                                        // margin: EdgeInsets.all(10.0),
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.06,
+                                        height:
                                             MediaQuery.of(context).size.height *
-                                                0.0001),
-                                        child: Center(
-                                          child: Text(
-                                            pdfModel.pdfPageCount.toString(),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.visible,
-                                            style: GoogleFonts.arimo(
-                                              color: Colors.black,
-                                              fontSize: MediaQuery.of(context)
+                                                0.15,
+                                        // color: Colors.orange,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.rectangle,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5.0)),
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.0035,
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(
+                                              MediaQuery.of(context)
                                                       .size
                                                       .height *
-                                                  0.02,
-                                              fontWeight: FontWeight.w700,
+                                                  0.0001),
+                                          child: Center(
+                                            child: Text(
+                                              pdfModel.pdfPageCount.toString(),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.visible,
+                                              style: GoogleFonts.arimo(
+                                                color: Colors.black,
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.02,
+                                                fontWeight: FontWeight.w700,
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -304,7 +306,16 @@ class _AllDocsScreenState extends State<AllDocsScreen>
               // noOfImportedFiles = snapshot.data.docs.length;
               // return importedDocsList(snapshot: snapshot);
             } else if (snapshot.data.docs.isEmpty) {
-              return Text('No docs yet');
+              return Container(
+                height: MediaQuery.of(context).size.height * 0.10,
+                color: Colors.deepOrange,
+                alignment: Alignment.center,
+                child: Text('NO DOCS YET',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.arimo(
+                        fontSize: MediaQuery.of(context).size.height * 0.16,
+                        color: Colors.grey)),
+              );
             }
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return Stack(

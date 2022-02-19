@@ -183,7 +183,7 @@ class _LandingScreenState extends State<LandingScreen>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 12.0),
                       child: Text(
-                        'App Description',
+                        'You Write, We Digitize',
                         style: GoogleFonts.arimo(
                           fontSize: 20.0,
                           height: 2.0,
