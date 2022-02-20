@@ -177,20 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }).where((userItem) {
                 return (userItem.id == _firebaseAuth.currentUser.uid);
               }).toList();
-              // if (userStream.isNotEmpty)
               userModel = userStream[0];
-              // else {
-              //   //TODO
-              //   final User user = _firebaseAuth.currentUser;
-              //   userModel = UserModel(
-              //       authenticatedBy: "anonymous",
-              //       createdAt: user.metadata.creationTime.toString().substring(0,10),
-              //       documentsCount: 0,
-              //       email: '',
-              //       id: '',
-              //       joinedAt: '',
-              //       name: 'Guest');
-              // }
               return UserDetails(
                 width: width,
                 height: height,

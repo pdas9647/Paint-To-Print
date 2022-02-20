@@ -1,5 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gradient_widgets/gradient_widgets.dart';
+import 'package:paint_to_print/models/user_model.dart';
 import 'package:paint_to_print/screens/auth/login_screen.dart';
 import 'package:paint_to_print/screens/auth/signup_screen.dart';
 import 'package:paint_to_print/services/global_methods.dart';
@@ -71,7 +73,32 @@ class _LandingScreenState extends State<LandingScreen>
       _isLoading = true;
     });
     try {
-      await _firebaseAuth.signInAnonymously();
+      await _firebaseAuth.signInAnonymously().then((value) async {
+        var date = DateTime.now().toString();
+        var dateParse = DateTime.parse(date);
+        var formattedDate =
+            '${dateParse.day}-${dateParse.month}-${dateParse.year}';
+        final User user = _firebaseAuth.currentUser;
+        final _uid = user.uid;
+        var createdDate = user.metadata.creationTime.toString();
+        user.reload();
+        await FirebaseFirestore.instance.collection('users').doc(_uid).set(
+                /*{'id': _uid,
+          'name': _name,
+          'email': _emailAddress,
+          'joinedAt': formattedDate,
+          'createdAt': createdDate,
+          'authenticatedBy': 'email',}*/
+                UserModel(
+              authenticatedBy: 'anonymous',
+              createdAt: createdDate,
+              email: '',
+              joinedAt: formattedDate,
+              id: _uid,
+              name: 'Guest',
+              documentsCount: 0,
+            ).toMap());
+      });
     } catch (error) {
       GlobalMethods.authErrorDialog(
         context,
@@ -171,8 +198,8 @@ class _LandingScreenState extends State<LandingScreen>
                         maxLines: 1,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.arimo(
-                          fontSize: 30.0,
                           color: Colors.white,
+                          fontSize: MediaQuery.of(context).size.width * 0.1,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -184,11 +211,12 @@ class _LandingScreenState extends State<LandingScreen>
                           horizontal: 20.0, vertical: 12.0),
                       child: Text(
                         'You Write, We Digitize',
-                        style: GoogleFonts.arimo(
-                          fontSize: 20.0,
-                          height: 2.0,
+                        style: GoogleFonts.sriracha(
+                          // height: 2.0,
+                          letterSpacing: 1,
                           color: Colors.white,
-                          fontWeight: FontWeight.w400,
+                          fontWeight: FontWeight.w500,
+                          fontSize: MediaQuery.of(context).size.width * 0.06,
                         ),
                       ),
                     ),
@@ -225,17 +253,23 @@ class _LandingScreenState extends State<LandingScreen>
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Feather.user_check, color: Colors.white),
-                              SizedBox(width: 7.0),
+                              Icon(Feather.user_check,
+                                  color: Colors.white,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.06),
+                              SizedBox(
+                                  width:
+                                  MediaQuery.of(context).size.width * 0.02),
                               AutoSizeText(
                                 'Sign in',
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
                                 overflow: TextOverflow.fade,
                                 style: GoogleFonts.arimo(
-                                  fontSize: 20.0,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.06,
                                 ),
                               ),
                             ],
@@ -267,17 +301,23 @@ class _LandingScreenState extends State<LandingScreen>
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Feather.user_plus, color: Colors.white),
-                              SizedBox(width: 7.0),
+                              Icon(Feather.user_plus,
+                                  color: Colors.white,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.06),
+                              SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.02),
                               AutoSizeText(
                                 'Sign up',
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
                                 overflow: TextOverflow.fade,
                                 style: GoogleFonts.arimo(
-                                  fontSize: 20.0,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width * 0.06,
                                 ),
                               ),
                             ],

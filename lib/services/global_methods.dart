@@ -298,154 +298,313 @@ class GlobalMethods {
             .doc(FirebaseAuth.instance.currentUser.uid)
             .collection(collectionName);
         print(index);
-        switch (value) {
-          case 'Share':
-            String saveFileName = pdfModel.pdfName;
-            final directory = await getExternalStorageDirectory();
-            String savePath = directory.path + '/$saveFileName';
-            final pdfFile = File('${directory.path}/${saveFileName}');
-            print(pdfFile.path);
-            if (pdfFile.existsSync() == true) {
-              print('pdf exists');
-              Share.shareFiles([savePath], text: '${saveFileName}');
-            } else {
-              print('pdf doesn\'t exist');
-              downloadPdf(
-                      context: context, pdfModel: pdfModel, savePath: savePath)
-                  .then((value) {
+        if (collectionName == 'createdpdfs') {
+          switch (value) {
+            case 'Share':
+              String saveFileName = pdfModel.pdfName;
+              final directory = await getExternalStorageDirectory();
+              String savePath = directory.path + '/$saveFileName';
+              final pdfFile = File('${directory.path}/${saveFileName}');
+              print(pdfFile.path);
+              if (pdfFile.existsSync() == true) {
+                print('pdf exists');
                 Share.shareFiles([savePath], text: '${saveFileName}');
-              });
-            }
-            break;
+              } else {
+                print('pdf doesn\'t exist');
+                downloadPdf(
+                        context: context,
+                        pdfModel: pdfModel,
+                        savePath: savePath)
+                    .then((value) {
+                  Share.shareFiles([savePath], text: '${saveFileName}');
+                });
+              }
+              break;
 
-          case 'Delete':
+            case 'Delete':
 
-            /// alert dialog
-            customDialog(context, 'Warning!', 'Do you want to delete?', () {
-              print('snapshot.data.docs[index]: ${snapshot.data.docs[index]}');
+              /// alert dialog
+              customDialog(context, 'Warning!', 'Do you want to delete?', () {
+                print(
+                    'snapshot.data.docs[index]: ${snapshot.data.docs[index]}');
+                Navigator.of(context).pop();
+                /// delete file from firebase storage
+                FirebaseStorage.instance.refFromURL(pdfModel.pdfUrl).delete();
+                print('Deleted from storage');
 
-              /// delete file from firebase storage
-              FirebaseStorage.instance.refFromURL(pdfModel.pdfUrl).delete();
-              print('Deleted from storage');
-
-              /// delete entry from firebasefirestore
-              firebaseFirestore
-                  .where('fileCreationDate',
-                      isEqualTo: pdfModel.fileCreationDate)
-                  .get()
-                  .then((value) {
-                value.docs.forEach((element) {
-                  firebaseFirestore.doc(element.id).delete().then((value) {
-                    print('Deleted from firestore');
-                    Navigator.of(context).pop();
-                    int documentsCount = 0;
-                    FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(FirebaseAuth.instance.currentUser.uid)
-                        .get()
-                        .then((documentSnapshot) {
-                      documentsCount = documentSnapshot.get('documentsCount');
-                    }).then((value) {
+                /// delete entry from firebasefirestore
+                firebaseFirestore
+                    .where('fileCreationDate',
+                        isEqualTo: pdfModel.fileCreationDate)
+                    .get()
+                    .then((value) {
+                  value.docs.forEach((element) {
+                    firebaseFirestore.doc(element.id).delete().then((value) {
+                      print('Deleted from firestore');
+                      int documentsCount = 0;
                       FirebaseFirestore.instance
                           .collection('users')
                           .doc(FirebaseAuth.instance.currentUser.uid)
-                          .update({
-                        'documentsCount': documentsCount - 1,
+                          .get()
+                          .then((documentSnapshot) {
+                        documentsCount = documentSnapshot.get('documentsCount');
+                      }).then((value) {
+                        FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser.uid)
+                            .update({
+                          'documentsCount': documentsCount - 1,
+                        });
                       });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(18.0))),
+                          content: Text(
+                            'Deleted Successfully',
+                            style: GoogleFonts.arimo(fontSize: 17.0),
+                          ),
+                        ),
+                      );
                     });
+                  });
+                });
+              });
+              break;
+
+            case 'Download':
+              Map<Permission, PermissionStatus> statuses = await [
+                Permission.storage,
+              ].request();
+              if (statuses[Permission.storage].isGranted) {
+                Directory downloadDirectory =
+                    await DownloadsPathProvider.downloadsDirectory;
+                if (downloadDirectory != null) {
+                  String savePath =
+                      downloadDirectory.path + '/${pdfModel.pdfName}';
+                  downloadPdf(
+                          context: context,
+                          pdfModel: pdfModel,
+                          savePath: savePath)
+                      .then((value) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.vertical(
                                 top: Radius.circular(18.0))),
                         content: Text(
-                          'Deleted Successfully',
+                          'Downloaded Successfully',
                           style: GoogleFonts.arimo(fontSize: 17.0),
                         ),
                       ),
                     );
                   });
-                });
-              });
-            });
-            break;
+                }
+              }
+              break;
 
-          case 'Download':
-            Map<Permission, PermissionStatus> statuses = await [
-              Permission.storage,
-            ].request();
-            if (statuses[Permission.storage].isGranted) {
-              Directory downloadDirectory =
-                  await DownloadsPathProvider.downloadsDirectory;
-              if (downloadDirectory != null) {
-                String savePath =
-                    downloadDirectory.path + '/${pdfModel.pdfName}';
+            case 'Rename':
+              TextEditingController _nameController =
+                  TextEditingController(text: pdfModel.pdfName);
+              showDialog(
+                  context: context,
+                  builder: (BuildContext ctx) {
+                    return AlertDialog(
+                      content: TextFormField(
+                        controller: _nameController,
+                        style: GoogleFonts.arimo(fontWeight: FontWeight.w400),
+                        // decoration: InputDecoration(
+                        // labelStyle: GoogleFonts.arimo(fontWeight: FontWeight.w600),
+                        // hintStyle: GoogleFonts.arimo(fontWeight: FontWeight.w600),
+                        // ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            if (!_nameController.text.contains('.pdf')) {
+                              _nameController.text += '.pdf';
+                            }
+                            firebaseFirestore
+                                .where('fileCreationDate',
+                                    isEqualTo: pdfModel.fileCreationDate)
+                                .get()
+                                .then((value) {
+                              value.docs.forEach((element) {
+                                firebaseFirestore
+                                    .doc(element.id)
+                                    .update({'pdfName': _nameController.text});
+                              });
+                            });
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            'Save',
+                            style:
+                                GoogleFonts.arimo(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
+                    );
+                  });
+              break;
+            default:
+              break;
+          }
+        } else if (collectionName == 'createdtxts') {
+          switch (value) {
+            case 'Share':
+              String saveFileName = pdfModel.pdfName;
+              final directory = await getExternalStorageDirectory();
+              String savePath = directory.path + '/$saveFileName';
+              final pdfFile = File('${directory.path}/${saveFileName}');
+              print(pdfFile.path);
+              if (pdfFile.existsSync() == true) {
+                print('pdf exists');
+                Share.shareFiles([savePath], text: '${saveFileName}');
+              } else {
+                print('pdf doesn\'t exist');
                 downloadPdf(
                         context: context,
                         pdfModel: pdfModel,
                         savePath: savePath)
                     .then((value) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(18.0))),
-                      content: Text(
-                        'Downloaded Successfully',
-                        style: GoogleFonts.arimo(fontSize: 17.0),
-                      ),
-                    ),
-                  );
+                  Share.shareFiles([savePath], text: '${saveFileName}');
                 });
               }
-            }
-            break;
+              break;
 
-          case 'Rename':
-            TextEditingController _nameController =
-                TextEditingController(text: pdfModel.pdfName);
-            showDialog(
-                context: context,
-                builder: (BuildContext ctx) {
-                  return AlertDialog(
-                    content: TextFormField(
-                      controller: _nameController,
-                      style: GoogleFonts.arimo(fontWeight: FontWeight.w400),
-                      // decoration: InputDecoration(
-                      // labelStyle: GoogleFonts.arimo(fontWeight: FontWeight.w600),
-                      // hintStyle: GoogleFonts.arimo(fontWeight: FontWeight.w600),
-                      // ),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          if (!_nameController.text.contains('.pdf')) {
-                            _nameController.text += '.pdf';
-                          }
-                          firebaseFirestore
-                              .where('fileCreationDate',
-                                  isEqualTo: pdfModel.fileCreationDate)
-                              .get()
-                              .then((value) {
-                            value.docs.forEach((element) {
-                              firebaseFirestore
-                                  .doc(element.id)
-                                  .update({'pdfName': _nameController.text});
-                            });
-                          });
-                          Navigator.of(context).pop();
-                        },
-                        child: Text(
-                          'Save',
-                          style: GoogleFonts.arimo(fontWeight: FontWeight.w600),
+            case 'Delete':
+
+              /// alert dialog
+              customDialog(context, 'Warning!', 'Do you want to delete?', () {
+                print(
+                    'snapshot.data.docs[index]: ${snapshot.data.docs[index]}');
+
+                /// delete file from firebase storage
+                FirebaseStorage.instance.refFromURL(pdfModel.pdfUrl).delete();
+                print('Deleted from storage');
+
+                /// delete entry from firebasefirestore
+                firebaseFirestore
+                    .where('fileCreationDate',
+                        isEqualTo: pdfModel.fileCreationDate)
+                    .get()
+                    .then((value) {
+                  value.docs.forEach((element) {
+                    firebaseFirestore.doc(element.id).delete().then((value) {
+                      print('Deleted from firestore');
+                      Navigator.of(context).pop();
+                      int documentsCount = 0;
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(FirebaseAuth.instance.currentUser.uid)
+                          .get()
+                          .then((documentSnapshot) {
+                        documentsCount = documentSnapshot.get('documentsCount');
+                      }).then((value) {
+                        FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser.uid)
+                            .update({
+                          'documentsCount': documentsCount - 1,
+                        });
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(18.0))),
+                          content: Text(
+                            'Deleted Successfully',
+                            style: GoogleFonts.arimo(fontSize: 17.0),
+                          ),
+                        ),
+                      );
+                    });
+                  });
+                });
+              });
+              break;
+
+            case 'Download':
+              Map<Permission, PermissionStatus> statuses = await [
+                Permission.storage,
+              ].request();
+              if (statuses[Permission.storage].isGranted) {
+                Directory downloadDirectory =
+                    await DownloadsPathProvider.downloadsDirectory;
+                if (downloadDirectory != null) {
+                  String savePath =
+                      downloadDirectory.path + '/${pdfModel.pdfName}';
+                  downloadPdf(
+                          context: context,
+                          pdfModel: pdfModel,
+                          savePath: savePath)
+                      .then((value) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(18.0))),
+                        content: Text(
+                          'Downloaded Successfully',
+                          style: GoogleFonts.arimo(fontSize: 17.0),
                         ),
                       ),
-                    ],
-                  );
-                });
-            break;
-          default:
-            break;
+                    );
+                  });
+                }
+              }
+              break;
+
+            case 'Rename':
+              TextEditingController _nameController =
+                  TextEditingController(text: pdfModel.pdfName);
+              showDialog(
+                  context: context,
+                  builder: (BuildContext ctx) {
+                    return AlertDialog(
+                      content: TextFormField(
+                        controller: _nameController,
+                        style: GoogleFonts.arimo(fontWeight: FontWeight.w400),
+                        // decoration: InputDecoration(
+                        // labelStyle: GoogleFonts.arimo(fontWeight: FontWeight.w600),
+                        // hintStyle: GoogleFonts.arimo(fontWeight: FontWeight.w600),
+                        // ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            if (!_nameController.text.contains('.pdf')) {
+                              _nameController.text += '.pdf';
+                            }
+                            firebaseFirestore
+                                .where('fileCreationDate',
+                                    isEqualTo: pdfModel.fileCreationDate)
+                                .get()
+                                .then((value) {
+                              value.docs.forEach((element) {
+                                firebaseFirestore
+                                    .doc(element.id)
+                                    .update({'pdfName': _nameController.text});
+                              });
+                            });
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            'Save',
+                            style:
+                                GoogleFonts.arimo(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
+                    );
+                  });
+              break;
+            default:
+              break;
+          }
         }
       },
       itemBuilder: (BuildContext context) {

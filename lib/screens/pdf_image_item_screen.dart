@@ -1,15 +1,26 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:paint_to_print/models/pdf_model.dart';
 import 'package:paint_to_print/models/text_model.dart';
 import 'package:paint_to_print/screens/pdf_images_screen.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:share/share.dart';
 
 enum MODE {
   VIEW_MODE,
@@ -42,6 +53,7 @@ class PdfImageItemScreen extends StatefulWidget {
 }
 
 class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
+  final GlobalKey canvasKey = GlobalKey();
   PDFModel pdfModel;
   TextModel textModel;
   MODE editViewMode;
@@ -210,6 +222,43 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
         });
   }
 
+  Future<void> _shareImage() async {
+    final directory = await getExternalStorageDirectory();
+    DateTime dateTime = Timestamp.now().toDate();
+    // String savePath = directory.path + '${dateTime}.png';
+    final imageFile = File('${directory.path}/$dateTime.png');
+    print(imageFile.path);
+    _saveImage(path: 'Ext Storage Directory', dateTime: dateTime).then((value) {
+      print(imageFile.exists() == true);
+      Share.shareFiles([imageFile.path]);
+    });
+  }
+
+  Future<void> _saveImage({String path, DateTime dateTime}) async {
+    Directory directory;
+    if (path == 'Ext Storage Directory') {
+      directory = await getExternalStorageDirectory();
+    } else if (path == 'Downloads') {
+      directory = await DownloadsPathProvider.downloadsDirectory;
+    }
+    RenderRepaintBoundary boundary =
+        canvasKey.currentContext.findRenderObject();
+    ui.Image image = await boundary.toImage();
+    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    Uint8List pngBytes = byteData.buffer.asUint8List();
+    //Request permissions if not already granted
+    if (!(await Permission.storage.status.isGranted))
+      await Permission.storage.request();
+    // final result = await ImageGallerySaver.saveImage(
+    //   Uint8List.fromList(pngBytes),
+    //   quality: 100,
+    //   name: DateTime.now().toIso8601String(),
+    // );
+    final result =
+        await File('${directory.path}/$dateTime.png').writeAsBytes(pngBytes);
+    print(result);
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -309,7 +358,13 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
                 onSelected: (value) {
                   print(value);
                   if (value == 'Share') {
-                  } else if (value == 'Docx') {}
+                    _shareImage();
+                  } else if (value == 'Save') {
+                    _saveImage(
+                      path: 'Downloads',
+                      dateTime: Timestamp.now().toDate(),
+                    );
+                  }
                 },
                 icon: Icon(
                   Icons.more_vert_rounded,
@@ -339,21 +394,21 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
                       ),
                     ),
 
-                    /// docx
+                    /// save
                     PopupMenuItem(
-                      value: 'Docx',
+                      value: 'Save',
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Docx',
+                            'Save',
                             style: GoogleFonts.arimo(
                               fontSize: 14.0,
-                              color: Colors.indigoAccent,
+                              color: Colors.black,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          Icon(MdiIcons.fileWord, color: Colors.indigoAccent),
+                          Icon(MdiIcons.contentSave, color: Colors.black),
                         ],
                       ),
                     ),
@@ -382,11 +437,24 @@ class _PdfImageItemScreenState extends State<PdfImageItemScreen> {
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
-                    child: Image.memory(
-                      canvasImages[index],
-                      fit: BoxFit.contain,
+                  child: RepaintBoundary(
+                    key: canvasKey,
+                    child: Stack(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20.0))),
+                        ),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(15.0),
+                          child: Image.memory(
+                            canvasImages[index],
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

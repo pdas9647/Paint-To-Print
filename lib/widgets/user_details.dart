@@ -47,18 +47,24 @@ class _UserDetailsState extends State<UserDetails> {
             Container(
               padding: EdgeInsets.all(widget.width * 0.05),
               width: widget.width * 0.35,
-              child: CircleAvatar(
-                radius: widget.height * 0.10,
-                backgroundColor: Theme.of(context).primaryColor,
-                child: Text(
-                  getInitialLetter(),
-                  style: GoogleFonts.arimo(
-                    fontSize: MediaQuery.of(context).size.height * 0.1,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+              child: widget.userModel.email.isNotEmpty
+                  ? CircleAvatar(
+                      radius: widget.height * 0.10,
+                      backgroundColor: Theme.of(context).primaryColor,
+                      child: Text(
+                        getInitialLetter(),
+                        style: GoogleFonts.arimo(
+                          fontSize: MediaQuery.of(context).size.height * 0.1,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  : Image(
+                      image: AssetImage('assets/images/profile_picture.png'),
+                      height: widget.height * 0.40,
+                      width: widget.height * 0.40,
+                    ),
             ),
             SizedBox(width: widget.width * 0.005),
             Container(
@@ -86,7 +92,7 @@ class _UserDetailsState extends State<UserDetails> {
 
                   /// created at
                   AutoSizeText(
-                    'Created At: ${widget.userModel.createdAt}',
+                    'Created At: ${widget.userModel.createdAt.substring(0, 10)}',
                     maxLines: 1,
                     style: GoogleFonts.arimo(fontSize: widget.height * 0.03),
                   ),
