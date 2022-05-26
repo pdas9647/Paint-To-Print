@@ -129,7 +129,8 @@ class _CanvasViewScreenState extends State<CanvasViewScreen> {
                 child: CupertinoSlider(
                   min: 1.0,
                   max: 10.0,
-                  value: widget.strokeWidth, thumbColor: selectedColor,
+                  value: widget.strokeWidth,
+                  thumbColor: selectedColor,
                   // label: 'Stroke width',
                   activeColor: selectedColor,
                   // inactiveColor: Colors.blueGrey.shade200,
