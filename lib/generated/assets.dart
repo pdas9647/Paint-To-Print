@@ -29,6 +29,8 @@ class Assets {
   static const String imagesSplashScreenBg = 'assets/images/splash_screen_bg.png';
   static const String imagesSwagato = 'assets/images/swagato.jpg';
   static const String imagesSwiftScanner = 'assets/images/swift_scanner.png';
+  static const String imagesTextIcon = 'assets/images/text_icon.png';
+  static const String imagesTextIcon1 = 'assets/images/text_icon_1.png';
   static const String imagesWarning = 'assets/images/warning.png';
   static const String mlModelsHandWrittenDigitModel = 'assets/ml_models/hand_written_digit_model.tflite';
   static const String mlModelsMnist = 'assets/ml_models/mnist.txt';

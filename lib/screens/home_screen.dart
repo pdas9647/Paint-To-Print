@@ -1,28 +1,20 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:paint_to_print/models/prediction_model.dart';
 import 'package:paint_to_print/models/user_model.dart';
 import 'package:paint_to_print/screens/canvas/canvas_view_screen.dart';
 import 'package:paint_to_print/services/recognizer.dart';
 import 'package:paint_to_print/widgets/create_home_icon.dart';
-import 'package:paint_to_print/widgets/loading_cube_grid.dart';
 import 'package:paint_to_print/widgets/user_details.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shimmer/shimmer.dart';
-
-import 'pdf_images_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static int noOfCreatedPdfs = 0;

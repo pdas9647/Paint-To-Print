@@ -57,12 +57,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         user.updateDisplayName(_name);
         user.reload();
         await FirebaseFirestore.instance.collection('users').doc(_uid).set(
-                /*{'id': _uid,
-          'name': _name,
-          'email': _emailAddress,
-          'joinedAt': formattedDate,
-          'createdAt': createdDate,
-          'authenticatedBy': 'email',}*/
                 UserModel(
               authenticatedBy: 'email',
               createdAt: createdDate,
@@ -418,7 +412,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           },
                         ),
                       ),
-                      // Spacer(),
 
                       /// don't have an account? sign up
                       Row(

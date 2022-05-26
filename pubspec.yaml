@@ -88,6 +88,9 @@ dependencies:
   downloads_path_provider_28: ^0.1.2
   dio: ^4.0.4
   flutter_image_compress: ^1.1.0
+  syncfusion_flutter_pdfviewer:
+  modal_bottom_sheet: ^2.0.1
+  flutter_linkify: ^5.0.2
 
 dev_dependencies:
   flutter_test:

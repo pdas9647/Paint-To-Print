@@ -1,15 +1,20 @@
-import 'package:auto_size_text/auto_size_text.dart';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_page_transition/flutter_page_transition.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:paint_to_print/models/pdf_model.dart';
 import 'package:paint_to_print/models/text_model.dart';
+import 'package:paint_to_print/screens/pdf_view_screen.dart';
+import 'package:paint_to_print/screens/text_file_viewer_screen.dart';
+import 'package:paint_to_print/screens/webview_screens/open_text_file_webview_screen.dart';
 import 'package:paint_to_print/services/global_methods.dart';
-import 'package:paint_to_print/widgets/loading_cube_grid.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'home_screen.dart';
@@ -82,24 +87,29 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(
                         MediaQuery.of(context).size.width * 0.02)),
-                // margin: EdgeInsets.all(10.0),
-                // color: Colors.greenAccent,
                 height: MediaQuery.of(context).size.height * 0.23,
                 child: GestureDetector(
                   onTap: () async {
                     print('index: ${index} tapped');
-                    /*String url = pdfModel.pdfUrl;
-                    final file = await DefaultCacheManager().getSingleFile(url);
-                    var fileContent = await file.readAsString();
-                    print(fileContent.characters);
+                    final pdfFile = File(pdfModel.pdfLocation);
+                    // print('96. ${pdfFile.existsSync() == true}');
+                    // print(pdfFile.path);
                     Navigator.push(
                       context,
                       PageTransition(
-                        child:
-                        TextFileViewerScreen(fileContent: fileContent),
-                        type: PageTransitionType.fade,
+                        child: PdfViewScreen(
+                          pdfUrl: pdfModel.pdfUrl,
+
+                          /// check if pdf exists then send the location from firestore otherwise send null
+                          pdfLocation: pdfFile.existsSync() == true
+                              ? pdfModel.pdfLocation
+                              : null,
+                          pdfCreationDate: pdfModel.fileCreationDate,
+                          pdfName: pdfModel.pdfName,
+                        ),
+                        type: PageTransitionType.rippleRightUp,
                       ),
-                    );*/
+                    );
                   },
                   child: Card(
                     color: Colors.indigo.shade200,
@@ -164,8 +174,8 @@ class _AllDocsScreenState extends State<AllDocsScreen>
 
                                     /// more_vert icon
                                     Flexible(
-                                      child:
-                                          GlobalMethods.morePdfItemsPopupMenu(
+                                      child: GlobalMethods
+                                          .morePdfTextItemsPopupMenu(
                                         context: context,
                                         pdfModel: pdfModel,
                                         collectionName: 'createdpdfs',
@@ -306,14 +316,13 @@ class _AllDocsScreenState extends State<AllDocsScreen>
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data.docs.isNotEmpty) {
-              // noOfImportedFiles = snapshot.data.docs.length;
-              // return importedDocsList(snapshot: snapshot);
             } else if (snapshot.data.docs.isEmpty) {
               return Container(
                 color: Colors.white,
                 child: Image.asset(
                   'assets/images/no_texts_yet.png',
                   width: MediaQuery.of(context).size.width,
+                  // fit: BoxFit.fill,
                 ),
               );
             }
@@ -330,14 +339,6 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                   right: MediaQuery.of(context).size.width * 0.01,
                   child: Shimmers(),
                 ),
-                // Positioned(
-                //   top: 0.0,
-                //   left: 0.0,
-                //   bottom: 0.0,
-                //   right: 0.0,
-                //   // child: LoadingCubeGrid(),
-                //   child: Shimmers(),
-                // ),
               ],
             );
           } else {
@@ -350,31 +351,31 @@ class _AllDocsScreenState extends State<AllDocsScreen>
             shrinkWrap: true,
             itemCount: fileList.length,
             itemBuilder: (BuildContext context, int index) {
-              TextModel textModel = fileList[index];
+              TextModel txtModel = fileList[index];
               return Container(
                 padding:
                     EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(
                         MediaQuery.of(context).size.width * 0.02)),
-                // margin: EdgeInsets.all(10.0),
-                // color: Colors.greenAccent,
                 height: MediaQuery.of(context).size.height * 0.23,
                 child: GestureDetector(
                   onTap: () async {
                     print('index: ${index} tapped');
-                    /*String url = pdfModel.pdfUrl;
+                    String url = txtModel.textUrl;
                     final file = await DefaultCacheManager().getSingleFile(url);
                     var fileContent = await file.readAsString();
                     print(fileContent.characters);
                     Navigator.push(
                       context,
                       PageTransition(
-                        child:
-                        TextFileViewerScreen(fileContent: fileContent),
-                        type: PageTransitionType.fade,
+                        child: TextFileViewerScreen(
+                          textName: txtModel.textName,
+                          fileContent: fileContent,
+                        ),
+                        type: PageTransitionType.rippleRightUp,
                       ),
-                    );*/
+                    );
                   },
                   child: Card(
                     color: Colors.indigo.shade200,
@@ -395,12 +396,13 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                               borderRadius: BorderRadius.circular(
                                   MediaQuery.of(context).size.width * 0.02),
                               image: DecorationImage(
-                                image: AssetImage('assets/images/pdf_icon.png'),
+                                image:
+                                    AssetImage('assets/images/text_icon_1.png'),
                               ),
                             ),
                           ),
                           Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               /// file name & more icon
@@ -418,7 +420,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                     Flexible(
                                       flex: 5,
                                       child: Text(
-                                        textModel.textName,
+                                        txtModel.textName,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: GoogleFonts.arimo(
@@ -432,23 +434,20 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                     ),
 
                                     /// more_vert icon
-                                    /*Flexible(
-                                      child:
-                                          GlobalMethods.morePdfItemsPopupMenu(
+                                    Flexible(
+                                      child: GlobalMethods
+                                          .morePdfTextItemsPopupMenu(
                                         context: context,
-                                        textModel: textModel,
+                                        textModel: txtModel,
                                         collectionName: 'createdtxts',
                                         index: index,
                                         fileList: fileList,
                                         snapshot: snapshot,
                                       ),
-                                    ),*/
+                                    ),
                                   ],
                                 ),
                               ),
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.02),
 
                               /// file creation date & file size
                               Container(
@@ -467,7 +466,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                           MediaQuery.of(context).size.height *
                                               0.05,
                                       child: Text(
-                                        textModel.fileCreationDate,
+                                        txtModel.fileCreationDate,
                                         maxLines: 1,
                                         overflow: TextOverflow.visible,
                                         style: GoogleFonts.arimo(
@@ -487,7 +486,7 @@ class _AllDocsScreenState extends State<AllDocsScreen>
                                               0.05,
                                       // color: Colors.lightBlueAccent,
                                       child: Text(
-                                        textModel.textSize,
+                                        txtModel.textSize,
                                         maxLines: 1,
                                         overflow: TextOverflow.clip,
                                         style: GoogleFonts.arimo(

@@ -12,6 +12,7 @@ class UserDetails extends StatefulWidget {
   final double width;
   final double height;
   final UserModel userModel;
+
   const UserDetails({Key key, this.width, this.height, this.userModel})
       : super(key: key);
 

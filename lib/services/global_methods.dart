@@ -279,7 +279,7 @@ class GlobalMethods {
         });
   }
 
-  static PopupMenuButton<String> morePdfItemsPopupMenu(
+  static PopupMenuButton<String> morePdfTextItemsPopupMenu(
       {BuildContext context,
       PDFModel pdfModel,
       TextModel textModel,
@@ -305,17 +305,17 @@ class GlobalMethods {
               final directory = await getExternalStorageDirectory();
               String savePath = directory.path + '/$saveFileName';
               final pdfFile = File('${directory.path}/${saveFileName}');
-              print(pdfFile.path);
+              print('308: ${pdfFile.path}');
               if (pdfFile.existsSync() == true) {
                 print('pdf exists');
                 Share.shareFiles([savePath], text: '${saveFileName}');
               } else {
                 print('pdf doesn\'t exist');
                 downloadPdf(
-                        context: context,
-                        pdfModel: pdfModel,
-                        savePath: savePath)
-                    .then((value) {
+                  context: context,
+                  pdfModel: pdfModel,
+                  savePath: savePath,
+                ).then((value) {
                   Share.shareFiles([savePath], text: '${saveFileName}');
                 });
               }
@@ -328,6 +328,7 @@ class GlobalMethods {
                 print(
                     'snapshot.data.docs[index]: ${snapshot.data.docs[index]}');
                 Navigator.of(context).pop();
+
                 /// delete file from firebase storage
                 FirebaseStorage.instance.refFromURL(pdfModel.pdfUrl).delete();
                 print('Deleted from storage');
@@ -454,21 +455,21 @@ class GlobalMethods {
         } else if (collectionName == 'createdtxts') {
           switch (value) {
             case 'Share':
-              String saveFileName = pdfModel.pdfName;
+              String saveFileName = textModel.textName;
               final directory = await getExternalStorageDirectory();
               String savePath = directory.path + '/$saveFileName';
-              final pdfFile = File('${directory.path}/${saveFileName}');
-              print(pdfFile.path);
-              if (pdfFile.existsSync() == true) {
-                print('pdf exists');
+              final txtFile = File('${directory.path}/${saveFileName}');
+              print(txtFile.path);
+              if (txtFile.existsSync() == true) {
+                print('txt exists');
                 Share.shareFiles([savePath], text: '${saveFileName}');
               } else {
-                print('pdf doesn\'t exist');
-                downloadPdf(
-                        context: context,
-                        pdfModel: pdfModel,
-                        savePath: savePath)
-                    .then((value) {
+                print('txt doesn\'t exist');
+                downloadText(
+                  context: context,
+                  textModel: textModel,
+                  savePath: savePath,
+                ).then((value) {
                   Share.shareFiles([savePath], text: '${saveFileName}');
                 });
               }
@@ -480,21 +481,21 @@ class GlobalMethods {
               customDialog(context, 'Warning!', 'Do you want to delete?', () {
                 print(
                     'snapshot.data.docs[index]: ${snapshot.data.docs[index]}');
+                Navigator.pop(context);
 
                 /// delete file from firebase storage
-                FirebaseStorage.instance.refFromURL(pdfModel.pdfUrl).delete();
+                FirebaseStorage.instance.refFromURL(textModel.textUrl).delete();
                 print('Deleted from storage');
 
                 /// delete entry from firebasefirestore
                 firebaseFirestore
                     .where('fileCreationDate',
-                        isEqualTo: pdfModel.fileCreationDate)
+                        isEqualTo: textModel.fileCreationDate)
                     .get()
                     .then((value) {
                   value.docs.forEach((element) {
                     firebaseFirestore.doc(element.id).delete().then((value) {
                       print('Deleted from firestore');
-                      Navigator.of(context).pop();
                       int documentsCount = 0;
                       FirebaseFirestore.instance
                           .collection('users')
@@ -536,12 +537,12 @@ class GlobalMethods {
                     await DownloadsPathProvider.downloadsDirectory;
                 if (downloadDirectory != null) {
                   String savePath =
-                      downloadDirectory.path + '/${pdfModel.pdfName}';
-                  downloadPdf(
-                          context: context,
-                          pdfModel: pdfModel,
-                          savePath: savePath)
-                      .then((value) {
+                      downloadDirectory.path + '/${textModel.textName}';
+                  downloadText(
+                    context: context,
+                    textModel: textModel,
+                    savePath: savePath,
+                  ).then((value) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         shape: RoundedRectangleBorder(
@@ -560,7 +561,7 @@ class GlobalMethods {
 
             case 'Rename':
               TextEditingController _nameController =
-                  TextEditingController(text: pdfModel.pdfName);
+                  TextEditingController(text: textModel.textName);
               showDialog(
                   context: context,
                   builder: (BuildContext ctx) {
@@ -568,29 +569,25 @@ class GlobalMethods {
                       content: TextFormField(
                         controller: _nameController,
                         style: GoogleFonts.arimo(fontWeight: FontWeight.w400),
-                        // decoration: InputDecoration(
-                        // labelStyle: GoogleFonts.arimo(fontWeight: FontWeight.w600),
-                        // hintStyle: GoogleFonts.arimo(fontWeight: FontWeight.w600),
-                        // ),
                       ),
                       actions: [
                         TextButton(
                           onPressed: () {
-                            if (!_nameController.text.contains('.pdf')) {
-                              _nameController.text += '.pdf';
+                            if (!_nameController.text.contains('.txt')) {
+                              _nameController.text += '.txt';
                             }
                             firebaseFirestore
                                 .where('fileCreationDate',
-                                    isEqualTo: pdfModel.fileCreationDate)
+                                    isEqualTo: textModel.fileCreationDate)
                                 .get()
                                 .then((value) {
                               value.docs.forEach((element) {
                                 firebaseFirestore
                                     .doc(element.id)
-                                    .update({'pdfName': _nameController.text});
+                                    .update({'textName': _nameController.text});
                               });
                             });
-                            Navigator.of(context).pop();
+                            Navigator.pop(context);
                           },
                           child: Text(
                             'Save',
@@ -769,13 +766,80 @@ class GlobalMethods {
     }
   }
 
+  static Future<void> downloadText(
+      {BuildContext context, TextModel textModel, String savePath}) async {
+    String saveFileName = textModel.textName;
+    // String savePath = downloadDirectory.path + '/$saveFileName';
+    print(savePath);
+    try {
+      /*ProgressDialog progressDialog = ProgressDialog(context);*/
+      await Dio().download(textModel.textUrl, savePath,
+          onReceiveProgress: (received, total) {
+        if (total != -1) {
+          print((received / total * 100).toStringAsFixed(0) + '%');
+          /*// progress dialog
+                      progressDialog = ProgressDialog(
+                        context,
+                        type: ProgressDialogType.Download,
+                        isDismissible: true,
+                        customBody: Padding(
+                          padding: const EdgeInsets.all(14.0),
+                          child: StatefulBuilder(
+                            builder: (BuildContext context, setState) {
+                              print((received / total * 100).toStringAsFixed(0) + '%');
+                              return SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/double_ring_loading_io.gif',
+                                          height: 50.0,
+                                          width: 50.0,
+                                        ),
+                                        SizedBox(width: 10.0),
+                                        Flexible(
+                                          child: AutoSizeText(
+                                            'Downloading...',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.fade,
+                                            style: GoogleFonts.arimo(
+                                              fontSize: 20.0,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Text(
+                                          '${(received / total * 100).toStringAsFixed(0) + '%'}'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                      progressDialog.show();*/
+        }
+      });
+      /*progressDialog.hide();*/
+      print('$saveFileName is saved to ${savePath}');
+    } on DioError catch (e) {
+      // progressDialog.hide();
+      print('Error in download: ${e.message}');
+    }
+  }
+
   static Future<void> createAndSavePdfFile({
     BuildContext context,
     List<Uint8List> images,
     List<String> convertedTexts,
     String pdfName,
     String fileCreationDate,
-    // String timestamp,
   }) async {
     /// creating pdf
     var pdf = pdfWidget.Document();
@@ -814,7 +878,7 @@ class GlobalMethods {
       );
     }
 
-    // progress dialog
+    /// progress dialog
     ProgressDialog progressDialog = ProgressDialog(
       context,
       type: ProgressDialogType.Normal,
